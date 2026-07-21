@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { hospitalConfig } from "../lib/hospitalConfig";
+import { supabase } from "../lib/supabase";
 import { HeartPulse, Brain, Bone, Stethoscope, Activity, Cross, LucideIcon } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -43,9 +44,43 @@ const iconVariants = {
 
 export default function SpecialitiesSection() {
   const [showAll, setShowAll] = useState(false);
+  const [fetchedSpecialities, setFetchedSpecialities] = useState<{name: string, icon: string, description: string}[]>(hospitalConfig.specialities);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchDepartments() {
+      try {
+        const { data, error } = await supabase.from('Departments').select('Names').order('Names');
+        if (!isMounted) return;
+        if (error) {
+          console.error(error);
+        } else if (data) {
+          const mapped = data.map(d => {
+            const name = d.Names ? d.Names.trim() : "";
+            if (!name) return null;
+            // Map the Supabase name to local config for icon and description
+            const localConfig = hospitalConfig.specialities.find(s => s.name.toLowerCase() === name.toLowerCase());
+            return {
+              name,
+              icon: localConfig?.icon || "Activity",
+              description: localConfig?.description || "Specialized care and treatment for this department."
+            };
+          }).filter(Boolean) as {name: string, icon: string, description: string}[];
+          
+          setFetchedSpecialities(mapped);
+        }
+      } catch (err) {
+        if (!isMounted) return;
+        console.error("Error fetching specialities:", err);
+      }
+    }
+    fetchDepartments();
+    return () => { isMounted = false; };
+  }, []);
+
   const displayedSpecialities = showAll 
-    ? hospitalConfig.specialities 
-    : hospitalConfig.specialities.slice(0, 6);
+    ? fetchedSpecialities 
+    : fetchedSpecialities.slice(0, 6);
 
   return (
     <section id="specialities" className="py-20 bg-slate-50 overflow-hidden">
@@ -109,7 +144,7 @@ export default function SpecialitiesSection() {
         </motion.div>
 
         {/* Bottom Button */}
-        {!showAll && hospitalConfig.specialities.length > 6 && (
+        {!showAll && fetchedSpecialities.length > 6 && (
           <motion.div 
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
