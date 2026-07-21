@@ -8,12 +8,12 @@ import { useAppointment } from "../context/AppointmentContext";
 
 const navLinks = [
   { name: "Home", href: "#home" },
-  { name: "About Us", href: "#about" },
   { name: "Specialities", href: "#specialities" },
   { name: "Services", href: "#services" },
   { name: "Doctors", href: "#doctors" },
-  { name: "Facilities", href: "#facilities" },
-  { name: "Gallery", href: "#gallery" },
+  { name: "Facilities", href: "#gallery" },
+  { name: "Gallery", href: "#facilities" },
+  { name: "About Us", href: "#about" },
   { name: "Contact Us", href: "#contact" },
 ];
 
