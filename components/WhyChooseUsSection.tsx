@@ -2,7 +2,7 @@
 
 import { hospitalConfig } from "../lib/hospitalConfig";
 import { CheckCircle2 } from "lucide-react";
-import { motion, useMotionValue, useTransform, animate } from "framer-motion";
+import { motion, useMotionValue, useTransform, animate, Variants } from "framer-motion";
 
 function AnimatedCounter({ value }: { value: string }) {
   const match = value.match(/(\d+)(.*)/);
@@ -24,27 +24,27 @@ function AnimatedCounter({ value }: { value: string }) {
   );
 }
 
-const listContainerVariants = {
+const listContainerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { staggerChildren: 0.15 } }
 };
 
-const listItemVariants = {
+const listItemVariants: Variants = {
   hidden: { opacity: 0, x: -20 },
   visible: { opacity: 1, x: 0, transition: { duration: 0.5 } }
 };
 
-const iconVariants = {
+const iconVariants: Variants = {
   hidden: { scale: 0, opacity: 0 },
   visible: { scale: 1, opacity: 1, transition: { type: "spring", stiffness: 200, damping: 10 } }
 };
 
-const statsContainerVariants = {
+const statsContainerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { staggerChildren: 0.2, delayChildren: 0.2 } }
 };
 
-const statCardVariants = {
+const statCardVariants: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
   hover: { 
