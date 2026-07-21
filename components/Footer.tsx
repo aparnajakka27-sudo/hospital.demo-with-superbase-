@@ -1,6 +1,21 @@
 import { hospitalConfig } from "../lib/hospitalConfig";
 import { HeartPulse, MapPin, Phone, Clock, Mail } from "lucide-react";
 import Link from "next/link";
+import { motion, Variants } from "framer-motion";
+
+const containerVariants: Variants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { staggerChildren: 0.1, duration: 0.6, ease: "easeOut" }
+  }
+};
+
+const columnVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+};
 
 const quickLinks = [
   { name: "Home", href: "#home" },
@@ -37,14 +52,20 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-primary text-white pt-16 pb-8">
+    <motion.footer 
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.1 }}
+      className="bg-primary text-white pt-16 pb-8"
+    >
       <div className="container mx-auto px-4 md:px-6">
         
         {/* Main Footer Content - 4 Columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           
           {/* Column 1: Brand & Social */}
-          <div className="flex flex-col">
+          <motion.div variants={columnVariants} className="flex flex-col">
             <Link href="#home" className="flex items-center gap-3 mb-6">
               <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white text-primary">
                 <HeartPulse size={24} strokeWidth={2.5} />
@@ -62,20 +83,20 @@ export default function Footer() {
               {hospitalConfig.tagline}
             </p>
             <div className="flex items-center gap-4">
-              <a href={hospitalConfig.socialLinks.facebook} target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-secondary hover:text-white transition-colors">
+              <motion.a whileHover={{ scale: 1.15, rotate: 5 }} href={hospitalConfig.socialLinks.facebook} target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-secondary hover:text-white transition-colors">
                 <FacebookIcon size={16} />
-              </a>
-              <a href={hospitalConfig.socialLinks.instagram} target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-secondary hover:text-white transition-colors">
+              </motion.a>
+              <motion.a whileHover={{ scale: 1.15, rotate: 5 }} href={hospitalConfig.socialLinks.instagram} target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-secondary hover:text-white transition-colors">
                 <InstagramIcon size={16} />
-              </a>
-              <a href={hospitalConfig.socialLinks.linkedin} target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-secondary hover:text-white transition-colors">
+              </motion.a>
+              <motion.a whileHover={{ scale: 1.15, rotate: 5 }} href={hospitalConfig.socialLinks.linkedin} target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-secondary hover:text-white transition-colors">
                 <LinkedinIcon size={16} />
-              </a>
+              </motion.a>
             </div>
-          </div>
+          </motion.div>
 
           {/* Column 2: Quick Links */}
-          <div>
+          <motion.div variants={columnVariants}>
             <h4 className="text-lg font-bold mb-6 text-white border-b border-white/20 pb-2 inline-block">
               Quick Links
             </h4>
@@ -88,10 +109,10 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </motion.div>
 
           {/* Column 3: Specialities */}
-          <div>
+          <motion.div variants={columnVariants}>
             <h4 className="text-lg font-bold mb-6 text-white border-b border-white/20 pb-2 inline-block">
               Specialities
             </h4>
@@ -104,10 +125,10 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </motion.div>
 
           {/* Column 4: Contact Us */}
-          <div>
+          <motion.div variants={columnVariants}>
             <h4 className="text-lg font-bold mb-6 text-white border-b border-white/20 pb-2 inline-block">
               Contact Us
             </h4>
@@ -137,7 +158,7 @@ export default function Footer() {
                 </span>
               </li>
             </ul>
-          </div>
+          </motion.div>
 
         </div>
 
@@ -154,6 +175,6 @@ export default function Footer() {
         </div>
 
       </div>
-    </footer>
+    </motion.footer>
   );
 }

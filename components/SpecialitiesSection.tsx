@@ -20,26 +20,26 @@ const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1 }
+    transition: { staggerChildren: 0.08 }
   }
 };
 
 const cardVariants: Variants = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 40 },
   visible: { 
     opacity: 1, 
     y: 0, 
     transition: { duration: 0.5, ease: "easeOut" } 
   },
   hover: { 
-    scale: 1.03, 
-    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
+    y: -10, 
+    boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
     transition: { duration: 0.3, ease: "easeOut" } 
   }
 };
 
 const iconVariants: Variants = {
-  hover: { rotate: 5, transition: { duration: 0.2 } }
+  hover: { rotate: 5, scale: 1.08, transition: { duration: 0.2 } }
 };
 
 export default function SpecialitiesSection() {
@@ -110,7 +110,7 @@ export default function SpecialitiesSection() {
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
+          viewport={{ once: true, amount: 0.25 }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           {displayedSpecialities.map((speciality, index) => {

@@ -17,8 +17,23 @@ const containerVariants: Variants = {
 };
 
 const itemLeft: Variants = {
-  hidden: { opacity: 0, x: -30, y: 20 },
-  visible: { opacity: 1, x: 0, y: 0, transition: { duration: 0.7, ease: "easeOut" } }
+  hidden: { opacity: 0, x: -40 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
+const scaleUp: Variants = {
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: "easeOut", type: "spring", stiffness: 150 } }
+};
+
+const badgeScale: Variants = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: "easeOut" } }
 };
 
 export default function HeroSection() {
@@ -32,7 +47,13 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/90 to-transparent z-10 hidden md:block"></div>
         <div className="absolute inset-0 bg-primary/80 z-10 md:hidden"></div>
         
-        <div className="absolute inset-0 md:left-1/3 z-0">
+        <motion.div 
+          initial={{ opacity: 0, x: 50, scale: 1.05 }}
+          whileInView={{ opacity: 1, x: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.25 }}
+          transition={{ duration: 0.9, ease: "easeOut" }}
+          className="absolute inset-0 md:left-1/3 z-0"
+        >
           <Image
             src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?q=80&w=1600"
             alt="Horizon Super Speciality Hospital Building"
@@ -57,7 +78,7 @@ export default function HeroSection() {
               <rect x="0" y="0" width="100" height="100" fill="url(#dots)"></rect>
             </svg>
           </motion.div>
-        </div>
+        </motion.div>
       </div>
 
       <div className="container relative z-20 mx-auto px-4 md:px-6 py-16 md:py-20 lg:py-28">
@@ -68,7 +89,7 @@ export default function HeroSection() {
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.25 }}
             className="w-full lg:w-[55%] text-white"
           >
             
@@ -84,37 +105,37 @@ export default function HeroSection() {
               </motion.span>
             </h1>
 
-            <motion.p variants={itemLeft} className="text-lg md:text-xl text-white/90 font-medium mb-10 max-w-xl border-l-4 border-secondary pl-4 drop-shadow-sm">
+            <motion.p variants={fadeUp} className="text-lg md:text-xl text-white/90 font-medium mb-10 max-w-xl border-l-4 border-secondary pl-4 drop-shadow-sm">
               {hospitalConfig.tagline}
             </motion.p>
 
             {/* Feature Badges - Glassmorphism */}
-            <motion.div variants={itemLeft} className="flex flex-col sm:flex-row flex-wrap gap-4 mt-8 mb-10">
-              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md px-5 py-3 rounded-xl border border-white/20 shadow-lg">
+            <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true }} className="flex flex-col sm:flex-row flex-wrap gap-4 mt-8 mb-10">
+              <motion.div variants={badgeScale} className="flex items-center gap-3 bg-white/10 backdrop-blur-md px-5 py-3 rounded-xl border border-white/20 shadow-lg">
                 <div className="bg-secondary/90 p-2 rounded-lg text-white">
                   <Clock size={20} />
                 </div>
                 <span className="text-sm font-semibold text-white tracking-wide">24/7 Emergency Care</span>
-              </div>
+              </motion.div>
               
-              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md px-5 py-3 rounded-xl border border-white/20 shadow-lg">
+              <motion.div variants={badgeScale} className="flex items-center gap-3 bg-white/10 backdrop-blur-md px-5 py-3 rounded-xl border border-white/20 shadow-lg">
                 <div className="bg-secondary/90 p-2 rounded-lg text-white">
                   <Users size={20} />
                 </div>
                 <span className="text-sm font-semibold text-white tracking-wide">Experienced Specialists</span>
-              </div>
+              </motion.div>
               
-              <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md px-5 py-3 rounded-xl border border-white/20 shadow-lg">
+              <motion.div variants={badgeScale} className="flex items-center gap-3 bg-white/10 backdrop-blur-md px-5 py-3 rounded-xl border border-white/20 shadow-lg">
                 <div className="bg-secondary/90 p-2 rounded-lg text-white">
                   <Stethoscope size={20} />
                 </div>
                 <span className="text-sm font-semibold text-white tracking-wide">Advanced Technology</span>
-              </div>
+              </motion.div>
             </motion.div>
 
             {/* Primary CTA */}
             <motion.button 
-              variants={itemLeft}
+              variants={scaleUp}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => setIsAppointmentModalOpen(true)}

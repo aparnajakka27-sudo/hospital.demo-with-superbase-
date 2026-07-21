@@ -5,6 +5,35 @@ import Image from "next/image";
 import { hospitalConfig } from "../lib/hospitalConfig";
 import { X } from "lucide-react";
 import { useAppointment } from "../context/AppointmentContext";
+import { motion, Variants } from "framer-motion";
+
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+  hover: { 
+    y: -8,
+    boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+    transition: { duration: 0.3 } 
+  }
+};
+
+const imageVariants: Variants = {
+  hidden: { scale: 1.1 },
+  visible: { scale: 1, transition: { duration: 0.6, ease: "easeOut" } },
+  hover: { scale: 1.05, transition: { duration: 0.3 } }
+};
+
+const buttonVariants: Variants = {
+  hover: { y: -3, transition: { duration: 0.2 } }
+};
 
 export default function DoctorsSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -41,21 +70,31 @@ export default function DoctorsSection() {
         </div>
 
         {/* Doctors Grid Preview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.25 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+        >
           {hospitalConfig.doctors.slice(0, 4).map((doctor, index) => (
-            <div 
+            <motion.div 
               key={index} 
-              className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow p-6 flex flex-col items-center text-center border border-gray-100"
+              variants={cardVariants}
+              whileHover="hover"
+              className="bg-white rounded-2xl shadow-sm transition-shadow p-6 flex flex-col items-center text-center border border-gray-100"
             >
               {/* Image */}
               <div className="relative w-32 h-32 rounded-full overflow-hidden mb-5 border-4 border-accent">
-                <Image
-                  src={doctor.image}
-                  alt={doctor.name}
-                  fill
-                  className="object-cover"
-                  sizes="128px"
-                />
+                <motion.div variants={imageVariants} className="w-full h-full relative">
+                  <Image
+                    src={doctor.image}
+                    alt={doctor.name}
+                    fill
+                    className="object-cover"
+                    sizes="128px"
+                  />
+                </motion.div>
               </div>
 
               {/* Info */}
@@ -65,7 +104,7 @@ export default function DoctorsSection() {
               <p className="text-gray-500 text-xs mb-6">{doctor.experience} Experience</p>
 
               {/* Action */}
-              <div className="mt-auto w-full">
+              <motion.div variants={buttonVariants} className="mt-auto w-full">
                 <button 
                   onClick={() => {
                     setSelectedDepartment(doctor.department);
@@ -75,10 +114,10 @@ export default function DoctorsSection() {
                 >
                   Book Appointment
                 </button>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Bottom CTA */}
         <div className="mt-16 text-center">

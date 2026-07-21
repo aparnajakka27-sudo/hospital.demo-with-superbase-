@@ -121,6 +121,9 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
 
   return (
     <motion.div 
+      initial={{ y: 0 }}
+      animate={{ y: [0, -8, 0] }}
+      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
       whileHover={{ y: -5, transition: { duration: 0.3 } }}
       className="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col w-full max-w-md mx-auto md:mx-0 border border-gray-100 relative"
       onClick={(e) => e.stopPropagation()}
@@ -159,7 +162,7 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
               <input
                 type="text"
                 placeholder="Full Name *"
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all text-sm text-gray-900 placeholder:text-gray-400"
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:shadow-md focus:pl-11 outline-none transition-all duration-300 text-sm text-gray-900 placeholder:text-gray-400"
                 value={formData.fullName}
                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                 required
@@ -173,7 +176,7 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
               <input
                 type="email"
                 placeholder="Email Address *"
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all text-sm text-gray-900 placeholder:text-gray-400"
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:shadow-md focus:pl-11 outline-none transition-all duration-300 text-sm text-gray-900 placeholder:text-gray-400"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
@@ -190,7 +193,7 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
               <input
                 type="tel"
                 placeholder="Mobile Number *"
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all text-sm text-gray-900 placeholder:text-gray-400"
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:shadow-md focus:pl-11 outline-none transition-all duration-300 text-sm text-gray-900 placeholder:text-gray-400"
                 value={formData.mobile}
                 onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
                 required
@@ -201,7 +204,7 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
           <div className="flex gap-3">
             <div className="relative flex-1">
               <select
-                className="w-full pl-3 pr-8 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all text-sm appearance-none text-gray-900"
+                className="w-full pl-3 pr-8 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:shadow-md focus:pl-4 outline-none transition-all duration-300 text-sm appearance-none text-gray-900"
                 value={formData.department}
                 onChange={(e) => setFormData({ ...formData, department: e.target.value })}
                 disabled={isLoadingDepartments || fetchError || dynamicDepartments.length === 0}
@@ -226,7 +229,7 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
             
             <div className="relative flex-1">
               <select
-                className="w-full pl-3 pr-8 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all text-sm appearance-none text-gray-900"
+                className="w-full pl-3 pr-8 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:shadow-md focus:pl-4 outline-none transition-all duration-300 text-sm appearance-none text-gray-900"
                 value={formData.doctor}
                 onChange={(e) => setFormData({ ...formData, doctor: e.target.value })}
               >
@@ -243,7 +246,7 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
             <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
             <input
               type="date"
-              className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all text-sm text-gray-900"
+              className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:shadow-md focus:pl-11 outline-none transition-all duration-300 text-sm text-gray-900"
               value={formData.date}
               onChange={(e) => setFormData({ ...formData, date: e.target.value })}
             />
@@ -267,7 +270,7 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
           </div>
 
           <motion.button
-            whileHover={!isFormValid || isSubmitting ? {} : { scale: 1.03 }}
+            whileHover={!isFormValid || isSubmitting ? {} : { scale: 1.03, boxShadow: "0 0 15px rgba(249, 115, 22, 0.6)" }}
             whileTap={!isFormValid || isSubmitting ? {} : { scale: 0.97 }}
             type="submit"
             disabled={!isFormValid || isSubmitting}

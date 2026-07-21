@@ -48,9 +48,9 @@ export default function Navbar() {
 
   return (
     <motion.header
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+      initial={{ y: -40, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
       className={`sticky top-0 z-50 w-full transition-all duration-300 ${
         isScrolled ? "bg-white shadow-md py-2" : "bg-white py-4"
       }`}
@@ -94,7 +94,7 @@ export default function Navbar() {
           {/* Action Button & Mobile Toggle */}
           <div className="flex items-center gap-4">
             <motion.button
-              whileHover={{ scale: 1.03 }}
+              whileHover={{ scale: 1.05, boxShadow: "0 0 15px rgba(249, 115, 22, 0.6)" }}
               whileTap={{ scale: 0.97 }}
               onClick={() => setIsAppointmentModalOpen(true)}
               className="hidden md:inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold text-white transition-colors bg-secondary rounded-xl hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2"

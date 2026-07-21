@@ -11,9 +11,9 @@ export default function AboutSection() {
           
           {/* Left Column - Text Content */}
           <motion.div 
-            initial={{ x: 50, opacity: 0 }}
+            initial={{ x: -50, opacity: 0 }}
             whileInView={{ x: 0, opacity: 1 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.25 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="w-full lg:w-1/2 flex flex-col items-start text-left"
           >
@@ -51,9 +51,9 @@ export default function AboutSection() {
 
           {/* Right Column - Image */}
           <motion.div 
-            initial={{ x: -50, opacity: 0 }}
+            initial={{ x: 50, opacity: 0 }}
             whileInView={{ x: 0, opacity: 1 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.25 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="w-full lg:w-1/2"
           >

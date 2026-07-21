@@ -1,5 +1,16 @@
 import { hospitalConfig } from "../lib/hospitalConfig";
 import { MapPin, Clock, Phone, Mail } from "lucide-react";
+import { motion, Variants } from "framer-motion";
+
+const containerVariants: Variants = {
+  hidden: { opacity: 0, y: -20 },
+  visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.1, delayChildren: 0.2, duration: 0.6, ease: "easeOut" } }
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.5, type: "spring", stiffness: 150 } }
+};
 
 export default function ContactInfoStrip() {
   return (
@@ -7,10 +18,16 @@ export default function ContactInfoStrip() {
       <div className="container mx-auto px-4 md:px-6">
         
         {/* Contact Info Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.25 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12"
+        >
           
           {/* Address Card */}
-          <div className="flex items-center gap-4 bg-white border border-gray-100 shadow-sm p-5 rounded-xl transition-shadow hover:shadow-md">
+          <motion.div variants={itemVariants} className="flex items-center gap-4 bg-white border border-gray-100 shadow-sm p-5 rounded-xl transition-shadow hover:shadow-md">
             <div className="w-12 h-12 bg-accent text-primary rounded-full flex items-center justify-center shrink-0">
               <MapPin size={24} />
             </div>
@@ -20,10 +37,10 @@ export default function ContactInfoStrip() {
                 {hospitalConfig.address}
               </p>
             </div>
-          </div>
+          </motion.div>
 
           {/* Hours Card */}
-          <div className="flex items-center gap-4 bg-white border border-gray-100 shadow-sm p-5 rounded-xl transition-shadow hover:shadow-md">
+          <motion.div variants={itemVariants} className="flex items-center gap-4 bg-white border border-gray-100 shadow-sm p-5 rounded-xl transition-shadow hover:shadow-md">
             <div className="w-12 h-12 bg-accent text-primary rounded-full flex items-center justify-center shrink-0">
               <Clock size={24} />
             </div>
@@ -33,10 +50,10 @@ export default function ContactInfoStrip() {
                 {hospitalConfig.hours}
               </p>
             </div>
-          </div>
+          </motion.div>
 
           {/* Phone Card */}
-          <a href={`tel:${hospitalConfig.phone.replace(/[^0-9+]/g, '')}`} className="flex items-center gap-4 bg-white border border-gray-100 shadow-sm p-5 rounded-xl transition-shadow hover:shadow-md group">
+          <motion.a variants={itemVariants} href={`tel:${hospitalConfig.phone.replace(/[^0-9+]/g, '')}`} className="flex items-center gap-4 bg-white border border-gray-100 shadow-sm p-5 rounded-xl transition-shadow hover:shadow-md group">
             <div className="w-12 h-12 bg-accent text-primary rounded-full flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-white transition-colors">
               <Phone size={24} />
             </div>
@@ -46,10 +63,10 @@ export default function ContactInfoStrip() {
                 {hospitalConfig.phone}
               </p>
             </div>
-          </a>
+          </motion.a>
 
           {/* Location / Plus Code Card */}
-          <div className="flex items-center gap-4 bg-white border border-gray-100 shadow-sm p-5 rounded-xl transition-shadow hover:shadow-md">
+          <motion.div variants={itemVariants} className="flex items-center gap-4 bg-white border border-gray-100 shadow-sm p-5 rounded-xl transition-shadow hover:shadow-md">
             <div className="w-12 h-12 bg-accent text-primary rounded-full flex items-center justify-center shrink-0">
               <MapPin size={24} />
             </div>
@@ -59,9 +76,9 @@ export default function ContactInfoStrip() {
                 8J23+4X Hyderabad
               </p>
             </div>
-          </div>
+          </motion.div>
 
-        </div>
+        </motion.div>
 
         {/* Google Maps iframe */}
         <div className="w-full h-[300px] rounded-xl overflow-hidden shadow-sm border border-gray-200">

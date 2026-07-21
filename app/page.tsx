@@ -21,7 +21,7 @@ export default function Home() {
     <motion.main 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.8, ease: "easeInOut" }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
       className="min-h-screen flex flex-col bg-white"
     >
       <Navbar />

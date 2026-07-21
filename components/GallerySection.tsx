@@ -1,5 +1,19 @@
 import Image from "next/image";
 import { hospitalConfig } from "../lib/hospitalConfig";
+import { motion, Variants } from "framer-motion";
+
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+};
 
 export default function GallerySection() {
   return (
@@ -18,10 +32,17 @@ export default function GallerySection() {
         </div>
 
         {/* Gallery Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.25 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
           {hospitalConfig.gallery.map((item, index) => (
-            <div 
+            <motion.div 
               key={index} 
+              variants={itemVariants}
               className="relative w-full aspect-[4/3] rounded-xl overflow-hidden group cursor-pointer border border-gray-100 shadow-sm"
             >
               <Image
@@ -38,9 +59,9 @@ export default function GallerySection() {
                   {item.caption}
                 </span>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
       </div>
     </section>

@@ -16,7 +16,7 @@ function AnimatedCounter({ value }: { value: string }) {
 
   return (
     <motion.span 
-      viewport={{ once: true, margin: "-50px" }} 
+      viewport={{ once: true, margin: "-50px", amount: 0.25 }} 
       onViewportEnter={() => animate(count, target, { duration: 2, ease: "easeOut" })}
     >
       {display}
@@ -48,6 +48,7 @@ const statCardVariants: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
   hover: { 
+    scale: 1.03,
     y: -5,
     boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
     transition: { duration: 0.3 }
@@ -65,7 +66,7 @@ export default function WhyChooseUsSection() {
             <motion.span 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, amount: 0.25 }}
               className="text-secondary font-bold tracking-wider uppercase text-sm mb-2 block"
             >
               Our Excellence
@@ -73,7 +74,7 @@ export default function WhyChooseUsSection() {
             <motion.h2 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, amount: 0.25 }}
               transition={{ delay: 0.1 }}
               className="text-3xl md:text-4xl font-extrabold text-primary mb-8 leading-tight"
             >
@@ -84,7 +85,7 @@ export default function WhyChooseUsSection() {
               variants={listContainerVariants}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true }}
+              viewport={{ once: true, amount: 0.25 }}
               className="space-y-6"
             >
               {hospitalConfig.whyChooseUs.map((reason, index) => (
@@ -106,7 +107,7 @@ export default function WhyChooseUsSection() {
               variants={statsContainerVariants}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true }}
+              viewport={{ once: true, amount: 0.25 }}
               className="grid grid-cols-2 gap-4 md:gap-6"
             >
               {hospitalConfig.stats.map((stat, index) => (
