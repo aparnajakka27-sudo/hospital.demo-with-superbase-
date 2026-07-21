@@ -3,9 +3,9 @@ import { hospitalConfig } from "../lib/hospitalConfig";
 import { Clock, Users, Stethoscope } from "lucide-react";
 import { useAppointment } from "../context/AppointmentContext";
 import AppointmentCard from "./AppointmentCard";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -16,7 +16,7 @@ const containerVariants = {
   }
 };
 
-const itemLeft = {
+const itemLeft: Variants = {
   hidden: { opacity: 0, x: -30, y: 20 },
   visible: { opacity: 1, x: 0, y: 0, transition: { duration: 0.7, ease: "easeOut" } }
 };

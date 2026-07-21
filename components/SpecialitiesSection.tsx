@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { hospitalConfig } from "../lib/hospitalConfig";
 import { supabase } from "../lib/supabase";
 import { HeartPulse, Brain, Bone, Stethoscope, Activity, Cross, LucideIcon } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 // Helper to map string icon names from config to actual Lucide components
 const IconMap: Record<string, LucideIcon> = {
@@ -16,7 +16,7 @@ const IconMap: Record<string, LucideIcon> = {
   Cross,
 };
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -24,7 +24,7 @@ const containerVariants = {
   }
 };
 
-const cardVariants = {
+const cardVariants: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: { 
     opacity: 1, 
@@ -38,7 +38,7 @@ const cardVariants = {
   }
 };
 
-const iconVariants = {
+const iconVariants: Variants = {
   hover: { rotate: 5, transition: { duration: 0.2 } }
 };
 
