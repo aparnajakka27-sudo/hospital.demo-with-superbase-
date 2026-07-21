@@ -112,21 +112,6 @@ export const hospitalConfig: HospitalConfig = {
       icon: "Stethoscope",
       description: "Expert care for skin, hair, and nail conditions.",
     },
-    {
-      name: "Urology",
-      icon: "Activity",
-      description: "Diagnosis and treatment of urinary tract and male reproductive system issues.",
-    },
-    {
-      name: "Psychiatry",
-      icon: "Brain",
-      description: "Mental health services including therapy and medication management.",
-    },
-    {
-      name: "Pulmonology",
-      icon: "Stethoscope",
-      description: "Specialized care for respiratory and lung diseases.",
-    },
   ],
   stats: [
     { label: "Years Experience", value: "15+" },
