@@ -3,8 +3,7 @@ import { hospitalConfig } from "../lib/hospitalConfig";
 import { Clock, Users, Stethoscope } from "lucide-react";
 import { useAppointment } from "../context/AppointmentContext";
 import AppointmentCard from "./AppointmentCard";
-import MagneticButton from "./MagneticButton";
-import { motion, Variants, useScroll, useTransform } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -39,8 +38,6 @@ const badgeScale: Variants = {
 
 export default function HeroSection() {
   const { setIsAppointmentModalOpen } = useAppointment();
-  const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
   return (
     <section id="home" className="relative w-full bg-primary overflow-hidden min-h-[600px] lg:min-h-[700px] flex items-center">
@@ -51,7 +48,6 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-primary/80 z-10 md:hidden"></div>
         
         <motion.div 
-          style={{ y }}
           initial={{ opacity: 0, x: 50, scale: 1.05 }}
           whileInView={{ opacity: 1, x: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.25 }}
@@ -138,19 +134,19 @@ export default function HeroSection() {
             </motion.div>
 
             {/* Primary CTA */}
-            <MagneticButton>
-              <motion.button 
-                variants={scaleUp}
-                onClick={() => setIsAppointmentModalOpen(true)}
-                className="inline-flex items-center gap-2 bg-secondary hover:bg-orange-600 text-white px-8 py-4 rounded-xl font-bold shadow-xl hover:shadow-2xl transition-colors"
-              >
-                Book Appointment
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </motion.button>
-            </MagneticButton>
+            <motion.button 
+              variants={scaleUp}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setIsAppointmentModalOpen(true)}
+              className="inline-flex items-center gap-2 bg-secondary hover:bg-orange-600 text-white px-8 py-4 rounded-xl font-bold shadow-xl hover:shadow-2xl transition-colors"
+            >
+              Book Appointment
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </motion.button>
 
           </motion.div>
 
