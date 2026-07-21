@@ -14,9 +14,16 @@ import BuildingSection from "../components/BuildingSection";
 import ContactInfoStrip from "../components/ContactInfoStrip";
 import Footer from "../components/Footer";
 
+import { motion } from "framer-motion";
+
 export default function Home() {
   return (
-    <main className="min-h-screen flex flex-col bg-white">
+    <motion.main 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8, ease: "easeInOut" }}
+      className="min-h-screen flex flex-col bg-white"
+    >
       <Navbar />
       
       <div className="flex-1">
@@ -34,6 +41,6 @@ export default function Home() {
       <Footer />
       
       <FloatingButtons />
-    </main>
+    </motion.main>
   );
 }

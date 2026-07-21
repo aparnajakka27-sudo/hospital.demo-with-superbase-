@@ -1,15 +1,22 @@
 import Image from "next/image";
 import { hospitalConfig } from "../lib/hospitalConfig";
 import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function AboutSection() {
   return (
-    <section id="about" className="pt-32 pb-20 bg-white">
+    <section id="about" className="pt-32 pb-20 bg-white overflow-hidden">
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
           
           {/* Left Column - Text Content */}
-          <div className="w-full lg:w-1/2 flex flex-col items-start text-left">
+          <motion.div 
+            initial={{ x: 50, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="w-full lg:w-1/2 flex flex-col items-start text-left"
+          >
             <span className="text-secondary font-bold tracking-wider uppercase text-sm mb-2">
               About Us
             </span>
@@ -31,17 +38,25 @@ export default function AboutSection() {
               recovery remain our utmost priority at every step of your journey.
             </p>
 
-            <a
+            <motion.a
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
               href="#facilities"
               className="group inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-secondary transition-colors border-2 border-secondary rounded-xl hover:bg-secondary hover:text-white"
             >
               Learn More
               <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
-            </a>
-          </div>
+            </motion.a>
+          </motion.div>
 
           {/* Right Column - Image */}
-          <div className="w-full lg:w-1/2">
+          <motion.div 
+            initial={{ x: -50, opacity: 0 }}
+            whileInView={{ x: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="w-full lg:w-1/2"
+          >
             <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden border border-gray-100 shadow-sm">
               <Image
                 src="https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?q=80&w=1000&auto=format&fit=crop"
@@ -51,7 +66,7 @@ export default function AboutSection() {
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
             </div>
-          </div>
+          </motion.div>
           
         </div>
       </div>

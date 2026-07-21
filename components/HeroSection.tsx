@@ -3,6 +3,23 @@ import { hospitalConfig } from "../lib/hospitalConfig";
 import { Clock, Users, Stethoscope } from "lucide-react";
 import { useAppointment } from "../context/AppointmentContext";
 import AppointmentCard from "./AppointmentCard";
+import { motion } from "framer-motion";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.2
+    }
+  }
+};
+
+const itemLeft = {
+  hidden: { opacity: 0, x: -30, y: 20 },
+  visible: { opacity: 1, x: 0, y: 0, transition: { duration: 0.7, ease: "easeOut" } }
+};
 
 export default function HeroSection() {
   const { setIsAppointmentModalOpen } = useAppointment();
@@ -16,7 +33,6 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-primary/80 z-10 md:hidden"></div>
         
         <div className="absolute inset-0 md:left-1/3 z-0">
-          {/* We use priority for the hero image to ensure LCP is fast */}
           <Image
             src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?q=80&w=1600"
             alt="Horizon Super Speciality Hospital Building"
@@ -24,11 +40,14 @@ export default function HeroSection() {
             className="object-cover object-center"
             priority
           />
-          {/* Enhanced Diagonal Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-r from-primary/[0.85] via-primary/70 to-primary/40 z-10"></div>
           
           {/* Subtle Decorative Pattern (Bottom Left) */}
-          <div className="absolute -bottom-8 -left-8 z-10 opacity-20 pointer-events-none">
+          <motion.div 
+            animate={{ y: [0, -15, 0] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -bottom-8 -left-8 z-10 opacity-20 pointer-events-none"
+          >
             <svg width="200" height="200" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <pattern id="dots" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
@@ -37,7 +56,7 @@ export default function HeroSection() {
               </defs>
               <rect x="0" y="0" width="100" height="100" fill="url(#dots)"></rect>
             </svg>
-          </div>
+          </motion.div>
         </div>
       </div>
 
@@ -45,26 +64,32 @@ export default function HeroSection() {
         <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8">
           
           {/* Left Content */}
-          <div className="w-full lg:w-[55%] text-white">
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="w-full lg:w-[55%] text-white"
+          >
             
             {/* Eyebrow Label */}
-            <div className="inline-block px-4 py-1.5 bg-secondary rounded-full text-xs font-bold uppercase tracking-wider mb-6 shadow-md border border-white/20">
+            <motion.div variants={itemLeft} className="inline-block px-4 py-1.5 bg-secondary rounded-full text-xs font-bold uppercase tracking-wider mb-6 shadow-md border border-white/20">
               Trusted Healthcare Since 2010
-            </div>
+            </motion.div>
 
             <h1 className="text-4xl md:text-5xl xl:text-6xl font-extrabold leading-tight tracking-tight mb-6 max-w-2xl drop-shadow-sm">
-              <span className="block">{hospitalConfig.name.split(" ")[0]}</span>
-              <span className="block mt-2">
+              <motion.span variants={itemLeft} className="block">{hospitalConfig.name.split(" ")[0]}</motion.span>
+              <motion.span variants={itemLeft} className="block mt-2">
                 {hospitalConfig.name.split(" ").slice(1).join(" ")}
-              </span>
+              </motion.span>
             </h1>
 
-            <p className="text-lg md:text-xl text-white/90 font-medium mb-10 max-w-xl border-l-4 border-secondary pl-4 drop-shadow-sm">
+            <motion.p variants={itemLeft} className="text-lg md:text-xl text-white/90 font-medium mb-10 max-w-xl border-l-4 border-secondary pl-4 drop-shadow-sm">
               {hospitalConfig.tagline}
-            </p>
+            </motion.p>
 
             {/* Feature Badges - Glassmorphism */}
-            <div className="flex flex-col sm:flex-row flex-wrap gap-4 mt-8 mb-10">
+            <motion.div variants={itemLeft} className="flex flex-col sm:flex-row flex-wrap gap-4 mt-8 mb-10">
               <div className="flex items-center gap-3 bg-white/10 backdrop-blur-md px-5 py-3 rounded-xl border border-white/20 shadow-lg">
                 <div className="bg-secondary/90 p-2 rounded-lg text-white">
                   <Clock size={20} />
@@ -85,32 +110,47 @@ export default function HeroSection() {
                 </div>
                 <span className="text-sm font-semibold text-white tracking-wide">Advanced Technology</span>
               </div>
-            </div>
+            </motion.div>
 
             {/* Primary CTA */}
-            <button 
+            <motion.button 
+              variants={itemLeft}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => setIsAppointmentModalOpen(true)}
-              className="inline-flex items-center gap-2 bg-secondary hover:bg-orange-600 text-white px-8 py-4 rounded-xl font-bold shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1"
+              className="inline-flex items-center gap-2 bg-secondary hover:bg-orange-600 text-white px-8 py-4 rounded-xl font-bold shadow-xl hover:shadow-2xl transition-colors"
             >
               Book Appointment
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>
               </svg>
-            </button>
+            </motion.button>
 
-          </div>
+          </motion.div>
 
           {/* Right Content - Appointment Card */}
-          <div className="w-full lg:w-[45%] xl:w-[40%] flex justify-center lg:justify-end mt-12 lg:mt-0 z-30">
+          <motion.div 
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
+            className="w-full lg:w-[45%] xl:w-[40%] flex justify-center lg:justify-end mt-12 lg:mt-0 z-30"
+          >
             <AppointmentCard />
-          </div>
+          </motion.div>
 
         </div>
       </div>
 
       {/* Overlapping Stats Bar at Bottom */}
-      <div className="absolute bottom-0 left-0 right-0 translate-y-1/2 z-40 px-4 md:px-6">
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
+        className="absolute bottom-0 left-0 right-0 translate-y-1/2 z-40 px-4 md:px-6"
+      >
         <div className="container mx-auto">
           <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 flex flex-wrap justify-between items-center gap-6 max-w-5xl mx-auto">
             {hospitalConfig.stats.slice(0, 4).map((stat, index) => (
@@ -121,7 +161,7 @@ export default function HeroSection() {
             ))}
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

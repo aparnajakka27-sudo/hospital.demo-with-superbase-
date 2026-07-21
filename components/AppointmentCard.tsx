@@ -5,6 +5,7 @@ import { hospitalConfig } from "../lib/hospitalConfig";
 import { Calendar, User, Phone, CheckSquare, Square, ChevronDown, Mail } from "lucide-react";
 import { useAppointment } from "../context/AppointmentContext";
 import { supabase } from "../lib/supabase";
+import { motion } from "framer-motion";
 
 interface AppointmentCardProps {
   onClose?: () => void;
@@ -24,6 +25,19 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
     consent: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [dynamicDepartments, setDynamicDepartments] = useState<string[]>([]);
+
+  useEffect(() => {
+    async function fetchDepartments() {
+      const { data, error } = await supabase.from('Departments').select('Names');
+      if (!error && data) {
+        setDynamicDepartments(data.map(d => d.Names ? d.Names.trim() : "").filter(Boolean));
+      } else {
+        console.error("Error fetching departments:", error);
+      }
+    }
+    fetchDepartments();
+  }, []);
 
   // Sync with global selected department
   useEffect(() => {
@@ -46,11 +60,14 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
       
       const { error } = await supabase
         .from('Booking Appointment')
-        .insert([
+        .upsert([
           { 
             Name: formData.fullName, 
             Email: formData.email, 
-            Phone: isNaN(phoneNum) ? null : phoneNum 
+            Phone: isNaN(phoneNum) ? null : phoneNum,
+            Department:formData.department,
+            Date:formData.date,
+            Doctor:formData.doctor,
           }
         ]);
         
@@ -79,7 +96,8 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
   };
 
   return (
-    <div 
+    <motion.div 
+      whileHover={{ y: -5, transition: { duration: 0.3 } }}
       className="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col w-full max-w-md mx-auto md:mx-0 border border-gray-100 relative"
       onClick={(e) => e.stopPropagation()}
     >
@@ -164,9 +182,15 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
                 onChange={(e) => setFormData({ ...formData, department: e.target.value })}
               >
                 <option value="" disabled className="text-gray-400">Department</option>
-                {hospitalConfig.specialities.map((spec) => (
-                  <option key={spec.name} value={spec.name}>{spec.name}</option>
-                ))}
+                {dynamicDepartments.length > 0 ? (
+                  dynamicDepartments.map((deptName) => (
+                    <option key={deptName} value={deptName}>{deptName}</option>
+                  ))
+                ) : (
+                  hospitalConfig.specialities.map((spec) => (
+                    <option key={spec.name} value={spec.name}>{spec.name}</option>
+                  ))
+                )}
               </select>
               <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
             </div>
@@ -213,7 +237,9 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
             </p>
           </div>
 
-          <button
+          <motion.button
+            whileHover={!isFormValid || isSubmitting ? {} : { scale: 1.03 }}
+            whileTap={!isFormValid || isSubmitting ? {} : { scale: 0.97 }}
             type="submit"
             disabled={!isFormValid || isSubmitting}
             className={`w-full py-3 rounded-xl font-bold text-sm transition-all mt-4 ${
@@ -223,9 +249,9 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
             }`}
           >
             {isSubmitting ? "Booking..." : "Schedule Appointment"}
-          </button>
+          </motion.button>
         </form>
       </div>
-    </div>
+    </motion.div>
   );
 }

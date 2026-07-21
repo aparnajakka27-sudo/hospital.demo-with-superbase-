@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Menu, X, HeartPulse } from "lucide-react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { hospitalConfig } from "../lib/hospitalConfig";
 import { useAppointment } from "../context/AppointmentContext";
 
@@ -46,7 +47,10 @@ export default function Navbar() {
   };
 
   return (
-    <header
+    <motion.header
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
       className={`sticky top-0 z-50 w-full transition-all duration-300 ${
         isScrolled ? "bg-white shadow-md py-2" : "bg-white py-4"
       }`}
@@ -80,7 +84,7 @@ export default function Navbar() {
                 key={link.name}
                 href={link.href}
                 onClick={(e) => handleSmoothScroll(e, link.href)}
-                className="text-sm font-medium text-gray-700 hover:text-secondary transition-colors"
+                className="relative text-sm font-medium text-gray-700 hover:text-secondary transition-colors after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-0 after:bg-secondary after:transition-all after:duration-300 hover:after:w-full"
               >
                 {link.name}
               </a>
@@ -89,12 +93,14 @@ export default function Navbar() {
 
           {/* Action Button & Mobile Toggle */}
           <div className="flex items-center gap-4">
-            <button
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => setIsAppointmentModalOpen(true)}
               className="hidden md:inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold text-white transition-colors bg-secondary rounded-xl hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2"
             >
               Book Appointment
-            </button>
+            </motion.button>
             
             <button
               type="button"
@@ -162,6 +168,6 @@ export default function Navbar() {
           </button>
         </div>
       </div>
-    </header>
+    </motion.header>
   );
 }
