@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { hospitalConfig } from "../lib/hospitalConfig";
-import { Calendar, User, Phone, CheckSquare, Square, ChevronDown } from "lucide-react";
+import { Calendar, User, Phone, CheckSquare, Square, ChevronDown, Mail } from "lucide-react";
 import { useAppointment } from "../context/AppointmentContext";
+import { supabase } from "../lib/supabase";
 
 interface AppointmentCardProps {
   onClose?: () => void;
@@ -15,12 +16,14 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
   const [tab, setTab] = useState<"india" | "international">("india");
   const [formData, setFormData] = useState({
     fullName: "",
+    email: "",
     mobile: "",
     department: "",
     doctor: "",
     date: "",
     consent: false,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Sync with global selected department
   useEffect(() => {
@@ -31,13 +34,47 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
 
   const doctorsList = ["Dr. Smith (Cardiology)", "Dr. Jones (Neurology)", "Dr. Patel (Orthopaedics)", "Dr. Kumar (General)"];
 
-  const isFormValid = formData.fullName.trim() !== "" && formData.mobile.trim() !== "" && formData.consent;
+  const isFormValid = formData.fullName.trim() !== "" && formData.email.trim() !== "" && formData.mobile.trim() !== "" && formData.consent;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isFormValid) {
-      alert("Appointment requested successfully! Our team will contact you shortly.");
-      if (onClose) onClose();
+      setIsSubmitting(true);
+      
+      // Convert phone to integer as Supabase expects int8
+      const phoneNum = parseInt(formData.mobile.replace(/\D/g, ''), 10);
+      
+      const { error } = await supabase
+        .from('Booking Appointment')
+        .insert([
+          { 
+            Name: formData.fullName, 
+            Email: formData.email, 
+            Phone: isNaN(phoneNum) ? null : phoneNum 
+          }
+        ]);
+        
+      setIsSubmitting(false);
+
+      if (error) {
+        console.error("Supabase Error:", error);
+        alert("There was an error saving to Supabase: " + error.message);
+      } else {
+        alert("Appointment requested successfully! Our team will contact you shortly.");
+        
+        // Reset form
+        setFormData({
+          fullName: "",
+          email: "",
+          mobile: "",
+          department: "",
+          doctor: "",
+          date: "",
+          consent: false,
+        });
+        
+        if (onClose) onClose();
+      }
     }
   };
 
@@ -83,6 +120,20 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
                 className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all text-sm text-gray-900 placeholder:text-gray-400"
                 value={formData.fullName}
                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                required
+              />
+            </div>
+          </div>
+
+          <div>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+              <input
+                type="email"
+                placeholder="Email Address *"
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all text-sm text-gray-900 placeholder:text-gray-400"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
               />
             </div>
@@ -164,14 +215,14 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
 
           <button
             type="submit"
-            disabled={!isFormValid}
+            disabled={!isFormValid || isSubmitting}
             className={`w-full py-3 rounded-xl font-bold text-sm transition-all mt-4 ${
-              isFormValid
+              isFormValid && !isSubmitting
                 ? "bg-primary text-white hover:bg-blue-800 shadow-md"
                 : "bg-gray-200 text-gray-400 cursor-not-allowed"
             }`}
           >
-            Schedule Appointment
+            {isSubmitting ? "Booking..." : "Schedule Appointment"}
           </button>
         </form>
       </div>
