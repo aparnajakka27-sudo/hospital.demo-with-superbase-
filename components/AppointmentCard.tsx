@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { hospitalConfig } from "../lib/hospitalConfig";
 import { Calendar, User, Phone, CheckSquare, Square, ChevronDown, Mail } from "lucide-react";
 import { useAppointment } from "../context/AppointmentContext";
 import { supabase } from "../lib/supabase";
@@ -26,17 +25,42 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [dynamicDepartments, setDynamicDepartments] = useState<string[]>([]);
+  const [isLoadingDepartments, setIsLoadingDepartments] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+    
     async function fetchDepartments() {
-      const { data, error } = await supabase.from('Departments').select('Names');
-      if (!error && data) {
-        setDynamicDepartments(data.map(d => d.Names ? d.Names.trim() : "").filter(Boolean));
-      } else {
-        console.error("Error fetching departments:", error);
+      try {
+        const { data, error } = await supabase
+          .from("Departments")
+          .select("Names")
+          .order("Names");
+          
+        if (!isMounted) return;
+
+        if (error) {
+          console.error(error);
+          setFetchError(true);
+        } else if (data) {
+          setDynamicDepartments(data.map(d => d.Names ? d.Names.trim() : "").filter(Boolean));
+        }
+      } catch (err) {
+        if (!isMounted) return;
+        console.error(err);
+        setFetchError(true);
+      } finally {
+        if (isMounted) {
+          setIsLoadingDepartments(false);
+        }
       }
     }
     fetchDepartments();
+    
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Sync with global selected department
@@ -48,7 +72,7 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
 
   const doctorsList = ["Dr. Smith (Cardiology)", "Dr. Jones (Neurology)", "Dr. Patel (Orthopaedics)", "Dr. Kumar (General)"];
 
-  const isFormValid = formData.fullName.trim() !== "" && formData.email.trim() !== "" && formData.mobile.trim() !== "" && formData.consent;
+  const isFormValid = formData.fullName.trim() !== "" && formData.email.trim() !== "" && formData.mobile.trim() !== "" && formData.consent && dynamicDepartments.length > 0 && !isLoadingDepartments && !fetchError;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -180,16 +204,21 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
                 className="w-full pl-3 pr-8 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all text-sm appearance-none text-gray-900"
                 value={formData.department}
                 onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+                disabled={isLoadingDepartments || fetchError || dynamicDepartments.length === 0}
               >
-                <option value="" disabled className="text-gray-400">Department</option>
-                {dynamicDepartments.length > 0 ? (
-                  dynamicDepartments.map((deptName) => (
-                    <option key={deptName} value={deptName}>{deptName}</option>
-                  ))
+                {isLoadingDepartments ? (
+                  <option value="" disabled className="text-gray-400">Loading departments...</option>
+                ) : fetchError ? (
+                  <option value="" disabled className="text-gray-400">Unable to load departments. Please try again.</option>
+                ) : dynamicDepartments.length === 0 ? (
+                  <option value="" disabled className="text-gray-400">No departments available</option>
                 ) : (
-                  hospitalConfig.specialities.map((spec) => (
-                    <option key={spec.name} value={spec.name}>{spec.name}</option>
-                  ))
+                  <>
+                    <option value="" disabled className="text-gray-400">Select Department</option>
+                    {dynamicDepartments.map((deptName) => (
+                      <option key={deptName} value={deptName}>{deptName}</option>
+                    ))}
+                  </>
                 )}
               </select>
               <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
