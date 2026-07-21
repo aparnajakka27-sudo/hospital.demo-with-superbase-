@@ -1,9 +1,17 @@
 import Image from "next/image";
 import { hospitalConfig } from "../lib/hospitalConfig";
 import { ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 
 export default function AboutSection() {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"]
+  });
+  const y = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"]);
+
   return (
     <section id="about" className="pt-32 pb-20 bg-white overflow-hidden">
       <div className="container mx-auto px-4 md:px-6">
@@ -51,6 +59,7 @@ export default function AboutSection() {
 
           {/* Right Column - Image */}
           <motion.div 
+            ref={ref}
             initial={{ x: 50, opacity: 0 }}
             whileInView={{ x: 0, opacity: 1 }}
             viewport={{ once: true, amount: 0.25 }}
@@ -58,13 +67,15 @@ export default function AboutSection() {
             className="w-full lg:w-1/2"
           >
             <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden border border-gray-100 shadow-sm">
-              <Image
-                src="https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?q=80&w=1000&auto=format&fit=crop"
-                alt="About Horizon Hospital"
-                fill
-                className="object-cover hover:scale-105 transition-transform duration-700 ease-in-out"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
+              <motion.div style={{ y }} className="w-full h-[130%] -top-[15%] relative">
+                <Image
+                  src="https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?q=80&w=1000&auto=format&fit=crop"
+                  alt="About Horizon Hospital"
+                  fill
+                  className="object-cover transition-transform duration-700 ease-in-out"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+              </motion.div>
             </div>
           </motion.div>
           

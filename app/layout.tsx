@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AppointmentProvider } from "../context/AppointmentContext";
 import BookAppointmentModal from "../components/BookAppointmentModal";
+import SmoothScroll from "../components/SmoothScroll";
+import ScrollProgress from "../components/ScrollProgress";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,8 +22,11 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <body className={inter.className}>
         <AppointmentProvider>
-          {children}
-          <BookAppointmentModal />
+          <SmoothScroll>
+            <ScrollProgress />
+            {children}
+            <BookAppointmentModal />
+          </SmoothScroll>
         </AppointmentProvider>
       </body>
     </html>
