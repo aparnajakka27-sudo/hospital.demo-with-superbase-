@@ -4,17 +4,15 @@ import { useState } from "react";
 import Navbar from "../components/Navbar";
 import HeroSection from "../components/HeroSection";
 import FloatingButtons from "../components/FloatingButtons";
-import dynamic from 'next/dynamic';
-
-const AboutSection = dynamic(() => import('../components/AboutSection'));
-const SpecialitiesSection = dynamic(() => import('../components/SpecialitiesSection'));
-const ServicesSection = dynamic(() => import('../components/ServicesSection'));
-const DoctorsSection = dynamic(() => import('../components/DoctorsSection'));
-const GallerySection = dynamic(() => import('../components/GallerySection'));
-const WhyChooseUsSection = dynamic(() => import('../components/WhyChooseUsSection'));
-const BuildingSection = dynamic(() => import('../components/BuildingSection'));
-const ContactInfoStrip = dynamic(() => import('../components/ContactInfoStrip'));
-const Footer = dynamic(() => import('../components/Footer'));
+import AboutSection from '../components/AboutSection';
+import SpecialitiesSection from '../components/SpecialitiesSection';
+import ServicesSection from '../components/ServicesSection';
+import DoctorsSection from '../components/DoctorsSection';
+import GallerySection from '../components/GallerySection';
+import WhyChooseUsSection from '../components/WhyChooseUsSection';
+import BuildingSection from '../components/BuildingSection';
+import ContactInfoStrip from '../components/ContactInfoStrip';
+import Footer from '../components/Footer';
 
 import { motion } from "framer-motion";
 

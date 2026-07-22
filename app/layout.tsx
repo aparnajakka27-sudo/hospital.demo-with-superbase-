@@ -25,12 +25,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <DoctorAuthProvider>
           <AppointmentProvider>
-            <SmoothScroll>
-              <ScrollProgress />
-              {children}
-              <BookAppointmentModal />
-              <AIHospitalAssistant />
-            </SmoothScroll>
+            <ScrollProgress />
+            {children}
+            <BookAppointmentModal />
+            <AIHospitalAssistant />
           </AppointmentProvider>
         </DoctorAuthProvider>
       </body>
