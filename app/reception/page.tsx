@@ -117,7 +117,7 @@ export default function ReceptionDashboard() {
     setIsSubmitting(true);
     
     try {
-      const payload = {
+      const payload: any = {
         Name: patientName,
         Email: email || "",
         Phone: isNaN(phoneNum) ? null : phoneNum,

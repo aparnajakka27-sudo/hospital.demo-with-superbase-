@@ -41,7 +41,7 @@ export default function HeroSection() {
   const { setIsAppointmentModalOpen } = useAppointment();
 
   return (
-    <section id="home" className="relative w-full bg-primary overflow-hidden min-h-[600px] lg:min-h-[700px] flex items-center">
+    <section id="home" className="relative w-full bg-primary overflow-hidden min-h-[600px] lg:min-h-[700px] flex flex-col">
       
       {/* Background Image with Gradient Overlay */}
       <div className="absolute inset-0 w-full h-full">
@@ -82,7 +82,7 @@ export default function HeroSection() {
         </motion.div>
       </div>
 
-      <div className="container relative z-20 mx-auto px-4 md:px-6 py-16 md:py-20 lg:py-28">
+      <div className="container relative z-20 mx-auto px-4 md:px-6 py-16 md:py-20 lg:py-28 flex-1 flex items-center w-full">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8">
           
           {/* Left Content */}
@@ -171,7 +171,7 @@ export default function HeroSection() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
-        className="absolute bottom-0 left-0 right-0 z-40 bg-black/15 backdrop-blur-sm border-t border-white/10"
+        className="relative w-full z-40 bg-black/15 backdrop-blur-sm border-t border-white/10 mt-auto"
       >
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-white/10">
