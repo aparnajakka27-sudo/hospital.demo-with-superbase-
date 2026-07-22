@@ -4,25 +4,7 @@ import { hospitalConfig } from "../lib/hospitalConfig";
 import { CheckCircle2 } from "lucide-react";
 import { motion, useMotionValue, useTransform, animate, Variants } from "framer-motion";
 
-function AnimatedCounter({ value }: { value: string }) {
-  const match = value.match(/(\d+)(.*)/);
-  if (!match) return <span>{value}</span>;
-  
-  const target = parseInt(match[1], 10);
-  const suffix = match[2];
-  const count = useMotionValue(0);
-  const rounded = useTransform(count, Math.round);
-  const display = useTransform(rounded, (latest) => `${latest}${suffix}`);
-
-  return (
-    <motion.span 
-      viewport={{ once: true, margin: "-50px", amount: 0.25 }} 
-      onViewportEnter={() => animate(count, target, { duration: 2, ease: "easeOut" })}
-    >
-      {display}
-    </motion.span>
-  );
-}
+import AnimatedCounter from "./AnimatedCounter";
 
 const listContainerVariants: Variants = {
   hidden: { opacity: 0 },
