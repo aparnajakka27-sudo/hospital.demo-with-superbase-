@@ -171,49 +171,49 @@ export default function HeroSection() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
-        className="absolute bottom-0 left-0 right-0 z-40 bg-[#052620] border-b-[6px] border-[#F26522]"
+        className="absolute bottom-0 left-0 right-0 z-40 bg-black/15 backdrop-blur-sm border-t border-white/10"
       >
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-white/10">
             {/* Stat 1 */}
-            <div className="flex-1 py-8 flex flex-col items-center justify-center text-center px-4">
-              <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-3">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white"><circle cx="12" cy="8" r="6"></circle><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path></svg>
+            <div className="flex-1 py-4 flex flex-col items-center justify-center text-center px-4">
+              <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mb-2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white"><circle cx="12" cy="8" r="6"></circle><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"></path></svg>
               </div>
-              <p className="text-4xl md:text-5xl font-extrabold text-white mb-1.5 tracking-tight">
+              <p className="text-3xl font-extrabold text-white mb-1 tracking-tight">
                 <AnimatedCounter value="15+" />
               </p>
               <p className="text-[11px] font-bold text-white/90 uppercase tracking-widest">Years of Excellence</p>
             </div>
             
             {/* Stat 2 */}
-            <div className="flex-1 py-8 flex flex-col items-center justify-center text-center px-4">
-              <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-3">
-                <Users className="text-white" size={24} />
+            <div className="flex-1 py-4 flex flex-col items-center justify-center text-center px-4">
+              <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mb-2">
+                <Users className="text-white" size={20} />
               </div>
-              <p className="text-4xl md:text-5xl font-extrabold text-white mb-1.5 tracking-tight">
+              <p className="text-3xl font-extrabold text-white mb-1 tracking-tight">
                 <AnimatedCounter value="50+" />
               </p>
               <p className="text-[11px] font-bold text-white/90 uppercase tracking-widest">Expert Specialists</p>
             </div>
 
             {/* Stat 3 */}
-            <div className="flex-1 py-8 flex flex-col items-center justify-center text-center px-4">
-              <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-3">
-                <Clock className="text-white" size={24} />
+            <div className="flex-1 py-4 flex flex-col items-center justify-center text-center px-4">
+              <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mb-2">
+                <Clock className="text-white" size={20} />
               </div>
-              <p className="text-4xl md:text-5xl font-extrabold text-white mb-1.5 tracking-tight">
+              <p className="text-3xl font-extrabold text-white mb-1 tracking-tight">
                 <AnimatedCounter value="24/7" />
               </p>
               <p className="text-[11px] font-bold text-white/90 uppercase tracking-widest">Emergency Care</p>
             </div>
 
             {/* Stat 4 */}
-            <div className="flex-1 py-8 flex flex-col items-center justify-center text-center px-4">
-              <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mb-3">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+            <div className="flex-1 py-4 flex flex-col items-center justify-center text-center px-4">
+              <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mb-2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
               </div>
-              <p className="text-4xl md:text-5xl font-extrabold text-white mb-1.5 tracking-tight">
+              <p className="text-3xl font-extrabold text-white mb-1 tracking-tight">
                 <AnimatedCounter value="100K+" />
               </p>
               <p className="text-[11px] font-bold text-white/90 uppercase tracking-widest">Patients Treated</p>
