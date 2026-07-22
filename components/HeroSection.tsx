@@ -165,13 +165,13 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Full-width Stats Bar at Bottom matching screenshot */}
+      {/* Full-width Stats Bar at Bottom matching website theme */}
       <motion.div 
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
-        className="absolute bottom-0 left-0 right-0 z-40 bg-[#1651B6] border-b-[6px] border-[#f97316]"
+        className="absolute bottom-0 left-0 right-0 z-40 bg-[#052620] border-b-[6px] border-[#F26522]"
       >
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-white/10">
