@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AppointmentProvider } from "../context/AppointmentContext";
+import { DoctorAuthProvider } from "../context/DoctorAuthContext";
 import BookAppointmentModal from "../components/BookAppointmentModal";
 import SmoothScroll from "../components/SmoothScroll";
 import ScrollProgress from "../components/ScrollProgress";
@@ -21,13 +22,15 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={inter.className}>
-        <AppointmentProvider>
-          <SmoothScroll>
-            <ScrollProgress />
-            {children}
-            <BookAppointmentModal />
-          </SmoothScroll>
-        </AppointmentProvider>
+        <DoctorAuthProvider>
+          <AppointmentProvider>
+            <SmoothScroll>
+              <ScrollProgress />
+              {children}
+              <BookAppointmentModal />
+            </SmoothScroll>
+          </AppointmentProvider>
+        </DoctorAuthProvider>
       </body>
     </html>
   );

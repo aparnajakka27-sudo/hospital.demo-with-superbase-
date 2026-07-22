@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Menu, X, HeartPulse } from "lucide-react";
+import { Menu, X, HeartPulse, Smartphone, Users, Stethoscope, Pill, Star } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { hospitalConfig } from "../lib/hospitalConfig";
@@ -13,7 +13,6 @@ const navLinks = [
   { name: "Services", href: "#services" },
   { name: "Doctors", href: "#doctors" },
   { name: "Facilities", href: "#gallery" },
-  { name: "Gallery", href: "#facilities" },
   { name: "About Us", href: "#about" },
   { name: "Contact Us", href: "#contact" },
 ];
@@ -35,12 +34,11 @@ export default function Navbar() {
     e.preventDefault();
     setIsMobileMenuOpen(false);
     
-    // Smooth scroll implementation
     const targetId = href.replace(/.*\#/, "");
     const elem = document.getElementById(targetId);
     if (elem) {
       window.scrollTo({
-        top: elem.offsetTop - 80, // Adjust for navbar height
+        top: elem.offsetTop - 120, // Adjusted for taller navbar
         behavior: "smooth",
       });
     }
@@ -56,55 +54,111 @@ export default function Navbar() {
       }`}
     >
       <div className="container mx-auto px-4 md:px-6">
-        <div className="flex items-center justify-between">
+        {/* Desktop Layout */}
+        <div className="hidden lg:flex flex-col gap-4">
           
-          {/* Logo Section */}
-          <Link 
-            href="#home" 
-            onClick={(e) => handleSmoothScroll(e, "#home")}
-            className="flex items-center gap-3 group"
-          >
-            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-              <HeartPulse size={28} strokeWidth={2.5} />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-2xl font-bold leading-none text-primary tracking-tight">
-                {hospitalConfig.name.split(" ")[0]}
-              </span>
-              <span className="text-xs font-semibold text-secondary tracking-wide uppercase mt-1">
-                Super Speciality Hospital
-              </span>
-            </div>
-          </Link>
+          {/* Top Row: Logo, Dashboard Pills, Book Button */}
+          <div className="flex items-center justify-between">
+            {/* Left: Logo Section */}
+            <Link 
+              href="#home" 
+              onClick={(e) => handleSmoothScroll(e, "#home")}
+              className="flex items-center gap-3 group shrink-0"
+            >
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary text-white transition-colors">
+                <HeartPulse size={28} strokeWidth={2.5} />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-2xl font-bold leading-none text-primary tracking-tight">
+                  {hospitalConfig.name.split(" ")[0]}
+                </span>
+                <span className="text-[10px] font-bold text-secondary tracking-widest uppercase mt-1">
+                  SUPER SPECIALITY HOSPITAL
+                </span>
+              </div>
+            </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
+            {/* Middle: Dashboards */}
+            <div className="flex items-center gap-5">
+              <Link href="#" className="flex items-center gap-1.5 px-4 py-1.5 bg-primary text-white rounded-full text-xs font-semibold shadow-sm hover:bg-primary-hover transition-colors">
+                <Smartphone size={14} />
+                Patient Booking
+              </Link>
+              
+              <Link href="/reception" className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-primary transition-colors">
+                <Users size={16} className="text-emerald-500" />
+                Reception Intake: <span className="bg-emerald-100 text-emerald-700 px-1.5 rounded text-[10px] ml-0.5">7</span>
+              </Link>
+
+              <Link href="/doctor-login" className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-primary transition-colors">
+                <Stethoscope size={16} className="text-teal-500" />
+                Doctor Desk
+              </Link>
+
+              <Link href="/pharmacy" className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-primary transition-colors">
+                <Pill size={16} className="text-amber-500" />
+                Pharmacy
+              </Link>
+            </div>
+
+            {/* Right: CTA */}
+            <motion.button
+              whileHover={{ scale: 1.05, boxShadow: "0 0 15px rgba(249, 115, 22, 0.4)" }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setIsAppointmentModalOpen(true)}
+              className="flex items-center justify-center px-6 py-2 text-sm font-bold text-white transition-colors bg-secondary rounded-xl hover:bg-secondary-hover shadow-md shrink-0"
+            >
+              Book Appointment
+            </motion.button>
+          </div>
+
+          {/* Bottom Row: Main Navigation Links */}
+          <nav className="flex items-center gap-6 xl:gap-8 pt-1">
             {navLinks.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
                 onClick={(e) => handleSmoothScroll(e, link.href)}
-                className="relative text-sm font-medium text-gray-700 hover:text-secondary transition-colors after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-0 after:bg-secondary after:transition-all after:duration-300 hover:after:w-full"
+                className="relative text-[13px] font-bold text-gray-600 hover:text-primary transition-colors after:absolute after:bottom-[-4px] after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all after:duration-300 hover:after:w-full"
               >
                 {link.name}
               </a>
             ))}
           </nav>
+        </div>
 
-          {/* Action Button & Mobile Toggle */}
-          <div className="flex items-center gap-4">
-            <motion.button
-              whileHover={{ scale: 1.05, boxShadow: "0 0 15px rgba(249, 115, 22, 0.6)" }}
-              whileTap={{ scale: 0.97 }}
-              onClick={() => setIsAppointmentModalOpen(true)}
-              className="hidden md:inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold text-white transition-colors bg-secondary rounded-xl hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2"
-            >
-              Book Appointment
-            </motion.button>
-            
+        {/* Mobile Layout */}
+        <div className="flex lg:hidden items-center justify-between">
+          <Link 
+            href="#home" 
+            onClick={(e) => handleSmoothScroll(e, "#home")}
+            className="flex items-center gap-2 group shrink-0"
+          >
+            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-white transition-colors">
+              <HeartPulse size={24} strokeWidth={2.5} />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-xl font-bold leading-none text-primary tracking-tight">
+                {hospitalConfig.name.split(" ")[0]}
+              </span>
+              <span className="text-[8px] font-bold text-secondary tracking-widest uppercase mt-0.5">
+                SUPER SPECIALITY HOSPITAL
+              </span>
+            </div>
+          </Link>
+
+          <div className="flex items-center gap-3">
+             <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setIsAppointmentModalOpen(true)}
+                className="inline-flex items-center justify-center px-4 py-2 text-xs font-semibold text-white transition-colors bg-secondary rounded-lg"
+              >
+                Book
+              </motion.button>
             <button
               type="button"
-              className="lg:hidden p-2 text-gray-600 hover:text-primary focus:outline-none"
+              className="p-1 text-gray-600 hover:text-primary focus:outline-none"
               onClick={() => setIsMobileMenuOpen(true)}
               aria-label="Open menu"
             >
@@ -115,7 +169,6 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Menu Drawer */}
-      {/* Overlay */}
       {isMobileMenuOpen && (
         <div 
           className="fixed inset-0 z-[60] bg-black/50 lg:hidden"
@@ -123,7 +176,6 @@ export default function Navbar() {
         />
       )}
       
-      {/* Drawer */}
       <div
         className={`fixed top-0 right-0 z-[70] w-full max-w-sm h-full bg-white shadow-xl transition-transform duration-300 ease-in-out lg:hidden ${
           isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
@@ -144,12 +196,28 @@ export default function Navbar() {
         </div>
         
         <nav className="flex flex-col py-4 overflow-y-auto h-[calc(100vh-140px)]">
+          {/* Dashboard links on mobile */}
+          <div className="px-6 py-2 mb-4 border-b pb-4 space-y-3">
+             <Link href="#" className="flex items-center gap-3 text-sm font-semibold text-primary">
+                <Smartphone size={18} /> Patient Booking
+             </Link>
+             <Link href="/reception" className="flex items-center gap-3 text-sm font-medium text-gray-700">
+                <Users size={18} className="text-emerald-500" /> Reception Intake
+             </Link>
+             <Link href="/doctor-login" className="flex items-center gap-3 text-sm font-medium text-gray-700">
+                <Stethoscope size={18} className="text-teal-500" /> Doctor Desk
+             </Link>
+             <Link href="/pharmacy" className="flex items-center gap-3 text-sm font-medium text-gray-700">
+                <Pill size={18} className="text-amber-500" /> Pharmacy
+             </Link>
+          </div>
+
           {navLinks.map((link) => (
             <a
               key={link.name}
               href={link.href}
               onClick={(e) => handleSmoothScroll(e, link.href)}
-              className="px-6 py-4 text-base font-medium text-gray-800 border-b border-gray-50 hover:bg-accent hover:text-primary transition-colors"
+              className="px-6 py-3 text-sm font-semibold text-gray-800 hover:bg-accent hover:text-primary transition-colors"
             >
               {link.name}
             </a>
@@ -162,7 +230,7 @@ export default function Navbar() {
               setIsMobileMenuOpen(false);
               setIsAppointmentModalOpen(true);
             }}
-            className="flex items-center justify-center w-full px-4 py-3 text-sm font-bold text-white transition-colors bg-secondary rounded-xl hover:bg-orange-600"
+            className="flex items-center justify-center w-full px-4 py-3 text-sm font-bold text-white transition-colors bg-secondary rounded-xl hover:bg-secondary-hover"
           >
             Book Appointment
           </button>

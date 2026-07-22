@@ -156,7 +156,7 @@ export default function SpecialitiesSection() {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => setShowAll(true)}
-              className="px-8 py-3.5 text-sm font-bold text-white transition-colors bg-primary rounded-xl hover:bg-blue-900 shadow-sm hover:shadow-md"
+              className="px-8 py-3.5 text-sm font-bold text-white transition-colors bg-primary rounded-xl hover:bg-primary-hover shadow-sm hover:shadow-md"
             >
               View All Specialities
             </motion.button>

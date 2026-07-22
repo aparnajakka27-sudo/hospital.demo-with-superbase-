@@ -13,7 +13,7 @@ interface AppointmentCardProps {
 export default function AppointmentCard({ onClose }: AppointmentCardProps) {
   const { selectedDepartment } = useAppointment();
   
-  const [tab, setTab] = useState<"india" | "international">("india");
+  const [countryCode, setCountryCode] = useState("+91");
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -80,7 +80,7 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
       setIsSubmitting(true);
       
       // Convert phone to integer as Supabase expects int8
-      const phoneNum = parseInt(formData.mobile.replace(/\D/g, ''), 10);
+      const phoneNum = parseInt((countryCode + formData.mobile).replace(/\D/g, ''), 10);
       
       const { error } = await supabase
         .from('Booking Appointment')
@@ -92,6 +92,8 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
             Department:formData.department,
             Date:formData.date,
             Doctor:formData.doctor,
+            booking_type: 'Online',
+            queue_status: 'Scheduled'
           }
         ]);
         
@@ -134,26 +136,7 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
       </div>
 
       <div className="px-6 py-5">
-        <div className="flex p-1 mb-5 bg-gray-100 rounded-lg">
-          <button
-            type="button"
-            className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${
-              tab === "india" ? "bg-white text-primary shadow-sm" : "text-gray-500 hover:text-gray-700"
-            }`}
-            onClick={() => setTab("india")}
-          >
-            India Users
-          </button>
-          <button
-            type="button"
-            className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${
-              tab === "international" ? "bg-white text-primary shadow-sm" : "text-gray-500 hover:text-gray-700"
-            }`}
-            onClick={() => setTab("international")}
-          >
-            International
-          </button>
-        </div>
+
 
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
@@ -185,8 +168,20 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
           </div>
 
           <div className="flex gap-2">
-            <div className="w-20 bg-gray-50 border border-gray-200 rounded-xl flex items-center justify-center text-sm font-semibold text-gray-800">
-              +91
+            <div className="w-24 relative bg-gray-50 border border-gray-200 rounded-xl flex items-center">
+              <select 
+                value={countryCode}
+                onChange={(e) => setCountryCode(e.target.value)}
+                className="w-full h-full appearance-none bg-transparent pl-3 pr-6 py-2.5 text-sm font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-secondary/50 focus:border-secondary rounded-xl cursor-pointer"
+              >
+                <option value="+91">+91 (IN)</option>
+                <option value="+1">+1 (US)</option>
+                <option value="+44">+44 (UK)</option>
+                <option value="+61">+61 (AU)</option>
+                <option value="+971">+971 (AE)</option>
+                <option value="+65">+65 (SG)</option>
+              </select>
+              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={14} />
             </div>
             <div className="relative flex-1">
               <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
