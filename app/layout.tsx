@@ -6,6 +6,7 @@ import { DoctorAuthProvider } from "../context/DoctorAuthContext";
 import BookAppointmentModal from "../components/BookAppointmentModal";
 import SmoothScroll from "../components/SmoothScroll";
 import ScrollProgress from "../components/ScrollProgress";
+import AIHospitalAssistant from "../components/AIHospitalAssistant";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,6 +29,7 @@ export default function RootLayout({
               <ScrollProgress />
               {children}
               <BookAppointmentModal />
+              <AIHospitalAssistant />
             </SmoothScroll>
           </AppointmentProvider>
         </DoctorAuthProvider>

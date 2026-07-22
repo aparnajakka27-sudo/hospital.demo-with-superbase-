@@ -41,6 +41,21 @@ export function DoctorAuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
     try {
       // Offline fallback for testing
+      const demoDoctors: Record<string, any> = {
+        "smith": { id: "doc-1", name: "Dr. Smith (Cardiology)", specialty: "Cardiology", room: "OPD-101" },
+        "jones": { id: "doc-2", name: "Dr. Jones (Neurology)", specialty: "Neurology", room: "OPD-102" },
+        "patel": { id: "doc-3", name: "Dr. Patel (Orthopaedics)", specialty: "Orthopaedics", room: "OPD-103" },
+        "kumar": { id: "doc-4", name: "Dr. Kumar (General)", specialty: "General", room: "OPD-104" }
+      };
+
+      if (pass === "demo" && demoDoctors[userId.toLowerCase()]) {
+        const demoUser = demoDoctors[userId.toLowerCase()];
+        setUser(demoUser);
+        localStorage.setItem("hospital_doctor_session", JSON.stringify(demoUser));
+        setIsLoading(false);
+        return { success: true };
+      }
+
       if (userId === "doctor123" && pass === "demo") {
         const demoUser = {
           id: "doc-demo-101",

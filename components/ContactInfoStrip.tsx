@@ -12,7 +12,9 @@ const itemVariants: Variants = {
   visible: { opacity: 1, scale: 1, transition: { duration: 0.5, type: "spring", stiffness: 150 } }
 };
 
-export default function ContactInfoStrip() {
+import React from "react";
+
+const ContactInfoStrip = React.memo(function ContactInfoStrip() {
   return (
     <section id="contact" className="py-20 bg-white">
       <div className="container mx-auto px-4 md:px-6">
@@ -97,4 +99,6 @@ export default function ContactInfoStrip() {
       </div>
     </section>
   );
-}
+});
+
+export default ContactInfoStrip;

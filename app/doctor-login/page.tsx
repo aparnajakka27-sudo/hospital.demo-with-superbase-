@@ -125,11 +125,17 @@ export default function DoctorLogin() {
             </button>
           </form>
           
-          <div className="mt-8 text-center text-xs font-medium text-gray-400/80 space-y-1">
+          <div className="mt-8 text-center text-xs font-medium text-gray-400/80 space-y-2">
             <p>Authorized Personnel Only • IP Logged</p>
-            <p className="text-gray-500 font-semibold bg-gray-50 py-1.5 px-3 rounded-lg inline-block border border-gray-100">
-              Demo: <span className="text-gray-700">doctor123</span> / <span className="text-gray-700">demo</span>
-            </p>
+            <div className="text-gray-500 font-semibold bg-gray-50 py-2 px-3 rounded-lg inline-block border border-gray-100">
+              <p className="mb-1 text-gray-800">Demo User IDs (Password: <strong>demo</strong>)</p>
+              <div className="grid grid-cols-2 gap-2 text-left mt-2">
+                <div>• <span className="text-primary">smith</span> (Cardiology)</div>
+                <div>• <span className="text-primary">jones</span> (Neurology)</div>
+                <div>• <span className="text-primary">patel</span> (Orthopaedics)</div>
+                <div>• <span className="text-primary">kumar</span> (General)</div>
+              </div>
+            </div>
           </div>
         </div>
       </motion.div>

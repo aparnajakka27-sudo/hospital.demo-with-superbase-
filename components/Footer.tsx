@@ -48,7 +48,9 @@ const LinkedinIcon = ({ size = 16 }: { size?: number }) => (
   </svg>
 );
 
-export default function Footer() {
+import React from "react";
+
+const Footer = React.memo(function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -177,4 +179,6 @@ export default function Footer() {
       </div>
     </motion.footer>
   );
-}
+});
+
+export default Footer;
