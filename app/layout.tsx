@@ -4,7 +4,6 @@ import "./globals.css";
 import { AppointmentProvider } from "../context/AppointmentContext";
 import { DoctorAuthProvider } from "../context/DoctorAuthContext";
 import BookAppointmentModal from "../components/BookAppointmentModal";
-import SmoothScroll from "../components/SmoothScroll";
 import ScrollProgress from "../components/ScrollProgress";
 import AIHospitalAssistant from "../components/AIHospitalAssistant";
 
