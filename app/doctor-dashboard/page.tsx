@@ -433,7 +433,7 @@ Wishing you a speedy recovery. 💙`;
                                   <span className="text-xs text-gray-500 font-normal">Dr. {hist.Doctor}</span>
                                 </div>
                                 {(hist.weight || hist["Blood Pressure"] || hist.temperature) && (
-                                  <p className="text-xs text-gray-500 mb-1">Vitals: {[hist.weight && `${hist.weight}kg`, hist["Blood Pressure"], hist.temperature].filter(Boolean).join(' • ')}</p>
+                                  <p className="text-xs text-gray-500 mb-1">Vitals: {[hist.weight && `${hist.weight}`, hist["Blood Pressure"] && `${hist["Blood Pressure"]} mmHg`, hist.temperature].filter(Boolean).join(' • ')}</p>
                                 )}
                                 {hist.diagnosis_notes && (
                                   <p className="text-xs text-gray-700 mt-1 mb-2">"{hist.diagnosis_notes}"</p>

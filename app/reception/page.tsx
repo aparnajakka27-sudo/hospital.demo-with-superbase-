@@ -145,9 +145,9 @@ export default function ReceptionDashboard() {
         triage_priority: triage,
         payment_status: paymentStatus,
         reason: reason,
-        weight: vitalsWeight ? `${vitalsWeight.replace(/kg|lbs/gi, '').trim()} ${weightUnit}` : "",
-        "Blood Pressure": vitalsBp ? `${vitalsBp.replace(/mmHg/gi, '').trim()} mmHg` : "",
-        temperature: vitalsTemp ? `${vitalsTemp.replace(/°F|°C|F|C/gi, '').trim()} ${tempUnit}` : "",
+        weight: vitalsWeight ? `${vitalsWeight.replace(/kg|lbs/gi, '').trim()} ${weightUnit}` : null,
+        "Blood Pressure": vitalsBp ? vitalsBp.replace(/mmHg/gi, '').trim() : null,
+        temperature: vitalsTemp ? `${vitalsTemp.replace(/°F|°C|F|C/gi, '').trim()} ${tempUnit}` : null,
         queue_status: "Waiting",
       };
       
