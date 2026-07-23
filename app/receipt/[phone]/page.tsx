@@ -105,23 +105,39 @@ export default function ReceiptPage() {
         </div>
 
         {/* Patient & Doctor Details Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 mb-8 text-sm">
-          <table className="w-full text-left">
-            <tbody>
-              <tr><td className="py-1 font-bold text-gray-600 w-28">Patient Name</td><td className="py-1 font-bold text-gray-900">: {data.Name}</td></tr>
-              <tr><td className="py-1 font-bold text-gray-600">Age / Gender</td><td className="py-1 font-semibold text-gray-800">: {data.age ? `${data.age} Years` : 'N/A'} / {data.gender || 'N/A'}</td></tr>
-              <tr><td className="py-1 font-bold text-gray-600">Mobile</td><td className="py-1 font-semibold text-gray-800">: {data.Phone || 'N/A'}</td></tr>
-              <tr><td className="py-1 font-bold text-gray-600">Address</td><td className="py-1 font-semibold text-gray-800">: Hyderabad, Telangana</td></tr>
-            </tbody>
-          </table>
-          <table className="w-full text-left">
-            <tbody>
-              <tr><td className="py-1 font-bold text-gray-600 w-28">Doctor Name</td><td className="py-1 font-bold text-gray-900">: {data.Doctor || 'Unassigned'}</td></tr>
-              <tr><td className="py-1 font-bold text-gray-600">Department</td><td className="py-1 font-semibold text-gray-800">: {data.Department || 'General'}</td></tr>
-              <tr><td className="py-1 font-bold text-gray-600">Visit Type</td><td className="py-1 font-semibold text-gray-800">: {data.booking_type === 'Online' ? 'Tele/Online Consultation' : 'OPD Consultation'}</td></tr>
-              <tr><td className="py-1 font-bold text-gray-600">Token Number</td><td className="py-1 font-bold text-gray-900">: {data.token_number || 'N/A'}</td></tr>
-            </tbody>
-          </table>
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 md:p-5 mb-8 text-sm grid grid-cols-2 sm:grid-cols-4 gap-4 text-left">
+          <div>
+            <p className="text-xs text-gray-500 font-semibold mb-0.5">Patient Name</p>
+            <p className="font-bold text-gray-900">{data.Name || 'N/A'}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500 font-semibold mb-0.5">Age / Gender</p>
+            <p className="font-bold text-gray-900">{data.age ? `${data.age} Years` : 'N/A'} / {data.gender || 'N/A'}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500 font-semibold mb-0.5">Mobile</p>
+            <p className="font-bold text-gray-900">{data.Phone || 'N/A'}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500 font-semibold mb-0.5">Address</p>
+            <p className="font-bold text-gray-900">Hyderabad, Telangana</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500 font-semibold mb-0.5">Doctor Name</p>
+            <p className="font-bold text-gray-900">{data.Doctor || 'Unassigned'}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500 font-semibold mb-0.5">Department</p>
+            <p className="font-bold text-gray-900">{data.Department || 'General'}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500 font-semibold mb-0.5">Visit Type</p>
+            <p className="font-bold text-gray-900">{data.booking_type === 'Online' ? 'Tele/Online' : 'OPD Consultation'}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500 font-semibold mb-0.5">Token Number</p>
+            <p className="font-bold text-gray-900">{data.token_number || 'N/A'}</p>
+          </div>
         </div>
 
         {/* Billing Table */}

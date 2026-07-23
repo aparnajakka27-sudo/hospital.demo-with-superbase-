@@ -103,22 +103,30 @@ export default function PrescriptionPage() {
         </div>
 
         {/* Patient Details Banner */}
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-8 text-sm flex flex-wrap justify-between gap-4">
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 md:p-5 mb-8 text-sm grid grid-cols-2 sm:grid-cols-4 gap-4 text-left">
           <div>
             <p className="text-xs text-gray-500 font-semibold mb-0.5">Patient Name</p>
-            <p className="font-bold text-gray-900">{data.Name}</p>
+            <p className="font-bold text-gray-900">{data.Name || 'N/A'}</p>
           </div>
           <div>
             <p className="text-xs text-gray-500 font-semibold mb-0.5">Age / Gender</p>
             <p className="font-bold text-gray-900">{data.age ? `${data.age} Years` : 'N/A'} / {data.gender || 'N/A'}</p>
           </div>
           <div>
+            <p className="text-xs text-gray-500 font-semibold mb-0.5">Mobile</p>
+            <p className="font-bold text-gray-900">{data.Phone || 'N/A'}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500 font-semibold mb-0.5">Address</p>
+            <p className="font-bold text-gray-900">Hyderabad, Telangana</p>
+          </div>
+          <div>
             <p className="text-xs text-gray-500 font-semibold mb-0.5">Token Number</p>
             <p className="font-bold text-gray-900">{data.token_number || 'N/A'}</p>
           </div>
-          <div>
+          <div className="col-span-1 sm:col-span-3">
             <p className="text-xs text-gray-500 font-semibold mb-0.5">Vitals Recorded</p>
-            <p className="font-bold text-gray-900">Wt: {data.vitals_weight || '--'} kg | BP: {data.vitals_bp || '--'}</p>
+            <p className="font-bold text-gray-900">Wt: {data.weight || '--'} | BP: {data["Blood Pressure"] || '--'} | Temp: {data.temperature || '--'}</p>
           </div>
         </div>
 
