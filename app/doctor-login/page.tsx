@@ -7,7 +7,7 @@ import { Hospital, Lock, User, Eye, EyeOff, ArrowLeft, ShieldCheck } from "lucid
 import { motion } from "framer-motion";
 import Link from "next/link";
 
-import { supabase } from '../lib/supabase';
+import { supabase } from '../../lib/supabase';
 
 export default function DoctorLogin() {
   const [userId, setUserId] = useState("");

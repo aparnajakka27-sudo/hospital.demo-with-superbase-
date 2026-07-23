@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { KeyRound, Lock, AlertCircle, Activity } from 'lucide-react'
-import { supabase } from '../lib/supabase'
+import { supabase } from '../../lib/supabase'
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('')
