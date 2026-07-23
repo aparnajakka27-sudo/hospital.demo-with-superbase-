@@ -69,7 +69,7 @@ export default function Navbar() {
                 <HeartPulse size={28} strokeWidth={2.5} />
               </div>
               <div className="flex flex-col">
-                <span className="text-2xl font-bold leading-none text-primary tracking-tight">
+                <span className="text-2xl lg:text-3xl font-black font-serif leading-none text-primary tracking-tighter">
                   {hospitalConfig.name.split(" ")[0]}
                 </span>
                 <span className="text-[10px] font-bold text-secondary tracking-widest uppercase mt-1">
@@ -138,7 +138,7 @@ export default function Navbar() {
               <HeartPulse size={24} strokeWidth={2.5} />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-bold leading-none text-primary tracking-tight">
+              <span className="text-xl font-black font-serif leading-none text-primary tracking-tighter">
                 {hospitalConfig.name.split(" ")[0]}
               </span>
               <span className="text-[8px] font-bold text-secondary tracking-widest uppercase mt-0.5">

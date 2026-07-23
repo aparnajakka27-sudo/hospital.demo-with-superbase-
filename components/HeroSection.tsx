@@ -41,7 +41,7 @@ export default function HeroSection() {
   const { setIsAppointmentModalOpen } = useAppointment();
 
   return (
-    <section id="home" className="relative w-full bg-primary overflow-hidden flex flex-col pt-10">
+    <section id="home" className="relative w-full bg-primary overflow-hidden flex flex-col pt-2">
       
       {/* Background Image with Gradient Overlay */}
       <div className="absolute inset-0 w-full h-full">
@@ -82,7 +82,7 @@ export default function HeroSection() {
         </motion.div>
       </div>
 
-      <div className="container relative z-20 mx-auto px-4 md:px-6 pt-20 md:pt-24 lg:pt-28 pb-8 md:pb-10 lg:pb-12 w-full">
+      <div className="container relative z-20 mx-auto px-4 md:px-6 pt-8 md:pt-10 lg:pt-12 pb-8 md:pb-10 lg:pb-12 w-full">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8">
           
           {/* Left Content */}

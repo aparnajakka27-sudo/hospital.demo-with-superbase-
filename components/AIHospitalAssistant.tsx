@@ -101,7 +101,7 @@ export default function AIHospitalAssistant() {
     return (
       <button 
         onClick={() => { setIsOpen(true); setIsMinimized(false); }}
-        className="fixed bottom-6 right-6 z-50 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-xl transition-transform hover:scale-110 active:scale-95 flex items-center justify-center group"
+        className="fixed bottom-6 left-6 z-50 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full p-4 shadow-xl transition-transform hover:scale-110 active:scale-95 flex items-center justify-center group"
         aria-label="Open AI Assistant"
       >
         <MessageSquare size={28} />
@@ -113,18 +113,18 @@ export default function AIHospitalAssistant() {
   }
 
   return (
-    <div className={`fixed right-6 z-50 transition-all duration-300 ease-in-out ${isMinimized ? 'bottom-6 w-72' : 'bottom-6 w-[350px] sm:w-[400px] h-[600px] max-h-[85vh]'}`}>
+    <div className={`fixed left-6 z-50 transition-all duration-300 ease-in-out ${isMinimized ? 'bottom-6 w-72' : 'bottom-6 w-[350px] sm:w-[400px] h-[600px] max-h-[85vh]'}`}>
       <div className="bg-white rounded-2xl shadow-2xl flex flex-col h-full border border-gray-200 overflow-hidden">
         
         {/* Header */}
-        <div className="bg-[#0B1B36] p-4 flex items-center justify-between text-white rounded-t-2xl shrink-0 cursor-pointer" onClick={() => isMinimized && setIsMinimized(false)}>
+        <div className="bg-primary p-4 flex items-center justify-between text-white rounded-t-2xl shrink-0 cursor-pointer" onClick={() => isMinimized && setIsMinimized(false)}>
           <div className="flex items-center gap-3">
-            <div className="bg-blue-500/20 p-2 rounded-full border border-blue-400/30">
-              <Bot size={20} className="text-blue-300" />
+            <div className="bg-emerald-500/20 p-2 rounded-full border border-emerald-400/30">
+              <Bot size={20} className="text-emerald-300" />
             </div>
             <div>
               <h3 className="font-bold text-sm tracking-wide">AI Hospital Assistant</h3>
-              <p className="text-[10px] text-blue-200 font-medium">Online • Reception & Info</p>
+              <p className="text-[10px] text-emerald-200 font-medium">Online • Reception & Info</p>
             </div>
           </div>
           <div className="flex items-center gap-1">
@@ -147,7 +147,7 @@ export default function AIHospitalAssistant() {
                     
                     <div className="shrink-0 mt-1">
                       {msg.sender === 'ai' ? (
-                        <div className={`p-1.5 rounded-full ${msg.isEmergency ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'}`}>
+                        <div className={`p-1.5 rounded-full ${msg.isEmergency ? 'bg-red-100 text-red-600' : 'bg-emerald-100 text-emerald-600'}`}>
                           {msg.isEmergency ? <AlertCircle size={16} /> : <Bot size={16} />}
                         </div>
                       ) : (
@@ -159,7 +159,7 @@ export default function AIHospitalAssistant() {
 
                     <div className={`px-4 py-3 text-sm shadow-sm ${
                       msg.sender === 'user' 
-                        ? 'bg-blue-600 text-white rounded-2xl rounded-tr-sm' 
+                        ? 'bg-emerald-600 text-white rounded-2xl rounded-tr-sm' 
                         : msg.isEmergency 
                           ? 'bg-red-50 border border-red-200 text-red-900 rounded-2xl rounded-tl-sm font-medium'
                           : 'bg-white border border-gray-100 text-gray-800 rounded-2xl rounded-tl-sm'
@@ -174,14 +174,14 @@ export default function AIHospitalAssistant() {
                 <div className="flex w-full justify-start">
                   <div className="flex gap-2 max-w-[80%] flex-row">
                     <div className="shrink-0 mt-1">
-                      <div className="p-1.5 rounded-full bg-blue-100 text-blue-600">
+                      <div className="p-1.5 rounded-full bg-emerald-100 text-emerald-600">
                         <Bot size={16} />
                       </div>
                     </div>
                     <div className="px-5 py-3.5 bg-white border border-gray-100 rounded-2xl rounded-tl-sm shadow-sm flex items-center gap-1.5">
-                      <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                      <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                      <div className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce"></div>
+                      <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                      <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                      <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce"></div>
                     </div>
                   </div>
                 </div>
@@ -198,12 +198,12 @@ export default function AIHospitalAssistant() {
                   onChange={(e) => setInputText(e.target.value)}
                   placeholder="Ask about departments, doctors, timings..."
                   disabled={isLoading}
-                  className="flex-1 bg-gray-50 border border-gray-200 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-gray-800 disabled:bg-gray-100"
+                  className="flex-1 bg-gray-50 border border-gray-200 rounded-full px-4 py-2.5 text-sm focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all text-gray-800 disabled:bg-gray-100"
                 />
                 <button
                   type="submit"
                   disabled={!inputText.trim() || isLoading}
-                  className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed text-white rounded-full w-10 h-10 flex items-center justify-center shrink-0 transition-colors shadow-sm"
+                  className="bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-300 disabled:cursor-not-allowed text-white rounded-full w-10 h-10 flex items-center justify-center shrink-0 transition-colors shadow-sm"
                 >
                   <Send size={18} className="ml-0.5" />
                 </button>

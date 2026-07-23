@@ -153,7 +153,7 @@ export const hospitalConfig: HospitalConfig = {
       specialization: "Joint Replacement Surgeon",
       experience: "18+ years",
       department: "Orthopaedics",
-      image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=400&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=400&auto=format&fit=crop",
       qualification: "MBBS, MS (Ortho)",
     },
     {
@@ -161,7 +161,7 @@ export const hospitalConfig: HospitalConfig = {
       specialization: "Gastroenterologist",
       experience: "10+ years",
       department: "Gastroenterology",
-      image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=400&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1594824436998-d8869f3a4798?q=80&w=400&auto=format&fit=crop",
       qualification: "MBBS, MD, DNB",
     },
     {
@@ -169,7 +169,7 @@ export const hospitalConfig: HospitalConfig = {
       specialization: "Senior Pediatrician",
       experience: "14+ years",
       department: "Pediatrics",
-      image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=400&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?q=80&w=400&auto=format&fit=crop",
       qualification: "MBBS, MD (Pediatrics)",
     },
     {
@@ -177,7 +177,7 @@ export const hospitalConfig: HospitalConfig = {
       specialization: "Medical Oncologist",
       experience: "16+ years",
       department: "Oncology",
-      image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=400&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1582750433449-648ed127d0fc?q=80&w=400&auto=format&fit=crop",
       qualification: "MBBS, MD, DM (Oncology)",
     },
     {
@@ -185,7 +185,7 @@ export const hospitalConfig: HospitalConfig = {
       specialization: "Consultant Dermatologist",
       experience: "9+ years",
       department: "Dermatology",
-      image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=400&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?q=80&w=400&auto=format&fit=crop",
       qualification: "MBBS, MD (Dermatology)",
     },
     {
@@ -193,7 +193,7 @@ export const hospitalConfig: HospitalConfig = {
       specialization: "Urologist & Transplant Surgeon",
       experience: "20+ years",
       department: "Urology",
-      image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=400&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1527613426441-4da17471b66d?q=80&w=400&auto=format&fit=crop",
       qualification: "MBBS, MS, MCh (Urology)",
     },
     {
@@ -201,7 +201,7 @@ export const hospitalConfig: HospitalConfig = {
       specialization: "Obstetrician & Gynecologist",
       experience: "11+ years",
       department: "Gynecology",
-      image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=400&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1550831107-1553da8c8464?q=80&w=400&auto=format&fit=crop",
       qualification: "MBBS, MD (O&G)",
     },
     {
@@ -209,7 +209,7 @@ export const hospitalConfig: HospitalConfig = {
       specialization: "Senior Psychiatrist",
       experience: "13+ years",
       department: "Psychiatry",
-      image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=400&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1638202993928-7267aad84c31?q=80&w=400&auto=format&fit=crop",
       qualification: "MBBS, MD (Psychiatry)",
     },
     {
@@ -217,7 +217,7 @@ export const hospitalConfig: HospitalConfig = {
       specialization: "Endocrinologist",
       experience: "8+ years",
       department: "Endocrinology",
-      image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=400&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1605684954998-685c79d6a018?q=80&w=400&auto=format&fit=crop",
       qualification: "MBBS, MD, DM (Endo)",
     },
     {
@@ -225,7 +225,7 @@ export const hospitalConfig: HospitalConfig = {
       specialization: "Pulmonologist",
       experience: "17+ years",
       department: "Pulmonology",
-      image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=400&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=400&auto=format&fit=crop",
       qualification: "MBBS, MD (Pulmonary Medicine)",
     },
     {
@@ -233,7 +233,7 @@ export const hospitalConfig: HospitalConfig = {
       specialization: "Ophthalmologist",
       experience: "12+ years",
       department: "Ophthalmology",
-      image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=400&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1523301343968-6a6ebf63c672?q=80&w=400&auto=format&fit=crop",
       qualification: "MBBS, MS (Ophthalmology)",
     },
     {
@@ -241,7 +241,7 @@ export const hospitalConfig: HospitalConfig = {
       specialization: "ENT Specialist",
       experience: "15+ years",
       department: "ENT",
-      image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=400&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=400&auto=format&fit=crop",
       qualification: "MBBS, MS (ENT)",
     },
     {
@@ -249,7 +249,7 @@ export const hospitalConfig: HospitalConfig = {
       specialization: "Rheumatologist",
       experience: "10+ years",
       department: "Rheumatology",
-      image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=400&auto=format&fit=crop",
+      image: "https://images.unsplash.com/photo-1622902046580-2b47f47f5471?q=80&w=400&auto=format&fit=crop",
       qualification: "MBBS, MD, DM (Rheumatology)",
     },
   ],
@@ -287,27 +287,27 @@ export const hospitalConfig: HospitalConfig = {
   ],
   gallery: [
     {
-      image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=800",
+      image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=400&auto=format&fit=crop",
       caption: "Reception Area"
     },
     {
-      image: "https://images.unsplash.com/photo-1587351021355-a479a299d2f9?q=80&w=800",
+      image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=400&auto=format&fit=crop",
       caption: "ICU Ward"
     },
     {
-      image: "https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=800",
+      image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=400&auto=format&fit=crop",
       caption: "Operation Theatre"
     },
     {
-      image: "https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=800",
+      image: "https://images.unsplash.com/photo-1594824436998-d8869f3a4798?q=80&w=400&auto=format&fit=crop",
       caption: "Patient Room"
     },
     {
-      image: "https://images.unsplash.com/photo-1538108149393-fbbd81895907?q=80&w=800",
+      image: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?q=80&w=400&auto=format&fit=crop",
       caption: "Diagnostic Lab"
     },
     {
-      image: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?q=80&w=800",
+      image: "https://images.unsplash.com/photo-1582750433449-648ed127d0fc?q=80&w=400&auto=format&fit=crop",
       caption: "Emergency Wing"
     }
   ]
