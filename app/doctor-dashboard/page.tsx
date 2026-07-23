@@ -18,8 +18,6 @@ export default function DoctorDashboard() {
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
 
   // Clinical Vitals & Notes
-  const [weight, setWeight] = useState("");
-  const [bp, setBp] = useState("");
   const [notes, setNotes] = useState("");
   const [isSavingClinical, setIsSavingClinical] = useState(false);
   const [smsLog, setSmsLog] = useState<string | null>(null);
@@ -83,7 +81,7 @@ export default function DoctorDashboard() {
       const { data, error } = await supabase
         .from('Booking Appointment')
         .select(`
-          Date, Doctor, diagnosis_notes, vitals_weight, vitals_bp, medicines_list
+          Date, Doctor, diagnosis_notes, weight, "Blood Pressure", temperature, medicines_list
         `)
         .eq('Phone', phone)
         .order('created_at', { ascending: false });
@@ -106,8 +104,6 @@ export default function DoctorDashboard() {
 
   const handlePatientSelect = async (p: any) => {
     setSelectedPatient(p);
-    setWeight(p.vitals_weight || "");
-    setBp(p.vitals_bp || "");
     setNotes(p.diagnosis_notes || "");
     setMedicines([]);
     setSmsLog(null);
@@ -139,8 +135,6 @@ export default function DoctorDashboard() {
       const { error } = await supabase
         .from('Booking Appointment')
         .update({
-          vitals_weight: weight,
-          vitals_bp: bp,
           diagnosis_notes: notes
         })
         .eq('Name', selectedPatient.Name)
@@ -393,14 +387,18 @@ Wishing you a speedy recovery. 💙`;
                           <p className="text-sm text-gray-600 mt-1">{selectedPatient.reason || "None recorded."}</p>
                         </div>
                         
-                        <div className="grid grid-cols-2 gap-4 mb-4">
-                          <div>
-                            <label className="block text-xs font-bold text-gray-500 mb-1">Weight (kg)</label>
-                            <input type="text" value={weight} onChange={e=>setWeight(e.target.value)} placeholder="e.g. 75" className="w-full bg-white text-gray-900 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary" />
+                        <div className="grid grid-cols-3 gap-4 mb-4">
+                          <div className="bg-gray-50 border border-gray-100 p-2 rounded-lg">
+                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Weight</label>
+                            <p className="text-sm font-semibold text-gray-900">{selectedPatient.weight ? `${selectedPatient.weight} kg` : "N/A"}</p>
                           </div>
-                          <div>
-                            <label className="block text-xs font-bold text-gray-500 mb-1">Blood Pressure</label>
-                            <input type="text" value={bp} onChange={e=>setBp(e.target.value)} placeholder="e.g. 120/80" className="w-full bg-white text-gray-900 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary" />
+                          <div className="bg-gray-50 border border-gray-100 p-2 rounded-lg">
+                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Blood Pressure</label>
+                            <p className="text-sm font-semibold text-gray-900">{selectedPatient["Blood Pressure"] ? `${selectedPatient["Blood Pressure"]} mmHg` : "N/A"}</p>
+                          </div>
+                          <div className="bg-gray-50 border border-gray-100 p-2 rounded-lg">
+                            <label className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Temperature</label>
+                            <p className="text-sm font-semibold text-gray-900">{selectedPatient.temperature ? `${selectedPatient.temperature}` : "N/A"}</p>
                           </div>
                         </div>
                         <div>
@@ -434,8 +432,8 @@ Wishing you a speedy recovery. 💙`;
                                   <span>{hist.Date}</span>
                                   <span className="text-xs text-gray-500 font-normal">Dr. {hist.Doctor}</span>
                                 </div>
-                                {(hist.vitals_weight || hist.vitals_bp) && (
-                                  <p className="text-xs text-gray-500 mb-1">Vitals: {hist.vitals_weight && `${hist.vitals_weight}kg`} {hist.vitals_bp && `• ${hist.vitals_bp}`}</p>
+                                {(hist.weight || hist["Blood Pressure"] || hist.temperature) && (
+                                  <p className="text-xs text-gray-500 mb-1">Vitals: {[hist.weight && `${hist.weight}kg`, hist["Blood Pressure"], hist.temperature].filter(Boolean).join(' • ')}</p>
                                 )}
                                 {hist.diagnosis_notes && (
                                   <p className="text-xs text-gray-700 mt-1 mb-2">"{hist.diagnosis_notes}"</p>

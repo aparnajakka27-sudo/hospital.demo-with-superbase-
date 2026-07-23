@@ -26,6 +26,9 @@ export default function ReceptionDashboard() {
   const [gender, setGender] = useState("Male");
   const [paymentStatus, setPaymentStatus] = useState("Collected $50 (Paid)");
   const [reason, setReason] = useState("");
+  const [vitalsWeight, setVitalsWeight] = useState("");
+  const [vitalsBp, setVitalsBp] = useState("");
+  const [vitalsTemp, setVitalsTemp] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -83,6 +86,9 @@ export default function ReceptionDashboard() {
       setGender(patientToEdit.gender || "Male");
       setPaymentStatus(patientToEdit.payment_status || "Collected $50 (Paid)");
       setReason(patientToEdit.reason || "");
+      setVitalsWeight(patientToEdit.weight || "");
+      setVitalsBp(patientToEdit["Blood Pressure"] || "");
+      setVitalsTemp(patientToEdit.temperature || "");
       setIsWalkInFormOpen(true);
     } else {
       setEditingPatient(null);
@@ -95,6 +101,9 @@ export default function ReceptionDashboard() {
       setGender("Male");
       setPaymentStatus("Collected $50 (Paid)");
       setReason("");
+      setVitalsWeight("");
+      setVitalsBp("");
+      setVitalsTemp("");
       setIsWalkInFormOpen(true);
     }
   };
@@ -114,6 +123,11 @@ export default function ReceptionDashboard() {
       }
     }
 
+    if (!vitalsWeight || !vitalsBp || !vitalsTemp) {
+      const proceed = window.confirm("Some vitals (Weight, BP, or Temp) are missing. Are you sure you want to proceed without them?");
+      if (!proceed) return;
+    }
+
     setIsSubmitting(true);
     
     try {
@@ -129,6 +143,9 @@ export default function ReceptionDashboard() {
         triage_priority: triage,
         payment_status: paymentStatus,
         reason: reason,
+        weight: vitalsWeight,
+        "Blood Pressure": vitalsBp,
+        temperature: vitalsTemp,
         queue_status: "Waiting",
       };
       
@@ -348,10 +365,10 @@ export default function ReceptionDashboard() {
 
         {/* Registration Form (Collapsible) */}
         {isWalkInFormOpen && (
-          <div className="bg-[#0B1B36] rounded-2xl shadow-xl p-6 md:p-8 mb-6 text-white border border-[#1a2c4e] animate-in fade-in slide-in-from-top-4 duration-300">
+          <div className="bg-slate-100 rounded-2xl shadow-xl p-6 md:p-8 mb-6 text-slate-900 border border-slate-200 animate-in fade-in slide-in-from-top-4 duration-300">
             <div className="flex justify-between items-center mb-8">
               <div className="flex items-center gap-4">
-                <div className="bg-white/10 p-3 rounded-xl border border-white/10">
+                <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
                   {editingPatient ? <Edit size={24} className="text-blue-400" /> : <UserPlus size={24} className="text-blue-400" />}
                 </div>
                 <div>
@@ -359,7 +376,7 @@ export default function ReceptionDashboard() {
                   <p className="text-gray-400 text-sm">Update details or create instant UHID & assign OPD queue token</p>
                 </div>
               </div>
-              <button onClick={() => setIsWalkInFormOpen(false)} className="text-gray-400 hover:text-white p-2">
+              <button onClick={() => setIsWalkInFormOpen(false)} className="text-slate-500 hover:text-slate-900 p-2">
                 <XCircle size={24} />
               </button>
             </div>
@@ -367,7 +384,7 @@ export default function ReceptionDashboard() {
             {formError && (
               <div className="bg-red-500/10 border border-red-500/50 text-red-500 px-4 py-3 rounded-lg mb-6 text-sm font-semibold flex items-center justify-between">
                 <div>{formError}</div>
-                <button type="button" onClick={() => setFormError(null)} className="text-red-500 hover:text-white">
+                <button type="button" onClick={() => setFormError(null)} className="text-red-500 hover:text-slate-900">
                   <XCircle size={16} />
                 </button>
               </div>
@@ -376,23 +393,23 @@ export default function ReceptionDashboard() {
             <form onSubmit={handleWalkInSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                  <label className="block text-xs font-bold text-gray-300 mb-2">Patient Name *</label>
-                  <input type="text" required value={patientName} onChange={e => setPatientName(e.target.value)} placeholder="e.g. David Miller" className="w-full bg-[#061022] border border-[#1a2c4e] rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-white" />
+                  <label className="block text-xs font-bold text-slate-700 mb-2">Patient Name *</label>
+                  <input type="text" required value={patientName} onChange={e => setPatientName(e.target.value)} placeholder="e.g. David Miller" className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-300 mb-2">Mobile (WhatsApp) *</label>
-                  <input type="tel" required value={mobile} onChange={e => setMobile(e.target.value)} placeholder="+1 (555) 123-4567" className="w-full bg-[#061022] border border-[#1a2c4e] rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-white" />
+                  <label className="block text-xs font-bold text-slate-700 mb-2">Mobile (WhatsApp) *</label>
+                  <input type="tel" required value={mobile} onChange={e => setMobile(e.target.value)} placeholder="+1 (555) 123-4567" className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-300 mb-2">Email (Optional)</label>
-                  <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="david@example.com" className="w-full bg-[#061022] border border-[#1a2c4e] rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-white" />
+                  <label className="block text-xs font-bold text-slate-700 mb-2">Email (Optional)</label>
+                  <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="david@example.com" className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900" />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div>
-                  <label className="block text-xs font-bold text-gray-300 mb-2">Assigned Doctor *</label>
-                  <select required value={assignedDoctor} onChange={e => setAssignedDoctor(e.target.value)} className="w-full bg-[#061022] border border-[#1a2c4e] rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-white">
+                  <label className="block text-xs font-bold text-slate-700 mb-2">Assigned Doctor *</label>
+                  <select required value={assignedDoctor} onChange={e => setAssignedDoctor(e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900">
                     <option value="">Select Doctor...</option>
                     <option value="Dr. Smith (Cardiology)">Dr. Smith (Cardiology)</option>
                     <option value="Dr. Jones (Neurology)">Dr. Jones (Neurology)</option>
@@ -401,8 +418,8 @@ export default function ReceptionDashboard() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-300 mb-2">Triage Priority</label>
-                  <select value={triage} onChange={e => setTriage(e.target.value)} className="w-full bg-[#061022] border border-[#1a2c4e] rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-white">
+                  <label className="block text-xs font-bold text-slate-700 mb-2">Triage Priority</label>
+                  <select value={triage} onChange={e => setTriage(e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900">
                     <option value="Normal">Normal Queue</option>
                     <option value="Urgent">Urgent / Priority</option>
                     <option value="Emergency">Emergency</option>
@@ -410,36 +427,51 @@ export default function ReceptionDashboard() {
                 </div>
                 <div className="flex gap-4">
                   <div className="flex-1">
-                    <label className="block text-xs font-bold text-gray-300 mb-2">Age</label>
-                    <input type="number" value={age} onChange={e => setAge(e.target.value)} placeholder="40" className="w-full bg-[#061022] border border-[#1a2c4e] rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-white" />
+                    <label className="block text-xs font-bold text-slate-700 mb-2">Age</label>
+                    <input type="number" value={age} onChange={e => setAge(e.target.value)} placeholder="40" className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900" />
                   </div>
                   <div className="flex-1">
-                    <label className="block text-xs font-bold text-gray-300 mb-2">Gender</label>
-                    <select value={gender} onChange={e => setGender(e.target.value)} className="w-full bg-[#061022] border border-[#1a2c4e] rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-white">
+                    <label className="block text-xs font-bold text-slate-700 mb-2">Gender</label>
+                    <select value={gender} onChange={e => setGender(e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900">
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
                     </select>
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-300 mb-2">Payment Status</label>
-                  <select value={paymentStatus} onChange={e => setPaymentStatus(e.target.value)} className="w-full bg-[#061022] border border-[#1a2c4e] rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-white">
+                  <label className="block text-xs font-bold text-slate-700 mb-2">Payment Status</label>
+                  <select value={paymentStatus} onChange={e => setPaymentStatus(e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900">
                     <option value="Collected $50 (Paid)">Collected $50 (Paid)</option>
                     <option value="Pending">Unpaid / Bill Later</option>
                   </select>
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-gray-300 mb-2">Chief Reason / Symptoms *</label>
-                <input type="text" required value={reason} onChange={e => setReason(e.target.value)} placeholder="Severe back pain, sudden allergic skin rash, high temperature..." className="w-full bg-[#061022] border border-[#1a2c4e] rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-white" />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-2">Weight (kg)</label>
+                  <input type="text" value={vitalsWeight} onChange={e => setVitalsWeight(e.target.value)} placeholder="e.g. 75" className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-2">Blood Pressure (mmHg)</label>
+                  <input type="text" value={vitalsBp} onChange={e => setVitalsBp(e.target.value)} placeholder="e.g. 120/80" className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-2">Temperature (°F/°C)</label>
+                  <input type="text" value={vitalsTemp} onChange={e => setVitalsTemp(e.target.value)} placeholder="e.g. 98.6 °F" className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900" />
+                </div>
               </div>
 
-              <div className="flex justify-end items-center gap-6 pt-4 border-t border-[#1a2c4e]">
-                <button type="button" onClick={() => setIsWalkInFormOpen(false)} className="text-sm font-semibold text-gray-400 hover:text-white transition-colors">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-2">Chief Reason / Symptoms *</label>
+                <input type="text" required value={reason} onChange={e => setReason(e.target.value)} placeholder="Severe back pain, sudden allergic skin rash, high temperature..." className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900" />
+              </div>
+
+              <div className="flex justify-end items-center gap-6 pt-4 border-t border-slate-200">
+                <button type="button" onClick={() => setIsWalkInFormOpen(false)} className="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors">
                   Cancel
                 </button>
-                <button type="submit" disabled={isSubmitting} className="bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold py-3 px-6 rounded-lg transition-colors shadow-lg disabled:opacity-50">
+                <button type="submit" disabled={isSubmitting} className="bg-primary hover:bg-primary-hover text-white text-sm font-bold py-3 px-6 rounded-lg transition-colors shadow-lg disabled:opacity-50">
                   {isSubmitting ? "Processing..." : editingPatient ? "Update Patient Details" : "Generate Token & Check-In"}
                 </button>
               </div>
