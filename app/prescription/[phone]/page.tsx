@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { supabase } from "../../../lib/supabase";
-import { Printer, ArrowLeft } from "lucide-react";
+import { Pill, CheckCircle2, FileText, ArrowLeft, Download, Printer, HeartPulse } from 'lucide-react';
 import Link from "next/link";
 
 export default function PrescriptionPage() {
@@ -75,13 +75,21 @@ export default function PrescriptionPage() {
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start border-b-4 border-emerald-600 pb-6 mb-6 gap-6 sm:gap-0">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
-            <div className="w-16 h-16 bg-white overflow-hidden flex items-center justify-center rounded-xl border-2 border-emerald-100 shrink-0">
-              {/* Hospital Logo */}
-              <img src="/horizon_hospital.jpg" alt="Horizon Hospital Logo" className="w-full h-full object-cover" />
+            <div className="flex items-center gap-3 shrink-0">
+              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-700 text-white">
+                <HeartPulse size={28} strokeWidth={2.5} />
+              </div>
+              <div className="flex flex-col text-left">
+                <span className="text-2xl font-black font-serif leading-none text-emerald-900 tracking-tighter">
+                  HORIZON
+                </span>
+                <span className="text-[10px] font-bold text-emerald-700 tracking-widest uppercase mt-1">
+                  SUPER SPECIALITY HOSPITAL
+                </span>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-extrabold text-[#0B1B36] tracking-tight">HORIZON <span className="font-light">SUPER SPECIALITY</span> HOSPITAL</h1>
-              <div className="text-[11px] text-gray-500 mt-1 space-y-0.5 font-medium">
+            <div className="mt-2 sm:mt-0 sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-emerald-200">
+              <div className="text-[11px] text-gray-500 space-y-0.5 font-medium text-center sm:text-left">
                 <p>123, HealthCare Road, Banjara Hills, Hyderabad, Telangana - 500034</p>
                 <p>Phone: +91 40 1234 5678 | Email: info@horizonhospital.com</p>
                 <p>Website: www.horizonhospital.com</p>
