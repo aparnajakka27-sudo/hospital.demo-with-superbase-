@@ -31,7 +31,8 @@ export default function StaffAdminPage() {
   const handleAddStaff = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const { error } = await supabase.from('staff').insert([{ ...newStaff, status: 'Active' }]);
+      const { name, role, department, shift, phone } = newStaff;
+      const { error } = await supabase.from('staff').insert([{ name, role, department, shift, phone, status: 'Active' }]);
       if (error) throw error;
       setIsModalOpen(false);
       setNewStaff({ name: '', role: '', department: '', shift: '', phone: '', salary: '', experience: '' });

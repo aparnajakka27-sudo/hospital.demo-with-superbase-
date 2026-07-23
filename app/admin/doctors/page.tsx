@@ -90,10 +90,7 @@ export default function DoctorsAdminPage() {
           "Specialization": newDoc.specialization,
           "User Id": newDoc.userId,
           "Password": newDoc.password,
-          "Room": newDoc.room,
-          "Experience": newDoc.experience,
-          "Salary": newDoc.salary,
-          "Available_Days": newDoc.available_days
+          "Room": newDoc.room
         }
       ]);
 

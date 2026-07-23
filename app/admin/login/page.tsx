@@ -72,10 +72,10 @@ export default function AdminLogin() {
             <Activity className="text-emerald-500 w-12 h-12" />
           </div>
         </div>
-        <h2 className="mt-2 text-center text-3xl font-extrabold text-white sm:text-slate-900">
+        <h2 className="mt-2 text-center text-3xl font-extrabold text-slate-900">
           {isResetView ? 'Reset Password' : 'Admin Portal Login'}
         </h2>
-        <p className="mt-2 text-center text-sm text-slate-300 sm:text-slate-500">
+        <p className="mt-2 text-center text-sm text-slate-500">
           {isResetView ? 'Enter your email to receive a reset link' : 'Secure access for HORIZON authorized personnel'}
         </p>
       </div>
