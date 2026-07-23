@@ -188,7 +188,7 @@ export default function AdminDashboardPage() {
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm font-medium text-slate-500 mb-1">Today's Revenue</p>
-              <h3 className="text-2xl font-bold text-slate-900">${kpi.revenue.toLocaleString()}</h3>
+              <h3 className="text-2xl font-bold text-slate-900">₹{kpi.revenue.toLocaleString()}</h3>
             </div>
             <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg">
               <TrendingUp size={20} />
@@ -284,10 +284,10 @@ export default function AdminDashboardPage() {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} tickFormatter={(value) => `$${value}`} />
+                <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} tickFormatter={(value) => `₹${value}`} />
                 <Tooltip 
                   contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                  formatter={(value: any) => [`$${value}`, 'Revenue']}
+                  formatter={(value: any) => [`₹${value}`, 'Revenue']}
                 />
                 <Area type="monotone" dataKey="revenue" stroke="#0a4d40" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
               </AreaChart>
@@ -403,7 +403,7 @@ export default function AdminDashboardPage() {
           <div className="space-y-4">
             <div className="flex justify-between items-center pb-3 border-b border-slate-100">
               <span className="text-sm text-slate-600">Prescription Revenue</span>
-              <span className="text-sm font-bold text-slate-900">${pharmacyStats.sales.toLocaleString()}</span>
+              <span className="text-sm font-bold text-slate-900">₹{pharmacyStats.sales.toLocaleString()}</span>
             </div>
             <div className="flex justify-between items-center pb-3 border-b border-slate-100">
               <span className="text-sm text-slate-600">Fulfilled Count</span>

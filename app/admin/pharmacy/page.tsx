@@ -205,7 +205,7 @@ export default function PharmacyAdminPage() {
           <div className="p-3 bg-blue-50 text-blue-600 rounded-lg"><ArrowRightLeft size={24} /></div>
           <div>
             <p className="text-sm text-slate-500">Today's Est. Sales</p>
-            <p className="text-xl font-bold text-slate-900">${stats.sales.toLocaleString()}</p>
+            <p className="text-xl font-bold text-slate-900">₹{stats.sales.toLocaleString()}</p>
           </div>
         </div>
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
@@ -232,7 +232,7 @@ export default function PharmacyAdminPage() {
                 <th className="px-6 py-4">Medicine Name</th>
                 <th className="px-6 py-4">Category</th>
                 <th className="px-6 py-4">Stock Qty</th>
-                <th className="px-6 py-4">Unit Price</th>
+                <th className="px-6 py-4">Unit Price (₹)</th>
                 <th className="px-6 py-4">Status</th>
                 <th className="px-6 py-4 text-right">Actions</th>
               </tr>
@@ -255,7 +255,7 @@ export default function PharmacyAdminPage() {
                       <td className="px-6 py-4 font-semibold text-slate-900">{med.name}</td>
                       <td className="px-6 py-4 text-slate-500">{med.category || 'General'}</td>
                       <td className="px-6 py-4 font-mono font-medium">{med.stock_quantity}</td>
-                      <td className="px-6 py-4">${Number(med.unit_price).toFixed(2)}</td>
+                      <td className="px-6 py-4">₹{Number(med.unit_price).toFixed(2)}</td>
                       <td className="px-6 py-4">
                         <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium 
                           ${isOut ? 'bg-red-100 text-red-800' : isLow ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}`}>
@@ -330,7 +330,7 @@ export default function PharmacyAdminPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Unit Price ($)</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Unit Price (₹)</label>
                     <input 
                       required 
                       type="number" 

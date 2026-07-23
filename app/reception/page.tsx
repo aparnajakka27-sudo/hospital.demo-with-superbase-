@@ -29,7 +29,7 @@ export default function ReceptionDashboard() {
   const [triage, setTriage] = useState("Normal");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("Male");
-  const [paymentStatus, setPaymentStatus] = useState("Collected $50 (Paid)");
+  const [paymentStatus, setPaymentStatus] = useState("Collected ₹500 (Paid)");
   const [reason, setReason] = useState("");
   const [vitalsWeight, setVitalsWeight] = useState("");
   const [vitalsBp, setVitalsBp] = useState("");
@@ -119,7 +119,7 @@ export default function ReceptionDashboard() {
       setTriage(patientToEdit.triage_priority || "Normal");
       setAge(patientToEdit.age ? patientToEdit.age.toString() : "");
       setGender(patientToEdit.gender || "Male");
-      setPaymentStatus(patientToEdit.payment_status || "Collected $50 (Paid)");
+      setPaymentStatus(patientToEdit.payment_status || "Collected ₹500 (Paid)");
       setReason(patientToEdit.reason || "");
       setVitalsWeight(patientToEdit.weight || "");
       setVitalsBp(patientToEdit["Blood Pressure"] || "");
@@ -134,7 +134,7 @@ export default function ReceptionDashboard() {
       setTriage("Normal");
       setAge("");
       setGender("Male");
-      setPaymentStatus("Collected $50 (Paid)");
+      setPaymentStatus("Collected ₹500 (Paid)");
       setReason("");
       setVitalsWeight("");
       setVitalsBp("");
@@ -487,7 +487,7 @@ export default function ReceptionDashboard() {
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-2">Payment Status</label>
                   <select value={paymentStatus} onChange={e => setPaymentStatus(e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900">
-                    <option value="Collected $50 (Paid)">Collected $50 (Paid)</option>
+                    <option value="Collected ₹500 (Paid)">Collected ₹500 (Paid)</option>
                     <option value="Pending">Unpaid / Bill Later</option>
                   </select>
                 </div>
