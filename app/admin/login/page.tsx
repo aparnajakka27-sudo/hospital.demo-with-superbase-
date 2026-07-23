@@ -10,6 +10,8 @@ export default function AdminLogin() {
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [successMsg, setSuccessMsg] = useState<string | null>(null)
+  const [isResetView, setIsResetView] = useState(false)
   const router = useRouter()
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -28,12 +30,32 @@ export default function AdminLogin() {
       }
       
       if (data.session) {
-        // Set a marker for our middleware/layout if needed
         localStorage.setItem("admin_session", "true")
         router.push('/admin')
       }
     } catch (err: any) {
       setError(err.message || 'An error occurred during login.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setError(null)
+    setSuccessMsg(null)
+    
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + '/reset-password',
+      })
+      
+      if (error) throw error
+      
+      setSuccessMsg('Password reset link has been sent to your email.')
+    } catch (err: any) {
+      setError(err.message || 'Failed to send reset email.')
     } finally {
       setIsLoading(false)
     }
@@ -51,10 +73,10 @@ export default function AdminLogin() {
           </div>
         </div>
         <h2 className="mt-2 text-center text-3xl font-extrabold text-white sm:text-slate-900">
-          Admin Portal Login
+          {isResetView ? 'Reset Password' : 'Admin Portal Login'}
         </h2>
         <p className="mt-2 text-center text-sm text-slate-300 sm:text-slate-500">
-          Secure access for HORIZON authorized personnel
+          {isResetView ? 'Enter your email to receive a reset link' : 'Secure access for HORIZON authorized personnel'}
         </p>
       </div>
 
@@ -68,82 +90,143 @@ export default function AdminLogin() {
             </div>
           )}
 
-          <form className="space-y-6" onSubmit={handleLogin}>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Email address
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-slate-400" />
-                </div>
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg shadow-sm placeholder-slate-400 text-slate-900 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm transition-colors"
-                  placeholder="admin@horizon.com"
-                />
-              </div>
+          {successMsg && (
+            <div className="mb-6 bg-emerald-50 border border-emerald-200 text-emerald-600 rounded-lg p-4 text-sm flex items-start gap-3">
+              <Activity size={18} className="mt-0.5 shrink-0" />
+              <span>{successMsg}</span>
             </div>
+          )}
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-slate-400" />
-                </div>
-                <input
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg shadow-sm placeholder-slate-400 text-slate-900 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm transition-colors"
-                  placeholder="••••••••"
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-slate-300 rounded cursor-pointer"
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-slate-900 cursor-pointer">
-                  Remember me
+          {isResetView ? (
+            <form className="space-y-6" onSubmit={handleResetPassword}>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Email address
                 </label>
-              </div>
-
-              <div className="text-sm">
-                <a href="#" className="font-medium text-emerald-600 hover:text-emerald-500">
-                  Forgot password?
-                </a>
-              </div>
-            </div>
-
-            <div>
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#0a4d40] hover:bg-[#073a30] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
-              >
-                {isLoading ? (
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                    Authenticating...
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Mail className="h-5 w-5 text-slate-400" />
                   </div>
-                ) : (
-                  "Sign in to Dashboard"
-                )}
-              </button>
-            </div>
-          </form>
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="appearance-none block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg shadow-sm placeholder-slate-400 text-slate-900 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm transition-colors"
+                    placeholder="admin@horizon.com"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#0a4d40] hover:bg-[#073a30] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {isLoading ? 'Sending...' : 'Send Reset Link'}
+                </button>
+              </div>
+
+              <div className="text-sm text-center mt-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsResetView(false)
+                    setError(null)
+                    setSuccessMsg(null)
+                  }}
+                  className="font-medium text-emerald-600 hover:text-emerald-500"
+                >
+                  Back to sign in
+                </button>
+              </div>
+            </form>
+          ) : (
+            <form className="space-y-6" onSubmit={handleLogin}>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Email address
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Mail className="h-5 w-5 text-slate-400" />
+                  </div>
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="appearance-none block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg shadow-sm placeholder-slate-400 text-slate-900 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm transition-colors"
+                    placeholder="admin@horizon.com"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Password
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Lock className="h-5 w-5 text-slate-400" />
+                  </div>
+                  <input
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="appearance-none block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg shadow-sm placeholder-slate-400 text-slate-900 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm transition-colors"
+                    placeholder="••••••••"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <input
+                    id="remember-me"
+                    name="remember-me"
+                    type="checkbox"
+                    className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-slate-300 rounded cursor-pointer"
+                  />
+                  <label htmlFor="remember-me" className="ml-2 block text-sm text-slate-900 cursor-pointer">
+                    Remember me
+                  </label>
+                </div>
+
+                <div className="text-sm">
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      setIsResetView(true)
+                      setError(null)
+                    }}
+                    className="font-medium text-emerald-600 hover:text-emerald-500"
+                  >
+                    Forgot password?
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#0a4d40] hover:bg-[#073a30] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {isLoading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                      Authenticating...
+                    </div>
+                  ) : (
+                    "Sign in to Dashboard"
+                  )}
+                </button>
+              </div>
+            </form>
+          )}
         </div>
         
         <p className="text-center text-slate-500 text-xs mt-8">
