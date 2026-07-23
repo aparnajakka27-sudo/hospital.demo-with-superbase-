@@ -7,6 +7,7 @@ export default function PatientsAdminPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [patients, setPatients] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [filterGender, setFilterGender] = useState('All');
 
   useEffect(() => {
     fetchPatients();
@@ -42,11 +43,16 @@ export default function PatientsAdminPage() {
     }
   };
 
-  const filteredPatients = patients.filter(p => 
-    p.Name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    p.Phone?.includes(searchTerm) ||
-    p.token_number?.toString().includes(searchTerm)
-  );
+  const filteredPatients = patients.filter(p => {
+    const matchesSearch = p.Name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          p.Phone?.includes(searchTerm) ||
+                          p.token_number?.toString().includes(searchTerm);
+                          
+    const pGender = p.gender || "N/A";
+    const matchesGender = filterGender === 'All' || pGender === filterGender;
+    
+    return matchesSearch && matchesGender;
+  });
 
   return (
     <div className="space-y-6">
@@ -68,9 +74,16 @@ export default function PatientsAdminPage() {
             className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:bg-white focus:border-emerald-500 outline-none transition-colors"
           />
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 border border-slate-200 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">
-          <Filter size={16} /> Filter
-        </button>
+        <select
+          value={filterGender}
+          onChange={(e) => setFilterGender(e.target.value)}
+          className="px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-emerald-500 text-slate-700 font-medium"
+        >
+          <option value="All">All Genders</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">

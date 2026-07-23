@@ -15,6 +15,8 @@ import { supabase } from '../../../lib/supabase'
 export default function PharmacyAdminPage() {
   const [inventory, setInventory] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [filterStock, setFilterStock] = useState('All');
+  const [searchTerm, setSearchTerm] = useState('');
   const [stats, setStats] = useState({ sales: 0, lowStock: 0, total: 0 });
   
   // Modal State
@@ -36,6 +38,18 @@ export default function PharmacyAdminPage() {
   useEffect(() => {
     fetchData();
   }, [timeRange]);
+
+  const filteredInventory = inventory.filter(med => {
+    const matchesSearch = med.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          med.category?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    let matchesStock = true;
+    if (filterStock === 'In Stock') matchesStock = med.stock_quantity > 20;
+    if (filterStock === 'Low Stock') matchesStock = med.stock_quantity > 0 && med.stock_quantity <= 20;
+    if (filterStock === 'Out of Stock') matchesStock = med.stock_quantity === 0;
+
+    return matchesSearch && matchesStock;
+  });
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -224,6 +238,29 @@ export default function PharmacyAdminPage() {
         </div>
       </div>
 
+      <div className="flex gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+          <input 
+            type="text" 
+            placeholder="Search inventory..." 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-emerald-500 transition-colors" 
+          />
+        </div>
+        <select
+          value={filterStock}
+          onChange={(e) => setFilterStock(e.target.value)}
+          className="px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-emerald-500 text-slate-700 font-medium"
+        >
+          <option value="All">All Stock</option>
+          <option value="In Stock">In Stock</option>
+          <option value="Low Stock">Low Stock</option>
+          <option value="Out of Stock">Out of Stock</option>
+        </select>
+      </div>
+
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm text-slate-600">
@@ -242,12 +279,12 @@ export default function PharmacyAdminPage() {
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center text-slate-500">Loading live inventory from Supabase...</td>
                 </tr>
-              ) : inventory.length === 0 ? (
+              ) : filteredInventory.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-slate-500">No medicines found in the inventory.</td>
+                  <td colSpan={6} className="px-6 py-12 text-center text-slate-500">No medicines found.</td>
                 </tr>
               ) : (
-                inventory.map((med) => {
+                filteredInventory.map((med) => {
                   const isLow = med.stock_quantity <= (med.reorder_level || 10);
                   const isOut = med.stock_quantity === 0;
                   return (

@@ -8,6 +8,7 @@ export default function AppointmentsAdminPage() {
   const [appointments, setAppointments] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedApt, setSelectedApt] = useState<any>(null);
+  const [filterStatus, setFilterStatus] = useState('All');
 
   useEffect(() => {
     fetchAppointments();
@@ -30,11 +31,16 @@ export default function AppointmentsAdminPage() {
     }
   };
 
-  const filteredAppointments = appointments.filter(apt => 
-    apt.Name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    apt.Doctor?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    apt.token_number?.toString().includes(searchTerm)
-  );
+  const filteredAppointments = appointments.filter(apt => {
+    const matchesSearch = apt.Name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          apt.Doctor?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          apt.token_number?.toString().includes(searchTerm);
+                          
+    const status = apt.queue_status || 'Waiting';
+    const matchesStatus = filterStatus === 'All' || status === filterStatus;
+    
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <div className="space-y-6">
@@ -59,9 +65,16 @@ export default function AppointmentsAdminPage() {
             className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-emerald-500 transition-colors" 
           />
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 border border-slate-200 text-slate-600 rounded-lg text-sm hover:bg-slate-50 transition-colors">
-          <Filter size={16} /> Filters
-        </button>
+        <select 
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value)}
+          className="px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-emerald-500 text-slate-700 font-medium"
+        >
+          <option value="All">All Statuses</option>
+          <option value="Waiting">Waiting</option>
+          <option value="In Consultation">In Consultation</option>
+          <option value="Completed">Completed</option>
+        </select>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
