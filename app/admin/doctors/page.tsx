@@ -27,7 +27,6 @@ export default function DoctorsAdminPage() {
   const [departments, setDepartments] = useState<any[]>([]);
   const [showPassword, setShowPassword] = useState(false);
   
-  // New Doctor Form State
   const [newDoc, setNewDoc] = useState({
     name: '',
     specialization: '',
@@ -36,7 +35,8 @@ export default function DoctorsAdminPage() {
     room: '',
     experience: '',
     salary: '',
-    available_days: 'Mon-Fri'
+    available_days: 'Mon-Fri',
+    is_head: false
   });
 
   useEffect(() => {
@@ -93,7 +93,8 @@ export default function DoctorsAdminPage() {
         "Salary": newDoc.salary,
         "Room": newDoc.room,
         "Available_Days": newDoc.available_days,
-        "Status": "Available"
+        "Status": "Available",
+        "Is_Head": newDoc.is_head
       };
 
       if (isEditing) {
@@ -107,7 +108,7 @@ export default function DoctorsAdminPage() {
       // Success
       setIsModalOpen(false);
       setIsEditing(false);
-      setNewDoc({ name: '', specialization: '', userId: '', password: '', room: '', experience: '', salary: '', available_days: 'Mon-Fri' });
+      setNewDoc({ name: '', specialization: '', userId: '', password: '', room: '', experience: '', salary: '', available_days: 'Mon-Fri', is_head: false });
       fetchData(); // Refresh list
     } catch (err: any) {
       setFormError(err.message || 'Failed to add doctor');
@@ -145,7 +146,7 @@ export default function DoctorsAdminPage() {
         <button 
           onClick={() => {
             setIsEditing(false);
-            setNewDoc({ name: '', specialization: '', userId: '', password: '', room: '', experience: '', salary: '', available_days: 'Mon-Fri' });
+            setNewDoc({ name: '', specialization: '', userId: '', password: '', room: '', experience: '', salary: '', available_days: 'Mon-Fri', is_head: false });
             setIsModalOpen(true);
           }}
           className="flex items-center gap-2 bg-[#0a4d40] hover:bg-[#073a30] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm"
@@ -327,6 +328,22 @@ export default function DoctorsAdminPage() {
                     />
                   </div>
                 </div>
+                
+                <div className="pt-2">
+                  <label className="flex items-center gap-3 cursor-pointer p-3 bg-emerald-50 rounded-lg border border-emerald-100">
+                    <input 
+                      type="checkbox" 
+                      checked={newDoc.is_head}
+                      onChange={e => setNewDoc({...newDoc, is_head: e.target.checked})}
+                      className="w-5 h-5 text-emerald-600 rounded border-emerald-300 focus:ring-emerald-500 cursor-pointer"
+                    />
+                    <div className="flex flex-col">
+                      <span className="text-sm font-bold text-emerald-900">Head of Department</span>
+                      <span className="text-xs text-emerald-700">Designate this doctor as the main HOD for their specialization.</span>
+                    </div>
+                  </label>
+                </div>
+
                 <div className="pt-4 border-t border-slate-100 mt-2">
                   <h3 className="text-sm font-semibold text-slate-800 mb-3">Login Credentials</h3>
                   <div className="space-y-4">
@@ -398,7 +415,12 @@ export default function DoctorsAdminPage() {
                   {(selectedDoctor.Name || selectedDoctor['Doctor Name'] || selectedDoctor.name || 'U').split(' ').map((n: string) => n[0]).join('').replace('D', '').replace('.', '').substring(0, 2)}
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-slate-900">{selectedDoctor.Name || selectedDoctor['Doctor Name'] || selectedDoctor.name}</h2>
+                  <h2 className="text-xl font-bold text-slate-900 flex items-center gap-3">
+                    {selectedDoctor.Name || selectedDoctor['Doctor Name'] || selectedDoctor.name}
+                    {selectedDoctor.Is_Head && (
+                      <span className="px-2.5 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full uppercase tracking-wide">Head of Dept</span>
+                    )}
+                  </h2>
                   <p className="text-sm font-medium text-emerald-600">{selectedDoctor.Deparment || selectedDoctor.Specialization || selectedDoctor.specialty}</p>
                 </div>
               </div>
@@ -455,7 +477,8 @@ export default function DoctorsAdminPage() {
                     room: selectedDoctor.Room || '',
                     experience: selectedDoctor.Experience || '',
                     salary: selectedDoctor.Salary || '',
-                    available_days: selectedDoctor.Available_Days || 'Mon-Fri'
+                    available_days: selectedDoctor.Available_Days || 'Mon-Fri',
+                    is_head: selectedDoctor.Is_Head || false
                   });
                   setIsEditing(true);
                   setSelectedDoctor(null);
