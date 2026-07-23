@@ -29,6 +29,8 @@ export default function ReceptionDashboard() {
   const [vitalsWeight, setVitalsWeight] = useState("");
   const [vitalsBp, setVitalsBp] = useState("");
   const [vitalsTemp, setVitalsTemp] = useState("");
+  const [weightUnit, setWeightUnit] = useState("kg");
+  const [tempUnit, setTempUnit] = useState("°F");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -143,9 +145,9 @@ export default function ReceptionDashboard() {
         triage_priority: triage,
         payment_status: paymentStatus,
         reason: reason,
-        weight: vitalsWeight,
-        "Blood Pressure": vitalsBp,
-        temperature: vitalsTemp,
+        weight: vitalsWeight ? `${vitalsWeight.replace(/kg|lbs/gi, '').trim()} ${weightUnit}` : "",
+        "Blood Pressure": vitalsBp ? `${vitalsBp.replace(/mmHg/gi, '').trim()} mmHg` : "",
+        temperature: vitalsTemp ? `${vitalsTemp.replace(/°F|°C|F|C/gi, '').trim()} ${tempUnit}` : "",
         queue_status: "Waiting",
       };
       
@@ -449,16 +451,33 @@ export default function ReceptionDashboard() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-2">Weight (kg)</label>
-                  <input type="text" value={vitalsWeight} onChange={e => setVitalsWeight(e.target.value)} placeholder="e.g. 75" className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900" />
+                  <label className="block text-xs font-bold text-slate-700 mb-2">Weight</label>
+                  <div className="flex">
+                    <input type="text" value={vitalsWeight} onChange={e => setVitalsWeight(e.target.value)} placeholder="e.g. 75" className="w-full bg-white border border-slate-300 rounded-l-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900" />
+                    <select value={weightUnit} onChange={e => setWeightUnit(e.target.value)} className="bg-slate-50 border border-l-0 border-slate-300 rounded-r-lg px-2 text-sm text-slate-700 focus:outline-none cursor-pointer">
+                      <option value="kg">kg</option>
+                      <option value="lbs">lbs</option>
+                    </select>
+                  </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-2">Blood Pressure (mmHg)</label>
-                  <input type="text" value={vitalsBp} onChange={e => setVitalsBp(e.target.value)} placeholder="e.g. 120/80" className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900" />
+                  <label className="block text-xs font-bold text-slate-700 mb-2">Blood Pressure</label>
+                  <div className="flex">
+                    <input type="text" value={vitalsBp} onChange={e => setVitalsBp(e.target.value)} placeholder="e.g. 120/80" className="w-full bg-white border border-slate-300 rounded-l-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900" />
+                    <div className="bg-slate-50 border border-l-0 border-slate-300 rounded-r-lg px-3 py-3 text-sm text-slate-700 flex items-center">
+                      mmHg
+                    </div>
+                  </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-2">Temperature (°F/°C)</label>
-                  <input type="text" value={vitalsTemp} onChange={e => setVitalsTemp(e.target.value)} placeholder="e.g. 98.6 °F" className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900" />
+                  <label className="block text-xs font-bold text-slate-700 mb-2">Temperature</label>
+                  <div className="flex">
+                    <input type="text" value={vitalsTemp} onChange={e => setVitalsTemp(e.target.value)} placeholder="e.g. 98.6" className="w-full bg-white border border-slate-300 rounded-l-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900" />
+                    <select value={tempUnit} onChange={e => setTempUnit(e.target.value)} className="bg-slate-50 border border-l-0 border-slate-300 rounded-r-lg px-2 text-sm text-slate-700 focus:outline-none cursor-pointer">
+                      <option value="°F">°F</option>
+                      <option value="°C">°C</option>
+                    </select>
+                  </div>
                 </div>
               </div>
 
