@@ -22,6 +22,7 @@ export default function DoctorsAdminPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
+  const [selectedDoctor, setSelectedDoctor] = useState<any>(null);
   
   // New Doctor Form State
   const [newDoc, setNewDoc] = useState({
@@ -201,6 +202,9 @@ export default function DoctorsAdminPage() {
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">
+                          <button onClick={() => setSelectedDoctor(doc)} className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="View Details">
+                            <Eye size={18} />
+                          </button>
                           <button onClick={() => deleteDoctor(doc.id)} className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Remove Doctor">
                             <Trash2 size={18} />
                           </button>
@@ -323,6 +327,59 @@ export default function DoctorsAdminPage() {
                 {isSubmitting ? (
                   <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> Saving...</>
                 ) : 'Save Doctor'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Doctor Details Modal */}
+      {selectedDoctor && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={() => setSelectedDoctor(null)}></div>
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg relative z-10 overflow-hidden flex flex-col">
+            <div className="flex justify-between items-center p-6 border-b border-slate-100 shrink-0 bg-slate-50">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xl">
+                  {(selectedDoctor['Doctor Name'] || selectedDoctor.name || 'U').split(' ').map((n: string) => n[0]).join('').replace('D', '').replace('.', '').substring(0, 2)}
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-slate-900">{selectedDoctor['Doctor Name'] || selectedDoctor.name}</h2>
+                  <p className="text-sm font-medium text-emerald-600">{selectedDoctor.Specialization || selectedDoctor.specialty}</p>
+                </div>
+              </div>
+              <button onClick={() => setSelectedDoctor(null)} className="text-slate-400 hover:text-slate-700 p-1 rounded-md hover:bg-slate-200 transition-colors">
+                <X size={24} />
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Room / Cabin</p>
+                  <p className="text-slate-900 font-bold">{selectedDoctor.Room || 'N/A'}</p>
+                </div>
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Status</p>
+                  <p className="text-emerald-600 font-bold">{selectedDoctor.Status || 'Active'}</p>
+                </div>
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">User ID (Login)</p>
+                  <p className="text-slate-900 font-mono font-medium">{selectedDoctor['User Id'] || 'N/A'}</p>
+                </div>
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Total Patients</p>
+                  <p className="text-slate-900 font-bold">{patientCounts[selectedDoctor['Doctor Name'] || selectedDoctor.name] || 0}</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-5 border-t border-slate-100 bg-slate-50 shrink-0 flex justify-end">
+              <button 
+                onClick={() => setSelectedDoctor(null)}
+                className="px-5 py-2.5 text-slate-700 bg-white border border-slate-300 rounded-lg text-sm font-bold hover:bg-slate-50 transition-colors shadow-sm"
+              >
+                Close Profile
               </button>
             </div>
           </div>
