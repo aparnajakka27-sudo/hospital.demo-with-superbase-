@@ -265,7 +265,7 @@ export default function AdminDashboardPage() {
                 <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} tickFormatter={(value) => `$${value}`} />
                 <Tooltip 
                   contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                  formatter={(value: number) => [`$${value}`, 'Revenue']}
+                  formatter={(value: any) => [`$${value}`, 'Revenue']}
                 />
                 <Area type="monotone" dataKey="revenue" stroke="#0a4d40" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
               </AreaChart>
@@ -293,7 +293,7 @@ export default function AdminDashboardPage() {
                   ))}
                 </Pie>
                 <Tooltip 
-                  formatter={(value: number) => [value, 'Appointments']}
+                  formatter={(value: any) => [value, 'Appointments']}
                   contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                 />
               </PieChart>
