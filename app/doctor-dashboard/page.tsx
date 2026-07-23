@@ -549,10 +549,14 @@ Wishing you a speedy recovery. 💙`;
                                     className="w-full flex justify-between items-center p-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left font-bold text-gray-800"
                                   >
                                     <div className="flex items-center gap-3">
+                                      <FileText size={16} className="text-blue-500" />
                                       <span className="text-primary">{hist.Date}</span>
-                                      <span className="text-xs text-gray-500 font-normal">Dr. {hist.Doctor}</span>
+                                      <span className="text-xs text-gray-500 font-normal">{hist.Doctor && hist.Doctor.startsWith('Dr.') ? hist.Doctor : `Dr. ${hist.Doctor}`}</span>
                                     </div>
-                                    <ChevronDown size={16} className={`text-gray-400 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-[10px] text-gray-400 font-medium hidden sm:inline-block">{isExpanded ? 'Close File' : 'Open File'}</span>
+                                      <ChevronDown size={16} className={`text-gray-400 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
+                                    </div>
                                   </button>
                                   
                                   {isExpanded && (
