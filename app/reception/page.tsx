@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Users, UserPlus, UserMinus, Search, Filter, Phone, Activity, ArrowLeft, Calendar, Bell, Edit, Trash2, CheckCircle, XCircle, Stethoscope, Clock } from "lucide-react";
+import { Users, UserPlus, UserMinus, Search, Filter, Phone, Activity, ArrowLeft, Calendar, Bell, Edit, Trash2, CheckCircle, XCircle, Stethoscope, Clock, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 import { supabase } from "../../lib/supabase";
 
@@ -20,6 +20,12 @@ export default function ReceptionDashboard() {
   const [doctorsList, setDoctorsList] = useState<any[]>([]);
   const [isDoctorsLoading, setIsDoctorsLoading] = useState(false);
   const [doctorSearchQuery, setDoctorSearchQuery] = useState("");
+
+  // Issue Modal State
+  const [isIssueModalOpen, setIsIssueModalOpen] = useState(false);
+  const [issueTarget, setIssueTarget] = useState("Admin");
+  const [issueMessage, setIssueMessage] = useState("");
+  const [isSubmittingIssue, setIsSubmittingIssue] = useState(false);
 
   // Form State
   const [editingPatient, setEditingPatient] = useState<any>(null);
@@ -108,6 +114,25 @@ export default function ReceptionDashboard() {
     } catch (err) {
       console.log("Error updating doctor status:", err);
       alert("Error updating status.");
+    }
+  };
+
+  const handleIssueSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!issueMessage) return;
+    setIsSubmittingIssue(true);
+    try {
+      const { error } = await supabase.from('Issues').insert([
+        { source: 'Reception', target: issueTarget, message: issueMessage }
+      ]);
+      if (error) throw error;
+      setIssueMessage("");
+      setIsIssueModalOpen(false);
+      alert("Complaint/Issue sent successfully to " + issueTarget);
+    } catch (err: any) {
+      alert("Error sending issue: " + err.message);
+    } finally {
+      setIsSubmittingIssue(false);
     }
   };
 
@@ -345,6 +370,12 @@ export default function ReceptionDashboard() {
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-3">
             <button 
+              onClick={() => setIsIssueModalOpen(true)}
+              className="flex items-center gap-2 bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 px-5 py-2.5 rounded-full font-semibold transition-all shadow-sm active:scale-95 whitespace-nowrap"
+            >
+              <AlertTriangle size={18} /> Raise Issue
+            </button>
+            <button 
               onClick={() => {
                 setIsRosterOpen(true);
                 fetchDoctors();
@@ -565,7 +596,8 @@ export default function ReceptionDashboard() {
               </div>
             </form>
           </div>
-        )}
+        </div>
+      )}
 
         {/* Doctor Roster Modal */}
         {isRosterOpen && (

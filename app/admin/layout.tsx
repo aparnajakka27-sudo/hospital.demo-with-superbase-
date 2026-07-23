@@ -43,6 +43,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [profileOpen, setProfileOpen] = useState(false);
   const [adminEmail, setAdminEmail] = useState('Admin User');
   const [isChecking, setIsChecking] = useState(true);
+  
+  // Issues/Notifications State
+  const [issues, setIssues] = useState<any[]>([]);
+  const [issuesOpen, setIssuesOpen] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -67,6 +71,29 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       }
     };
     checkAuth();
+
+    // Fetch and subscribe to Admin Issues
+    const fetchIssues = async () => {
+      const { data, error } = await supabase
+        .from('Issues')
+        .select('*')
+        .eq('target', 'Admin')
+        .order('created_at', { ascending: false });
+      if (!error && data) {
+        setIssues(data);
+      }
+    };
+    fetchIssues();
+
+    const channel = supabase.channel('admin_issues')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'Issues', filter: "target=eq.Admin" }, (payload) => {
+        setIssues(prev => [payload.new, ...prev]);
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [pathname, router]);
 
   const handleLogout = async () => {
@@ -171,10 +198,50 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
 
           <div className="flex items-center gap-3 sm:gap-5">
-            <button className="relative p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors">
-              <Bell size={20} />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-            </button>
+            <div className="relative">
+              <button 
+                onClick={() => setIssuesOpen(!issuesOpen)}
+                className="relative p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors"
+              >
+                <Bell size={20} />
+                {issues.length > 0 && (
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+                )}
+              </button>
+
+              {issuesOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setIssuesOpen(false)}></div>
+                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden z-50">
+                    <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                      <h3 className="font-bold text-slate-800 text-sm">Notifications</h3>
+                      <span className="bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">{issues.length}</span>
+                    </div>
+                    <div className="max-h-[300px] overflow-y-auto">
+                      {issues.length === 0 ? (
+                        <div className="p-4 text-center text-sm text-slate-500">No new notifications.</div>
+                      ) : (
+                        <div className="divide-y divide-slate-100">
+                          {issues.map(issue => (
+                            <div key={issue.id} className="p-4 hover:bg-slate-50 transition-colors">
+                              <div className="flex justify-between items-start mb-1">
+                                <span className={`text-xs font-bold px-2 py-0.5 rounded-md ${issue.source === 'Pharmacy' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'}`}>
+                                  From: {issue.source}
+                                </span>
+                                <span className="text-[10px] font-semibold text-slate-400">
+                                  {new Date(issue.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                </span>
+                              </div>
+                              <p className="text-sm text-slate-700 font-medium">{issue.message}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
 
             <div className="h-6 w-px bg-slate-200 hidden sm:block"></div>
 

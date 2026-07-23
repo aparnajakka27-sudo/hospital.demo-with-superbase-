@@ -177,10 +177,19 @@ export default function PharmacyDashboard() {
                   ></textarea>
                 </div>
                 <button 
-                  onClick={() => {
-                    alert(`Issue successfully sent to ${issueType === 'Admin' ? 'Admin Dashboard' : "Doctor's Desk"}:\n\n${issueMessage}`);
-                    setIssueModalOpen(false);
-                    setIssueMessage('');
+                  onClick={async () => {
+                    if (!issueMessage.trim()) return;
+                    try {
+                      const { error } = await supabase.from('Issues').insert([
+                        { source: 'Pharmacy', target: issueType, message: issueMessage }
+                      ]);
+                      if (error) throw error;
+                      alert(`Issue successfully sent to ${issueType === 'Admin' ? 'Admin Dashboard' : "Doctor's Desk"}!`);
+                      setIssueModalOpen(false);
+                      setIssueMessage('');
+                    } catch (err: any) {
+                      alert("Error sending issue: " + err.message);
+                    }
                   }}
                   disabled={!issueMessage.trim()}
                   className="w-full bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white font-bold py-2.5 rounded-lg transition-colors text-sm"

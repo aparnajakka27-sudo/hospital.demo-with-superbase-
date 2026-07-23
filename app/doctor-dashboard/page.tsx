@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useDoctorAuth } from "../../context/DoctorAuthContext";
-import { Stethoscope, ChevronDown, CheckCircle2, User, Activity, FileText, ArrowLeft, Send, Save, History, Phone, AlertCircle, MessageSquare } from "lucide-react";
+import { Stethoscope, ChevronDown, CheckCircle2, User, Activity, FileText, ArrowLeft, Send, Save, History, Phone, AlertCircle, MessageSquare, Bell } from "lucide-react";
 import Link from "next/link";
 import { supabase } from "../../lib/supabase";
 
@@ -30,6 +30,10 @@ export default function DoctorDashboard() {
   const [medicines, setMedicines] = useState<any[]>([]);
   const [isSending, setIsSending] = useState(false);
 
+  // Issues / Notifications State
+  const [issues, setIssues] = useState<any[]>([]);
+  const [issuesOpen, setIssuesOpen] = useState(false);
+
   const today = new Date().toISOString().split('T')[0];
 
   // Authentication Guard
@@ -43,6 +47,12 @@ export default function DoctorDashboard() {
     if (user) {
       fetchMyPatients();
       
+      const fetchIssues = async () => {
+        const { data } = await supabase.from('Issues').select('*').eq('target', 'Doctor').order('created_at', { ascending: false });
+        if (data) setIssues(data);
+      };
+      fetchIssues();
+
       const subscription = supabase
         .channel('doctor-queue')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'Booking Appointment', filter: `Doctor=eq.${user.name}` }, () => {
@@ -50,8 +60,16 @@ export default function DoctorDashboard() {
         })
         .subscribe();
 
+      const issueSubscription = supabase
+        .channel('doctor-issues')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'Issues', filter: "target=eq.Doctor" }, (payload) => {
+          setIssues(prev => [payload.new, ...prev]);
+        })
+        .subscribe();
+
       return () => {
         subscription.unsubscribe();
+        issueSubscription.unsubscribe();
       };
     }
   }, [user]);
@@ -243,13 +261,59 @@ Wishing you a speedy recovery. 💙`;
             <ArrowLeft size={16} />
             Back to Home
           </Link>
-          
-          <button 
-            onClick={logout} 
-            className="text-sm font-semibold text-gray-500 hover:text-red-500 transition-colors bg-white px-4 py-1.5 rounded-full shadow-sm border border-gray-100"
-          >
-            Logout session
-          </button>
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <button 
+                onClick={() => setIssuesOpen(!issuesOpen)}
+                className="relative p-2 text-slate-500 hover:bg-white rounded-full transition-colors bg-white shadow-sm border border-gray-100"
+              >
+                <Bell size={18} />
+                {issues.length > 0 && (
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+                )}
+              </button>
+
+              {issuesOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setIssuesOpen(false)}></div>
+                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-slate-200 overflow-hidden z-50">
+                    <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                      <h3 className="font-bold text-slate-800 text-sm">Notifications</h3>
+                      <span className="bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">{issues.length}</span>
+                    </div>
+                    <div className="max-h-[300px] overflow-y-auto">
+                      {issues.length === 0 ? (
+                        <div className="p-4 text-center text-sm text-slate-500">No new notifications.</div>
+                      ) : (
+                        <div className="divide-y divide-slate-100">
+                          {issues.map(issue => (
+                            <div key={issue.id} className="p-4 hover:bg-slate-50 transition-colors">
+                              <div className="flex justify-between items-start mb-1">
+                                <span className={`text-xs font-bold px-2 py-0.5 rounded-md ${issue.source === 'Pharmacy' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'}`}>
+                                  From: {issue.source}
+                                </span>
+                                <span className="text-[10px] font-semibold text-slate-400">
+                                  {new Date(issue.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                </span>
+                              </div>
+                              <p className="text-sm text-slate-700 font-medium">{issue.message}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <button 
+              onClick={logout} 
+              className="text-sm font-semibold text-gray-500 hover:text-red-500 transition-colors bg-white px-4 py-1.5 rounded-full shadow-sm border border-gray-100"
+            >
+              Sign out
+            </button>
+          </div>
         </div>
 
         {/* Header Console */}
