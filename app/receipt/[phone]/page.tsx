@@ -73,8 +73,8 @@ export default function ReceiptPage() {
       <div className="max-w-[900px] mx-auto bg-white p-10 md:p-14 shadow-lg border border-gray-200 print:shadow-none print:border-none print:p-0">
         
         {/* Header Section */}
-        <div className="flex justify-between items-start border-b-2 border-blue-600 pb-6 mb-6">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start border-b-2 border-blue-600 pb-6 mb-6 gap-6 sm:gap-0">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
             <div className="w-16 h-16 bg-blue-50 text-blue-600 flex items-center justify-center rounded-xl border-2 border-blue-100">
               {/* Simulated Hospital Logo */}
               <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -91,9 +91,9 @@ export default function ReceiptPage() {
             </div>
           </div>
           
-          <div className="text-right">
+          <div className="text-center sm:text-right w-full sm:w-auto">
             <div className="bg-[#1A56A9] text-white font-bold tracking-widest text-sm py-1.5 px-6 inline-block mb-3">RECEIPT</div>
-            <table className="text-xs text-left ml-auto">
+            <table className="text-xs text-left mx-auto sm:ml-auto sm:mr-0">
               <tbody>
                 <tr><td className="pr-3 text-gray-500 font-semibold py-0.5">Receipt No</td><td className="font-bold text-gray-800">: {receiptNo}</td></tr>
                 <tr><td className="pr-3 text-gray-500 font-semibold py-0.5">Date</td><td className="font-bold text-gray-800">: {new Date(data.created_at || new Date()).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</td></tr>
@@ -105,7 +105,7 @@ export default function ReceiptPage() {
         </div>
 
         {/* Patient & Doctor Details Grid */}
-        <div className="grid grid-cols-2 gap-8 mb-8 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 mb-8 text-sm">
           <table className="w-full text-left">
             <tbody>
               <tr><td className="py-1 font-bold text-gray-600 w-28">Patient Name</td><td className="py-1 font-bold text-gray-900">: {data.Name}</td></tr>

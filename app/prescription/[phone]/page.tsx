@@ -68,8 +68,8 @@ export default function PrescriptionPage() {
       <div className="max-w-[900px] mx-auto bg-white p-10 md:p-14 shadow-lg border border-gray-200 print:shadow-none print:border-none print:p-0">
         
         {/* Header Section */}
-        <div className="flex justify-between items-start border-b-4 border-emerald-600 pb-6 mb-6">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start border-b-4 border-emerald-600 pb-6 mb-6 gap-6 sm:gap-0">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
             <div className="w-16 h-16 bg-emerald-50 text-emerald-600 flex items-center justify-center rounded-xl border-2 border-emerald-100">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -85,8 +85,8 @@ export default function PrescriptionPage() {
             </div>
           </div>
           
-          <div className="text-right flex flex-col items-end">
-            <div className="bg-emerald-600 text-white font-bold tracking-widest text-sm py-1.5 px-6 inline-block mb-3 rounded-l-full">e-PRESCRIPTION</div>
+          <div className="text-center sm:text-right flex flex-col items-center sm:items-end w-full sm:w-auto">
+            <div className="bg-emerald-600 text-white font-bold tracking-widest text-sm py-1.5 px-6 inline-block mb-3 rounded-full sm:rounded-l-full sm:rounded-r-none">e-PRESCRIPTION</div>
             <div className="text-xs font-semibold text-gray-600 mt-2">
               <p>Consultation Date: {new Date(data.created_at || new Date()).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
             </div>
@@ -94,7 +94,7 @@ export default function PrescriptionPage() {
         </div>
 
         {/* Doctor Details */}
-        <div className="mb-6 flex justify-between items-end">
+        <div className="mb-6 flex flex-col sm:flex-row justify-between items-center sm:items-end text-center sm:text-left">
           <div>
             <h2 className="text-xl font-extrabold text-emerald-900">{data.Doctor || 'Unassigned Doctor'}</h2>
             <p className="text-sm font-semibold text-gray-600 mt-1">{data.Department || 'General Department'}</p>

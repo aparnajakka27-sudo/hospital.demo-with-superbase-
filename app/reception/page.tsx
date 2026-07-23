@@ -650,7 +650,7 @@ export default function ReceptionDashboard() {
           </div>
         )}
 
-        <div className="flex flex-col xl:flex-row gap-6 mb-12">
+        <div className="flex flex-col xl:flex-row gap-6 mb-12 w-full max-w-full">
           
           {/* Online Bookings Panel */}
           <div className="w-full xl:w-80 shrink-0">
@@ -706,7 +706,7 @@ export default function ReceptionDashboard() {
           </div>
 
           {/* Main Active Queue Table */}
-          <div className="flex-1 min-w-0 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+          <div className="flex-1 min-w-0 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col max-w-full">
             {/* Toolbar */}
             <div className="p-4 border-b border-gray-100 flex flex-wrap justify-between items-center gap-4 bg-gray-50/50">
               <div className="relative flex-1 min-w-[200px] max-w-md">
@@ -738,7 +738,7 @@ export default function ReceptionDashboard() {
             </div>
 
             {/* Table */}
-            <div className="overflow-x-auto flex-1">
+            <div className="overflow-x-auto flex-1 w-full max-w-full" style={{ WebkitOverflowScrolling: 'touch' }}>
               <table className="w-full text-left border-collapse min-w-[800px]">
                 <thead>
                   <tr className="bg-white border-b border-gray-100">
