@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Users, UserPlus, UserMinus, Search, Filter, Phone, Activity, ArrowLeft, Calendar, Bell, Edit, Trash2, CheckCircle, XCircle } from "lucide-react";
+import { Users, UserPlus, UserMinus, Search, Filter, Phone, Activity, ArrowLeft, Calendar, Bell, Edit, Trash2, CheckCircle, XCircle, Stethoscope, Clock } from "lucide-react";
 import Link from "next/link";
 import { supabase } from "../../lib/supabase";
 
@@ -14,6 +14,11 @@ export default function ReceptionDashboard() {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [newOnlineCount, setNewOnlineCount] = useState(0);
   const [formError, setFormError] = useState<string | null>(null);
+
+  // Doctor Roster State
+  const [isRosterOpen, setIsRosterOpen] = useState(false);
+  const [doctorsList, setDoctorsList] = useState<any[]>([]);
+  const [isDoctorsLoading, setIsDoctorsLoading] = useState(false);
 
   // Form State
   const [editingPatient, setEditingPatient] = useState<any>(null);
@@ -72,6 +77,34 @@ export default function ReceptionDashboard() {
       console.error("Error fetching patients:", err);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const fetchDoctors = async () => {
+    setIsDoctorsLoading(true);
+    try {
+      const { data, error } = await supabase.from('Doctors').select('*');
+      if (error) throw error;
+      setDoctorsList(data || []);
+    } catch (err) {
+      console.error("Error fetching doctors:", err);
+    } finally {
+      setIsDoctorsLoading(false);
+    }
+  };
+
+  const updateDoctorStatus = async (id: any, newStatus: string) => {
+    try {
+      const { error } = await supabase
+        .from('Doctors')
+        .update({ Status: newStatus })
+        .eq('id', id);
+      
+      if (error) throw error;
+      fetchDoctors(); // Refresh list
+    } catch (err) {
+      console.error("Error updating doctor status:", err);
+      alert("Error updating status.");
     }
   };
 
@@ -301,19 +334,30 @@ export default function ReceptionDashboard() {
             <h1 className="text-3xl font-extrabold text-gray-900 mb-1">Reception Intake Dashboard</h1>
             <p className="text-gray-500 text-sm">Manage online bookings, walk-ins, and queue priorities seamlessly.</p>
           </div>
-          <button 
-            onClick={() => {
-              if (!isWalkInFormOpen) openWalkInForm(null);
-              else setIsWalkInFormOpen(false);
-            }}
-            className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-5 py-2.5 rounded-full font-semibold transition-all shadow-md active:scale-95 whitespace-nowrap"
-          >
-            {isWalkInFormOpen && !editingPatient ? (
-              <><UserMinus size={18} /> Close Walk-In Form</>
-            ) : (
-              <><UserPlus size={18} /> + Walk-In / Urgent Intake</>
-            )}
-          </button>
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            <button 
+              onClick={() => {
+                setIsRosterOpen(true);
+                fetchDoctors();
+              }}
+              className="flex items-center gap-2 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 px-5 py-2.5 rounded-full font-semibold transition-all shadow-sm active:scale-95 whitespace-nowrap"
+            >
+              <Stethoscope size={18} /> Doctor Roster
+            </button>
+            <button 
+              onClick={() => {
+                if (!isWalkInFormOpen) openWalkInForm(null);
+                else setIsWalkInFormOpen(false);
+              }}
+              className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-5 py-2.5 rounded-full font-semibold transition-all shadow-md active:scale-95 whitespace-nowrap"
+            >
+              {isWalkInFormOpen && !editingPatient ? (
+                <><UserMinus size={18} /> Close Walk-In Form</>
+              ) : (
+                <><UserPlus size={18} /> + Walk-In / Urgent Intake</>
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Stats Grid */}
@@ -495,6 +539,82 @@ export default function ReceptionDashboard() {
                 </button>
               </div>
             </form>
+          </div>
+        )}
+
+        {/* Doctor Roster Modal */}
+        {isRosterOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={() => setIsRosterOpen(false)}></div>
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
+              <div className="flex justify-between items-center p-6 border-b border-slate-100 shrink-0 bg-slate-50">
+                <div className="flex items-center gap-3">
+                  <div className="bg-blue-100 p-2 rounded-lg text-blue-700">
+                    <Stethoscope size={20} />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-slate-900">Doctor Availability Roster</h2>
+                    <p className="text-xs text-slate-500">Manage today's active duty doctors</p>
+                  </div>
+                </div>
+                <button onClick={() => setIsRosterOpen(false)} className="text-slate-400 hover:text-slate-700 p-1 rounded-md hover:bg-slate-200 transition-colors">
+                  <XCircle size={24} />
+                </button>
+              </div>
+              
+              <div className="p-0 overflow-y-auto bg-slate-50">
+                {isDoctorsLoading ? (
+                  <div className="p-12 text-center text-slate-500 flex flex-col items-center">
+                    <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mb-3"></div>
+                    Loading roster...
+                  </div>
+                ) : doctorsList.length === 0 ? (
+                  <div className="p-12 text-center text-slate-500">
+                    No doctors found in the system.
+                  </div>
+                ) : (
+                  <table className="w-full text-left text-sm text-slate-600 bg-white">
+                    <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                      <tr>
+                        <th className="px-6 py-4">Doctor</th>
+                        <th className="px-6 py-4">Specialization</th>
+                        <th className="px-6 py-4">Current Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {doctorsList.map((doc) => (
+                        <tr key={doc.id} className="hover:bg-slate-50 transition-colors">
+                          <td className="px-6 py-4">
+                            <p className="font-bold text-slate-900">{doc['Doctor Name'] || doc.name}</p>
+                            <p className="text-xs text-slate-500">{doc.Room || 'No Room Assigned'}</p>
+                          </td>
+                          <td className="px-6 py-4 font-medium">
+                            {doc.Specialization || doc.specialty}
+                          </td>
+                          <td className="px-6 py-4">
+                            <select
+                              value={doc.Status || 'Available'}
+                              onChange={(e) => updateDoctorStatus(doc.id, e.target.value)}
+                              className={`text-xs font-bold px-3 py-1.5 rounded-lg border appearance-none outline-none cursor-pointer ${
+                                doc.Status === 'Available' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                                doc.Status === 'In Surgery' ? 'bg-red-50 text-red-700 border-red-200' :
+                                doc.Status === 'On Leave' ? 'bg-gray-100 text-gray-600 border-gray-300' :
+                                'bg-blue-50 text-blue-700 border-blue-200'
+                              }`}
+                            >
+                              <option value="Available">Available (Consulting)</option>
+                              <option value="In Surgery">In Surgery / OT</option>
+                              <option value="On Rounds">On Rounds (Wards)</option>
+                              <option value="On Leave">On Leave / Off Shift</option>
+                            </select>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </div>
           </div>
         )}
 
