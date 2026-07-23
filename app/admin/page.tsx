@@ -29,6 +29,7 @@ const COLORS = ['#0a4d40', '#0ea5e9', '#f59e0b', '#10b981', '#6366f1', '#ef4444'
 
 export default function AdminDashboardPage() {
   const [timeRange, setTimeRange] = useState('Today');
+  const [revenueTimeRange, setRevenueTimeRange] = useState('7');
   const [isLoading, setIsLoading] = useState(true);
 
   // Live Data States
@@ -49,7 +50,7 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     fetchDashboardData();
-  }, [timeRange]);
+  }, [timeRange, revenueTimeRange]);
 
   const fetchDashboardData = async () => {
     setIsLoading(true);
@@ -143,9 +144,10 @@ export default function AdminDashboardPage() {
       });
       setStatusData(Object.keys(statusCounts).map(k => ({ name: k, value: statusCounts[k] })));
 
-      // Revenue Trend (Last 7 days)
+      // Revenue Trend
       const trendMap: Record<string, number> = {};
-      for(let i=6; i>=0; i--) {
+      const daysToFetch = parseInt(revenueTimeRange);
+      for(let i=daysToFetch-1; i>=0; i--) {
         const d = new Date(Date.now() - i * 86400000).toISOString().split('T')[0];
         trendMap[d] = 0;
       }
@@ -258,7 +260,18 @@ export default function AdminDashboardPage() {
         {/* Revenue Chart */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 lg:col-span-2">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-bold text-slate-800">Revenue Trend (Last 7 Days)</h3>
+            <h3 className="text-lg font-bold text-slate-800">Revenue Trend</h3>
+            <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
+              <CalendarDays className="text-slate-400" size={16} />
+              <select 
+                value={revenueTimeRange}
+                onChange={(e) => setRevenueTimeRange(e.target.value)}
+                className="text-sm font-bold text-slate-700 bg-transparent border-none outline-none cursor-pointer py-0.5"
+              >
+                <option value="7">Last 7 Days</option>
+                <option value="30">Last 30 Days</option>
+              </select>
+            </div>
           </div>
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
