@@ -567,28 +567,30 @@ Wishing you a speedy recovery. 💙`;
                                   
                                   {isExpanded && (
                                     <div className="p-4 bg-white border-t border-gray-100 animate-in slide-in-from-top-2">
-                                      {hist.reason && (
-                                        <div className="mb-3">
-                                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Chief Symptoms / Reason</p>
-                                          <p className="text-xs text-gray-700 font-medium">{hist.reason}</p>
-                                        </div>
-                                      )}
+                                      <div className="mb-3">
+                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Chief Symptoms / Reason</p>
+                                        <p className="text-xs text-gray-700 font-medium">{hist.reason || <span className="text-gray-400 italic">Not recorded</span>}</p>
+                                      </div>
                                       
-                                      {(hist.weight || hist["Blood Pressure"] || hist.temperature) && (
-                                        <div className="mb-3">
-                                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Vitals Recorded</p>
+                                      <div className="mb-3">
+                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Vitals Recorded</p>
+                                        {(hist.weight || hist["Blood Pressure"] || hist.temperature) ? (
                                           <p className="text-xs text-gray-600 font-medium bg-gray-50 p-2 rounded-md border border-gray-100">
                                             {[hist.weight && `Wt: ${hist.weight}`, hist["Blood Pressure"] && `BP: ${hist["Blood Pressure"]} mmHg`, hist.temperature && `Temp: ${hist.temperature}`].filter(Boolean).join('  |  ')}
                                           </p>
-                                        </div>
-                                      )}
+                                        ) : (
+                                          <p className="text-xs text-gray-400 italic">No vitals recorded</p>
+                                        )}
+                                      </div>
                                       
-                                      {hist.diagnosis_notes && (
-                                        <div className="mb-3">
-                                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Clinical Notes</p>
+                                      <div className="mb-3">
+                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Clinical Notes</p>
+                                        {hist.diagnosis_notes ? (
                                           <p className="text-xs text-gray-700 bg-blue-50/50 p-2.5 rounded-md border border-blue-100/50">"{hist.diagnosis_notes}"</p>
-                                        </div>
-                                      )}
+                                        ) : (
+                                          <p className="text-xs text-gray-400 italic">No clinical notes recorded</p>
+                                        )}
+                                      </div>
                                       
                                       {hist.medicines_list && hist.medicines_list.length > 0 ? (
                                         <div className="mt-4">
