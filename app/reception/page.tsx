@@ -514,11 +514,15 @@ export default function ReceptionDashboard() {
                   <label className="block text-xs font-bold text-slate-700 mb-2">Assigned Doctor *</label>
                   <select required value={assignedDoctor} onChange={e => setAssignedDoctor(e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900">
                     <option value="">Select Doctor...</option>
-                    {doctorsList.map(doc => (
-                      <option key={doc.id || doc['User Id'] || doc.Name} value={doc['Doctor Name'] || doc.Name || doc.name}>
-                        {doc['Doctor Name'] || doc.Name || doc.name} {doc.Specialization || doc.Department ? `(${doc.Specialization || doc.Department})` : ''}
-                      </option>
-                    ))}
+                    {doctorsList.map(doc => {
+                      const docName = doc['Doctor Name'] || doc.Name || doc.name;
+                      const spec = doc.Specialization || doc.Department || doc.Deparment;
+                      return (
+                        <option key={doc.id || doc['User Id'] || docName} value={docName}>
+                          {docName} {spec ? `(${spec.trim()})` : ''}
+                        </option>
+                      );
+                    })}
                   </select>
                 </div>
                 <div>
@@ -668,7 +672,7 @@ export default function ReceptionDashboard() {
                     <tbody className="divide-y divide-slate-100">
                       {doctorsList.filter(d => 
                         (d['Doctor Name'] || d.Name || d.name || '').toLowerCase().includes(doctorSearchQuery.toLowerCase()) || 
-                        (d.Specialization || d.Deparment || d.Department || d.specialty || '').toLowerCase().includes(doctorSearchQuery.toLowerCase())
+                        (d.Specialization || d.Department || d.Deparment || d.specialty || '').toLowerCase().includes(doctorSearchQuery.toLowerCase())
                       ).map((doc) => (
                         <tr key={doc['User Id'] || doc.id || doc.Name} className="hover:bg-slate-50 transition-colors">
                           <td className="px-6 py-4">
@@ -677,7 +681,7 @@ export default function ReceptionDashboard() {
                             <p className="text-xs text-emerald-600 font-semibold mt-1">Avail: {doc.Available_Days || 'N/A'}</p>
                           </td>
                           <td className="px-6 py-4 font-medium">
-                            {doc.Specialization || doc.Deparment || doc.Department || doc.specialty}
+                            {doc.Specialization || doc.Department || doc.Deparment || doc.specialty}
                           </td>
                           <td className="px-6 py-4">
                             <select
