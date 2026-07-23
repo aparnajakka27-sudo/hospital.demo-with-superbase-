@@ -246,15 +246,26 @@ export default function DoctorsAdminPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Specialization</label>
-                  <input 
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Department / Specialization</label>
+                  <select 
                     required 
-                    type="text" 
-                    placeholder="e.g. Cardiology"
                     value={newDoc.specialization}
                     onChange={e => setNewDoc({...newDoc, specialization: e.target.value})}
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm text-slate-900"
-                  />
+                  >
+                    <option value="" disabled>Select Department</option>
+                    <option value="Cardiology">Cardiology</option>
+                    <option value="Neurology">Neurology</option>
+                    <option value="Orthopedics">Orthopedics</option>
+                    <option value="Pediatrics">Pediatrics</option>
+                    <option value="General Medicine">General Medicine</option>
+                    <option value="Oncology">Oncology</option>
+                    <option value="Dermatology">Dermatology</option>
+                    <option value="Gynaecology">Gynaecology</option>
+                    <option value="ENT">ENT</option>
+                    <option value="Ophthalmology">Ophthalmology</option>
+                    <option value="Psychiatry">Psychiatry</option>
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">Consultation Room</label>
