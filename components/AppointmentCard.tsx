@@ -84,7 +84,7 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
       
       const { error } = await supabase
         .from('Booking Appointment')
-        .insert([
+        .upsert([
           { 
             Name: formData.fullName, 
             Email: formData.email, 
