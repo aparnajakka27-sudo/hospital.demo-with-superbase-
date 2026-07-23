@@ -17,11 +17,11 @@ export default function PrescriptionPage() {
       if (!phone) return;
       try {
         const searchParams = new URLSearchParams(window.location.search);
-        const idParam = searchParams.get('id');
+        const createdParam = searchParams.get('created');
 
         let query = supabase.from('Booking Appointment').select('*');
-        if (idParam) {
-          query = query.eq('id', idParam);
+        if (createdParam) {
+          query = query.eq('created_at', createdParam);
         } else {
           query = query.eq('Phone', phone).order('created_at', { ascending: false }).limit(1);
         }
