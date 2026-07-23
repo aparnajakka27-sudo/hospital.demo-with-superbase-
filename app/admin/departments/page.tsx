@@ -1,110 +1,130 @@
 "use client"
-import React, { useState } from 'react'
-import { 
-  Search, 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Activity,
-  Heart,
-  Brain,
-  Bone
-} from 'lucide-react'
-
-// Seed Data
-const MOCK_DEPARTMENTS = [
-  { id: 1, name: 'Cardiology', head: 'Dr. Sarah Smith', doctors: 8, patients: 3200, revenue: '$145,000', icon: Heart },
-  { id: 2, name: 'Neurology', head: 'Dr. James Wilson', doctors: 5, patients: 1850, revenue: '$98,000', icon: Brain },
-  { id: 3, name: 'Orthopaedics', head: 'Dr. Michael Brown', doctors: 6, patients: 2400, revenue: '$112,000', icon: Bone },
-  { id: 4, name: 'General Medicine', head: 'Dr. Robert Taylor', doctors: 12, patients: 5600, revenue: '$180,000', icon: Activity },
-]
+import React, { useState, useEffect } from 'react'
+import { Plus, Search, Trash2 } from 'lucide-react'
+import { supabase } from '../../lib/supabase'
 
 export default function DepartmentsAdminPage() {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [departments, setDepartments] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   
-  const filteredDepts = MOCK_DEPARTMENTS.filter(dept => 
-    dept.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    dept.head.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newDeptName, setNewDeptName] = useState('');
+  const [newDeptHead, setNewDeptHead] = useState('');
+
+  useEffect(() => {
+    fetchDepartments();
+  }, []);
+
+  const fetchDepartments = async () => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.from('departments').select('*');
+      if (error) console.error("Could not fetch departments. Table might be empty or missing.", error);
+      setDepartments(data || []);
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAddDept = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const { error } = await supabase.from('departments').insert([{
+        name: newDeptName,
+        head_doctor: newDeptHead,
+        status: 'Active'
+      }]);
+      if (error) throw error;
+      setIsModalOpen(false);
+      setNewDeptName('');
+      setNewDeptHead('');
+      fetchDepartments();
+    } catch (err: any) {
+      alert("Error adding department: " + err.message);
+    }
+  };
+
+  const deleteDept = async (id: string) => {
+    if (!confirm('Are you sure?')) return;
+    try {
+      await supabase.from('departments').delete().eq('id', id);
+      fetchDepartments();
+    } catch (err: any) {
+      alert("Error deleting: " + err.message);
+    }
+  };
 
   return (
     <div className="space-y-6">
-      {/* Header section */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Departments</h1>
-          <p className="text-sm text-slate-500">Manage hospital specialities and view performance.</p>
+          <p className="text-sm text-slate-500">Live database of hospital departments.</p>
         </div>
-        <button className="flex items-center gap-2 bg-[#0a4d40] hover:bg-[#073a30] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
-          <Plus size={16} />
-          Add Department
+        <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 bg-[#0a4d40] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#073a30]">
+          <Plus size={16} /> Add Department
         </button>
       </div>
 
-      {/* Search */}
-      <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-        <div className="relative w-full max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-          <input 
-            type="text" 
-            placeholder="Search departments..." 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all outline-none"
-          />
-        </div>
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <table className="w-full text-left text-sm text-slate-600">
+          <thead className="bg-slate-50 text-slate-900 font-semibold border-b border-slate-200">
+            <tr>
+              <th className="px-6 py-4">Department Name</th>
+              <th className="px-6 py-4">Head Doctor</th>
+              <th className="px-6 py-4">Status</th>
+              <th className="px-6 py-4 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {isLoading ? (
+              <tr><td colSpan={4} className="px-6 py-12 text-center">Loading live departments...</td></tr>
+            ) : departments.length === 0 ? (
+              <tr><td colSpan={4} className="px-6 py-12 text-center">No departments added yet.</td></tr>
+            ) : (
+              departments.map((dept) => (
+                <tr key={dept.id} className="hover:bg-slate-50">
+                  <td className="px-6 py-4 font-semibold text-slate-900">{dept.name}</td>
+                  <td className="px-6 py-4">{dept.head_doctor || 'Unassigned'}</td>
+                  <td className="px-6 py-4">
+                    <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+                      {dept.status || 'Active'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <button onClick={() => deleteDept(dept.id)} className="text-slate-400 hover:text-red-600 p-1.5"><Trash2 size={18} /></button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
 
-      {/* Data Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {filteredDepts.map((dept) => {
-          const Icon = dept.icon;
-          return (
-            <div key={dept.id} className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 hover:shadow-md transition-shadow">
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                    <Icon size={24} />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-slate-900">{dept.name}</h3>
-                    <p className="text-sm text-slate-500">Head: {dept.head}</p>
-                  </div>
-                </div>
-                <div className="flex gap-1">
-                  <button className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors">
-                    <Edit size={16} />
-                  </button>
-                  <button className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-                    <Trash2 size={16} />
-                  </button>
-                </div>
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={() => setIsModalOpen(false)}></div>
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md relative z-10 p-5">
+            <h2 className="text-lg font-bold mb-4">Add Department</h2>
+            <form onSubmit={handleAddDept} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-1">Department Name</label>
+                <input required type="text" value={newDeptName} onChange={e => setNewDeptName(e.target.value)} className="w-full border rounded-lg p-2" />
               </div>
-
-              <div className="grid grid-cols-3 gap-4 py-4 border-t border-slate-100 mt-4">
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-slate-800">{dept.doctors}</p>
-                  <p className="text-xs text-slate-500 font-medium">Doctors</p>
-                </div>
-                <div className="text-center border-x border-slate-100">
-                  <p className="text-2xl font-bold text-slate-800">{dept.patients}</p>
-                  <p className="text-xs text-slate-500 font-medium">Patients</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-lg font-bold text-emerald-600 mt-1">{dept.revenue}</p>
-                  <p className="text-xs text-slate-500 font-medium">Revenue</p>
-                </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Head Doctor</label>
+                <input required type="text" value={newDeptHead} onChange={e => setNewDeptHead(e.target.value)} className="w-full border rounded-lg p-2" />
               </div>
-            </div>
-          )
-        })}
-
-        {filteredDepts.length === 0 && (
-          <div className="col-span-full py-12 text-center text-slate-500 bg-white rounded-xl border border-slate-200">
-            No departments found matching "{searchTerm}"
+              <div className="flex justify-end gap-3 mt-4">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 border rounded-lg">Cancel</button>
+                <button type="submit" className="px-4 py-2 bg-[#0a4d40] text-white rounded-lg">Save</button>
+              </div>
+            </form>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }
