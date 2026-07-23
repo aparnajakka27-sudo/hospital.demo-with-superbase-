@@ -62,7 +62,7 @@ export default function BillingAdminPage() {
       });
       
     } catch (error) {
-      console.error("Error fetching billing data:", error);
+      console.log("Error fetching billing data:", error);
     } finally {
       setIsLoading(false);
     }
@@ -179,12 +179,12 @@ export default function BillingAdminPage() {
                   <td colSpan={6} className="px-6 py-12 text-center text-slate-500">No transactions found.</td>
                 </tr>
               ) : (
-                filteredBills.map((bill) => {
+                filteredBills.map((bill, index) => {
                   const isPaid = bill.payment_status === 'Paid';
                   const amount = 150 + (bill.pharmacy_status === 'Fulfilled' ? 45 : 0);
                   
                   return (
-                    <tr key={bill.id} className="hover:bg-slate-50 transition-colors">
+                    <tr key={bill.id || `bill-${index}`} className="hover:bg-slate-50 transition-colors">
                       <td className="px-6 py-4 font-mono font-medium text-slate-700">INV-TKN-{bill.token_number || bill.id}</td>
                       <td className="px-6 py-4 font-semibold text-slate-900">{bill.Name}</td>
                       <td className="px-6 py-4">{bill.Date}</td>

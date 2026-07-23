@@ -25,7 +25,7 @@ export default function AppointmentsAdminPage() {
       if (error) throw error;
       setAppointments(data || []);
     } catch (error) {
-      console.error("Error fetching appointments:", error);
+      console.log("Error fetching appointments:", error);
     } finally {
       setIsLoading(false);
     }
@@ -105,8 +105,8 @@ export default function AppointmentsAdminPage() {
                   </td>
                 </tr>
               ) : (
-                filteredAppointments.map((apt) => (
-                  <tr key={apt.id} className="hover:bg-slate-50 transition-colors">
+                filteredAppointments.map((apt, idx) => (
+                  <tr key={apt.id || `apt-${idx}`} className="hover:bg-slate-50 transition-colors">
                     <td className="px-6 py-4 font-mono font-medium text-slate-700">TKN-{apt.token_number || apt.id}</td>
                     <td className="px-6 py-4 font-semibold text-slate-900">
                       {apt.Name}

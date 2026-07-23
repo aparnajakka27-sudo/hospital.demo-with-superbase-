@@ -74,7 +74,7 @@ export default function ReceptionDashboard() {
       setPatients(data || []);
       setNewOnlineCount(0); // clear visual cue when fetched manually or date changes
     } catch (err) {
-      console.error("Error fetching patients:", err);
+      console.log("Error fetching patients:", err);
     } finally {
       setIsLoading(false);
     }
@@ -87,7 +87,7 @@ export default function ReceptionDashboard() {
       if (error) throw error;
       setDoctorsList(data || []);
     } catch (err) {
-      console.error("Error fetching doctors:", err);
+      console.log("Error fetching doctors:", err);
     } finally {
       setIsDoctorsLoading(false);
     }
@@ -103,7 +103,7 @@ export default function ReceptionDashboard() {
       if (error) throw error;
       fetchDoctors(); // Refresh list
     } catch (err) {
-      console.error("Error updating doctor status:", err);
+      console.log("Error updating doctor status:", err);
       alert("Error updating status.");
     }
   };
@@ -215,7 +215,7 @@ export default function ReceptionDashboard() {
       fetchPatients(); // Refresh list
     } catch (err: any) {
       const errorMsg = err?.message || err?.details || JSON.stringify(err);
-      console.error("Failed to add/update patient:", JSON.stringify(err, null, 2), err);
+      console.log("Failed to add/update patient:", JSON.stringify(err, null, 2), err);
       setFormError(`Database Error: ${errorMsg}`);
     } finally {
       setIsSubmitting(false);
@@ -233,7 +233,7 @@ export default function ReceptionDashboard() {
       if (error) throw error;
       fetchPatients();
     } catch (err) {
-      console.error("Failed to update status:", err);
+      console.log("Failed to update status:", err);
       alert("Error updating status.");
     }
   };
@@ -587,6 +587,7 @@ export default function ReceptionDashboard() {
                           <td className="px-6 py-4">
                             <p className="font-bold text-slate-900">{doc['Doctor Name'] || doc.name}</p>
                             <p className="text-xs text-slate-500">{doc.Room || 'No Room Assigned'}</p>
+                            <p className="text-xs text-emerald-600 font-semibold mt-1">Avail: {doc.Available_Days || 'N/A'}</p>
                           </td>
                           <td className="px-6 py-4 font-medium">
                             {doc.Specialization || doc.specialty}

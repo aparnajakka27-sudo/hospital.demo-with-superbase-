@@ -68,7 +68,7 @@ export default function DoctorDashboard() {
       if (error) throw error;
       setPatients(data || []);
     } catch (err) {
-      console.error("Error fetching doctor patients:", err);
+      console.log("Error fetching doctor patients:", err);
     } finally {
       setIsFetching(false);
     }
@@ -87,7 +87,7 @@ export default function DoctorDashboard() {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error("Supabase History Error:", error);
+        console.log("Supabase History Error:", error);
         alert("Error fetching history: " + (error.message || JSON.stringify(error)));
         setVisitHistory([]);
         return;
@@ -95,7 +95,7 @@ export default function DoctorDashboard() {
       
       setVisitHistory(data || []);
     } catch (err: any) {
-      console.error("Error fetching history:", err);
+      console.log("Error fetching history:", err);
       alert("Error fetching history: " + (err.message || JSON.stringify(err)));
     } finally {
       setIsHistoryLoading(false);
@@ -123,7 +123,7 @@ export default function DoctorDashboard() {
           .eq('Name', p.Name)
           .eq('Email', p.Email || "");
       } catch (err) {
-        console.error("Failed to update status to With Doctor:", err);
+        console.log("Failed to update status to With Doctor:", err);
       }
     }
   };
@@ -143,7 +143,7 @@ export default function DoctorDashboard() {
       if (error) throw error;
       alert("Clinical notes saved securely!");
     } catch (err) {
-      console.error("Error saving clinical info:", err);
+      console.log("Error saving clinical info:", err);
       alert("Failed to save notes.");
     } finally {
       setIsSavingClinical(false);
@@ -205,7 +205,7 @@ Wishing you a speedy recovery. 💙`;
       }, 5000);
 
     } catch (err: any) {
-      console.error("Error sending prescription:", err);
+      console.log("Error sending prescription:", err);
       alert("Failed to send prescription: " + err.message);
       setIsSending(false);
     }

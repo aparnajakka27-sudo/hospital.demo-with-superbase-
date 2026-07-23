@@ -37,7 +37,7 @@ export default function PatientsAdminPage() {
       
       setPatients(Array.from(uniquePatientsMap.values()));
     } catch (error) {
-      console.error("Error fetching patients:", error);
+      console.log("Error fetching patients:", error);
     } finally {
       setIsLoading(false);
     }

@@ -9,7 +9,7 @@ export default function StaffAdminPage() {
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedStaff, setSelectedStaff] = useState<any>(null);
-  const [newStaff, setNewStaff] = useState({ name: '', role: '', department: '', shift: '', phone: '' });
+  const [newStaff, setNewStaff] = useState({ name: '', role: '', department: '', shift: '', phone: '', salary: '', experience: '' });
 
   useEffect(() => {
     fetchStaff();
@@ -19,10 +19,10 @@ export default function StaffAdminPage() {
     setIsLoading(true);
     try {
       const { data, error } = await supabase.from('staff').select('*');
-      if (error) console.error(error);
+      if (error) console.log("Supabase fetch error:", error.message || error);
       setStaff(data || []);
-    } catch (error) {
-      console.error(error);
+    } catch (err: any) {
+      console.log("Exception in fetchStaff:", err.message || err);
     } finally {
       setIsLoading(false);
     }
@@ -34,7 +34,7 @@ export default function StaffAdminPage() {
       const { error } = await supabase.from('staff').insert([{ ...newStaff, status: 'Active' }]);
       if (error) throw error;
       setIsModalOpen(false);
-      setNewStaff({ name: '', role: '', department: '', shift: '', phone: '' });
+      setNewStaff({ name: '', role: '', department: '', shift: '', phone: '', salary: '', experience: '' });
       fetchStaff();
     } catch (err: any) {
       alert("Error adding staff: " + err.message);
@@ -69,8 +69,6 @@ export default function StaffAdminPage() {
             <tr>
               <th className="px-6 py-4">Name</th>
               <th className="px-6 py-4">Role</th>
-              <th className="px-6 py-4">Department</th>
-              <th className="px-6 py-4">Shift</th>
               <th className="px-6 py-4 text-right">Actions</th>
             </tr>
           </thead>
@@ -80,12 +78,10 @@ export default function StaffAdminPage() {
             ) : staff.length === 0 ? (
               <tr><td colSpan={5} className="px-6 py-12 text-center">No staff added yet.</td></tr>
             ) : (
-              staff.map((s) => (
-                <tr key={s.id} className="hover:bg-slate-50">
+              staff.map((s, index) => (
+                <tr key={s.id || index} className="hover:bg-slate-50">
                   <td className="px-6 py-4 font-semibold text-slate-900">{s.name}</td>
                   <td className="px-6 py-4">{s.role}</td>
-                  <td className="px-6 py-4">{s.department}</td>
-                  <td className="px-6 py-4">{s.shift}</td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
                       <button onClick={() => setSelectedStaff(s)} className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="View Details">
@@ -158,6 +154,16 @@ export default function StaffAdminPage() {
                   <option value="Flexible">Flexible / On Call</option>
                 </select>
               </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Experience (Years)</label>
+                  <input type="text" value={newStaff.experience} onChange={e => setNewStaff({...newStaff, experience: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0a4d40]" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Salary (₹)</label>
+                  <input type="text" value={newStaff.salary} onChange={e => setNewStaff({...newStaff, salary: e.target.value})} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0a4d40]" />
+                </div>
+              </div>
               <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-100">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 border rounded-lg text-slate-600 hover:bg-slate-50 font-medium">Cancel</button>
                 <button type="submit" className="px-4 py-2 bg-[#0a4d40] text-white rounded-lg font-medium hover:bg-[#073a30]">Save</button>
@@ -206,6 +212,14 @@ export default function StaffAdminPage() {
                   <p className="text-slate-900 font-bold">
                     {selectedStaff.created_at ? new Date(selectedStaff.created_at).toLocaleDateString() : 'N/A'}
                   </p>
+                </div>
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Experience</p>
+                  <p className="text-slate-900 font-bold">{selectedStaff.experience || 'N/A'}</p>
+                </div>
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Salary</p>
+                  <p className="text-slate-900 font-bold">{selectedStaff.salary ? `₹${selectedStaff.salary}` : 'N/A'}</p>
                 </div>
               </div>
             </div>

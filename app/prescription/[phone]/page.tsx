@@ -28,7 +28,7 @@ export default function PrescriptionPage() {
           setData(records[0]);
         }
       } catch (err) {
-        console.error("Error fetching prescription data:", err);
+        console.log("Error fetching prescription data:", err);
       } finally {
         setLoading(false);
       }

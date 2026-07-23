@@ -18,11 +18,11 @@ export default function DoctorsAdminPage() {
   const [patientCounts, setPatientCounts] = useState<Record<string, number>>({});
   const [isLoading, setIsLoading] = useState(true);
   
-  // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
   const [selectedDoctor, setSelectedDoctor] = useState<any>(null);
+  const [departments, setDepartments] = useState<any[]>([]);
   
   // New Doctor Form State
   const [newDoc, setNewDoc] = useState({
@@ -30,7 +30,10 @@ export default function DoctorsAdminPage() {
     specialization: '',
     userId: '',
     password: '',
-    room: ''
+    room: '',
+    experience: '',
+    salary: '',
+    available_days: 'Mon-Fri'
   });
 
   useEffect(() => {
@@ -48,6 +51,9 @@ export default function DoctorsAdminPage() {
       if (docError) throw docError;
       setDoctors(docs || []);
 
+      const { data: depts } = await supabase.from('departments').select('name');
+      if (depts) setDepartments(depts);
+
       // 2. Fetch Appointments to count patients per doctor
       const { data: appts, error: apptError } = await supabase
         .from('Booking Appointment')
@@ -63,7 +69,7 @@ export default function DoctorsAdminPage() {
         setPatientCounts(counts);
       }
     } catch (error) {
-      console.error("Error fetching doctors:", error);
+      console.log("Error fetching doctors:", error);
     } finally {
       setIsLoading(false);
     }
@@ -82,7 +88,10 @@ export default function DoctorsAdminPage() {
           "Specialization": newDoc.specialization,
           "User Id": newDoc.userId,
           "Password": newDoc.password,
-          "Room": newDoc.room
+          "Room": newDoc.room,
+          "Experience": newDoc.experience,
+          "Salary": newDoc.salary,
+          "Available_Days": newDoc.available_days
         }
       ]);
 
@@ -90,7 +99,7 @@ export default function DoctorsAdminPage() {
 
       // Success
       setIsModalOpen(false);
-      setNewDoc({ name: '', specialization: '', userId: '', password: '', room: '' });
+      setNewDoc({ name: '', specialization: '', userId: '', password: '', room: '', experience: '', salary: '', available_days: 'Mon-Fri' });
       fetchData(); // Refresh list
     } catch (err: any) {
       setFormError(err.message || 'Failed to add doctor');
@@ -154,9 +163,8 @@ export default function DoctorsAdminPage() {
           <table className="w-full text-left text-sm text-slate-600">
             <thead className="bg-slate-50 text-slate-900 font-semibold border-b border-slate-200">
               <tr>
-                <th className="px-6 py-4">Doctor Info</th>
+                <th className="px-6 py-4">Doctor Name</th>
                 <th className="px-6 py-4">Specialization</th>
-                <th className="px-6 py-4">Room / User ID</th>
                 <th className="px-6 py-4">Total Patients</th>
                 <th className="px-6 py-4 text-right">Actions</th>
               </tr>
@@ -171,31 +179,19 @@ export default function DoctorsAdminPage() {
                   <td colSpan={5} className="px-6 py-12 text-center text-slate-500">No doctors found.</td>
                 </tr>
               ) : (
-                filteredDoctors.map((doc) => {
+                filteredDoctors.map((doc, index) => {
                   const name = doc['Doctor Name'] || doc.name || 'Unknown';
                   const spec = doc.Specialization || doc.specialty || 'General';
                   const initials = name.split(' ').map((n: string) => n[0]).join('').replace('D', '').replace('.', '').substring(0, 2);
                   const patientCount = patientCounts[name] || 0;
 
                   return (
-                    <tr key={doc.id} className="hover:bg-slate-50/50 transition-colors">
+                    <tr key={doc.id || index} className="hover:bg-slate-50/50 transition-colors">
                       <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
-                            {initials}
-                          </div>
-                          <div>
-                            <p className="font-semibold text-slate-900">{name}</p>
-                            <p className="text-xs text-slate-500">Active</p>
-                          </div>
-                        </div>
+                        <p className="font-semibold text-slate-900">{name}</p>
                       </td>
                       <td className="px-6 py-4 font-medium text-slate-700">
                         {spec}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="block text-slate-900 font-medium">{doc.Room || 'N/A'}</span>
-                        <span className="text-xs text-slate-500 font-mono">{doc['User Id'] || 'N/A'}</span>
                       </td>
                       <td className="px-6 py-4">
                         {patientCount}
@@ -204,9 +200,6 @@ export default function DoctorsAdminPage() {
                         <div className="flex items-center justify-end gap-2">
                           <button onClick={() => setSelectedDoctor(doc)} className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="View Details">
                             <Eye size={18} />
-                          </button>
-                          <button onClick={() => deleteDoctor(doc.id)} className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Remove Doctor">
-                            <Trash2 size={18} />
                           </button>
                         </div>
                       </td>
@@ -258,29 +251,53 @@ export default function DoctorsAdminPage() {
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm text-slate-900"
                   >
                     <option value="" disabled>Select Department</option>
-                    <option value="Cardiology">Cardiology</option>
-                    <option value="Neurology">Neurology</option>
-                    <option value="Orthopedics">Orthopedics</option>
-                    <option value="Pediatrics">Pediatrics</option>
-                    <option value="General Medicine">General Medicine</option>
-                    <option value="Oncology">Oncology</option>
-                    <option value="Dermatology">Dermatology</option>
-                    <option value="Gynaecology">Gynaecology</option>
-                    <option value="ENT">ENT</option>
-                    <option value="Ophthalmology">Ophthalmology</option>
-                    <option value="Psychiatry">Psychiatry</option>
+                    {departments.map((d, i) => (
+                      <option key={i} value={d.name}>{d.name}</option>
+                    ))}
                   </select>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Consultation Room</label>
-                  <input 
-                    required 
-                    type="text" 
-                    placeholder="e.g. OPD-105"
-                    value={newDoc.room}
-                    onChange={e => setNewDoc({...newDoc, room: e.target.value})}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm text-slate-900"
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Experience (Years)</label>
+                    <input 
+                      type="text" 
+                      value={newDoc.experience}
+                      onChange={e => setNewDoc({...newDoc, experience: e.target.value})}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm text-slate-900"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Salary (₹)</label>
+                    <input 
+                      type="text" 
+                      value={newDoc.salary}
+                      onChange={e => setNewDoc({...newDoc, salary: e.target.value})}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm text-slate-900"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Consultation Room</label>
+                    <input 
+                      required 
+                      type="text" 
+                      placeholder="e.g. OPD-105"
+                      value={newDoc.room}
+                      onChange={e => setNewDoc({...newDoc, room: e.target.value})}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm text-slate-900"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Available Days</label>
+                    <input 
+                      type="text" 
+                      placeholder="e.g. Mon-Fri"
+                      value={newDoc.available_days}
+                      onChange={e => setNewDoc({...newDoc, available_days: e.target.value})}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm text-slate-900"
+                    />
+                  </div>
                 </div>
                 <div className="pt-4 border-t border-slate-100 mt-2">
                   <h3 className="text-sm font-semibold text-slate-800 mb-3">Login Credentials</h3>
@@ -370,6 +387,18 @@ export default function DoctorsAdminPage() {
                 <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
                   <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Total Patients</p>
                   <p className="text-slate-900 font-bold">{patientCounts[selectedDoctor['Doctor Name'] || selectedDoctor.name] || 0}</p>
+                </div>
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Experience</p>
+                  <p className="text-slate-900 font-bold">{selectedDoctor.Experience || 'N/A'}</p>
+                </div>
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Salary</p>
+                  <p className="text-slate-900 font-bold">{selectedDoctor.Salary ? `₹${selectedDoctor.Salary}` : 'N/A'}</p>
+                </div>
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Availability</p>
+                  <p className="text-slate-900 font-bold">{selectedDoctor.Available_Days || 'N/A'}</p>
                 </div>
               </div>
             </div>

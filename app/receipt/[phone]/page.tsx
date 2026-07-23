@@ -28,7 +28,7 @@ export default function ReceiptPage() {
           setData(records[0]);
         }
       } catch (err) {
-        console.error("Error fetching receipt data:", err);
+        console.log("Error fetching receipt data:", err);
       } finally {
         setLoading(false);
       }

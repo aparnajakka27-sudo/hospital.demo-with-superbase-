@@ -76,9 +76,9 @@ export default function AdminDashboardPage() {
       const todayAppts = appts.filter(a => a.Date === today);
       const yesterdayAppts = appts.filter(a => a.Date === yesterday);
       
-      // Assume flat consultation fee of $150 for 'Paid' status 
-      // and flat $45 for pharmacy 'Fulfilled' status
-      const calcRevenue = (arr: any[]) => arr.filter(a => a.payment_status === 'Paid').length * 150;
+      // Assume flat consultation fee of ₹12000 for 'Paid' status 
+      // and flat ₹3600 for pharmacy 'Fulfilled' status
+      const calcRevenue = (arr: any[]) => arr.filter(a => a.payment_status === 'Paid').length * 12000;
       
       const todayRev = calcRevenue(todayAppts);
       const yesterdayRev = calcRevenue(yesterdayAppts);
@@ -103,7 +103,7 @@ export default function AdminDashboardPage() {
       // Pharmacy Stats (Today)
       const fulfilledToday = todayAppts.filter(a => a.pharmacy_status === 'Fulfilled').length;
       setPharmacyStats({
-        sales: fulfilledToday * 45,
+        sales: fulfilledToday * 3600,
         fulfilledCount: fulfilledToday
       });
 
@@ -153,7 +153,7 @@ export default function AdminDashboardPage() {
       }
       appts.forEach(a => {
         if (trendMap[a.Date] !== undefined && a.payment_status === 'Paid') {
-          trendMap[a.Date] += 150;
+          trendMap[a.Date] += 12000;
         }
       });
       setRevenueData(Object.keys(trendMap).map(k => ({ 
@@ -162,7 +162,7 @@ export default function AdminDashboardPage() {
       })));
 
     } catch (error) {
-      console.error("Dashboard error:", error);
+      console.log("Dashboard error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -268,8 +268,10 @@ export default function AdminDashboardPage() {
                 onChange={(e) => setRevenueTimeRange(e.target.value)}
                 className="text-sm font-bold text-slate-700 bg-transparent border-none outline-none cursor-pointer py-0.5"
               >
-                <option value="7">Last 7 Days</option>
-                <option value="30">Last 30 Days</option>
+                <option value="1">Past 1 Day</option>
+                <option value="7">Past 1 Week</option>
+                <option value="30">Past 1 Month</option>
+                <option value="365">Past 1 Year</option>
               </select>
             </div>
           </div>

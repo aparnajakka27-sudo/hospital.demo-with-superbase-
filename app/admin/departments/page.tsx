@@ -110,8 +110,8 @@ export default function DepartmentsAdminPage() {
             ) : departments.length === 0 ? (
               <tr><td colSpan={4} className="px-6 py-12 text-center">No departments added yet.</td></tr>
             ) : (
-              departments.map((dept) => (
-                <tr key={dept.id} className="hover:bg-slate-50">
+              departments.map((dept, index) => (
+                <tr key={dept.id || index} className="hover:bg-slate-50">
                   <td className="px-6 py-4 font-semibold text-slate-900">{dept.name}</td>
                   <td className="px-6 py-4">{dept.head_doctor || 'Unassigned'}</td>
                   <td className="px-6 py-4">

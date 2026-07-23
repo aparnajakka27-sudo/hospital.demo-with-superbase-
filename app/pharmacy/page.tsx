@@ -37,7 +37,7 @@ export default function PharmacyDashboard() {
       if (error) throw error;
       setPrescriptions(data || []);
     } catch (err) {
-      console.error("Error fetching prescriptions:", err);
+      console.log("Error fetching prescriptions:", err);
     } finally {
       setIsLoading(false);
     }
@@ -55,7 +55,7 @@ export default function PharmacyDashboard() {
       // Optimistic update (realtime will also catch it)
       setPrescriptions(prev => prev.map(p => p.Name === rx.Name ? { ...p, pharmacy_status: 'Fulfilled' } : p));
     } catch (err) {
-      console.error("Error marking fulfilled:", err);
+      console.log("Error marking fulfilled:", err);
       alert("Error updating prescription.");
     }
   };

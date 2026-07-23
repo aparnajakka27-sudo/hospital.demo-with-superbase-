@@ -44,19 +44,30 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [adminEmail, setAdminEmail] = useState('Admin User');
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const checkAuth = async () => {
+      if (pathname === '/admin/login') return;
+      
+      const hasSession = localStorage.getItem("admin_session");
+      if (!hasSession) {
+        router.push('/admin/login');
+        return;
+      }
+
       const { data } = await supabase.auth.getUser();
       if (data?.user?.email) {
         setAdminEmail(data.user.email);
+      } else {
+        localStorage.removeItem("admin_session");
+        router.push('/admin/login');
       }
     };
-    fetchUser();
-  }, []);
+    checkAuth();
+  }, [pathname, router]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     localStorage.removeItem("admin_session");
-    router.push('/admin/login');
+    router.push('/');
   };
 
   // If we are on the login page, don't show the sidebar layout
