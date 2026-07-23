@@ -7,6 +7,7 @@ import {
   Edit, 
   Trash2, 
   Eye,
+  EyeOff,
   Filter,
   X
 } from 'lucide-react'
@@ -23,6 +24,7 @@ export default function DoctorsAdminPage() {
   const [formError, setFormError] = useState('');
   const [selectedDoctor, setSelectedDoctor] = useState<any>(null);
   const [departments, setDepartments] = useState<any[]>([]);
+  const [showPassword, setShowPassword] = useState(false);
   
   // New Doctor Form State
   const [newDoc, setNewDoc] = useState({
@@ -244,17 +246,20 @@ export default function DoctorsAdminPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">Department / Specialization</label>
-                  <select 
+                  <input 
                     required 
+                    type="text"
+                    list="departments-list"
+                    placeholder="Select or type department"
                     value={newDoc.specialization}
                     onChange={e => setNewDoc({...newDoc, specialization: e.target.value})}
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm text-slate-900"
-                  >
-                    <option value="" disabled>Select Department</option>
+                  />
+                  <datalist id="departments-list">
                     {departments.map((d, i) => (
-                      <option key={i} value={d.name}>{d.name}</option>
+                      <option key={i} value={d.name} />
                     ))}
-                  </select>
+                  </datalist>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -314,13 +319,22 @@ export default function DoctorsAdminPage() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
-                      <input 
-                        required 
-                        type="password" 
-                        value={newDoc.password}
-                        onChange={e => setNewDoc({...newDoc, password: e.target.value})}
-                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm text-slate-900"
-                      />
+                      <div className="relative">
+                        <input 
+                          required 
+                          type={showPassword ? "text" : "password"} 
+                          value={newDoc.password}
+                          onChange={e => setNewDoc({...newDoc, password: e.target.value})}
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm text-slate-900 pr-10"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-emerald-600 transition-colors"
+                        >
+                          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
