@@ -6,9 +6,11 @@ import { supabase } from '../../../lib/supabase'
 export default function PatientsAdminPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [patients, setPatients] = useState<any[]>([]);
+  const [allVisits, setAllVisits] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filterGender, setFilterGender] = useState('All');
   const [selectedPatient, setSelectedPatient] = useState<any>(null);
+  const [historyPatient, setHistoryPatient] = useState<any>(null);
 
   useEffect(() => {
     fetchPatients();
@@ -36,6 +38,7 @@ export default function PatientsAdminPage() {
         }
       });
       
+      setAllVisits(data || []);
       setPatients(Array.from(uniquePatientsMap.values()));
     } catch (error) {
       console.log("Error fetching patients:", error);
@@ -143,7 +146,11 @@ export default function PatientsAdminPage() {
                       >
                         <Eye size={18} />
                       </button>
-                      <button className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="View Medical Records">
+                      <button 
+                        onClick={() => setHistoryPatient(patient)}
+                        className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" 
+                        title="View Medical Records"
+                      >
                         <FileText size={18} />
                       </button>
                     </td>
@@ -292,6 +299,77 @@ export default function PatientsAdminPage() {
                 className="px-5 py-2 text-slate-700 bg-white border border-slate-300 rounded-lg text-sm font-bold hover:bg-slate-50 transition-colors shadow-sm"
               >
                 Close Profile
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Medical History Modal */}
+      {historyPatient && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={() => setHistoryPatient(null)}></div>
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="flex justify-between items-center p-6 border-b border-slate-100 shrink-0 bg-slate-50">
+              <div>
+                <h2 className="text-xl font-bold text-slate-900">Medical Records History</h2>
+                <p className="text-sm font-medium text-slate-500">
+                  Showing all recorded visits for <span className="font-bold text-emerald-700">{historyPatient.Name}</span>
+                </p>
+              </div>
+              <button onClick={() => setHistoryPatient(null)} className="text-slate-400 hover:text-slate-700 p-2 rounded-md hover:bg-slate-200 transition-colors">
+                <span className="sr-only">Close</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto bg-slate-50 space-y-6">
+              {allVisits
+                .filter(v => v.Name === historyPatient.Name && v.Phone === historyPatient.Phone)
+                .map((visit, idx) => (
+                  <div key={visit.id || idx} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div className="bg-slate-800 text-white px-5 py-3 flex justify-between items-center">
+                      <div className="flex items-center gap-4">
+                        <span className="font-bold">{visit.Date}</span>
+                        <span className="bg-white/20 px-2 py-0.5 rounded text-xs font-medium">{visit.Department}</span>
+                      </div>
+                      <span className="text-sm font-medium">Dr. {visit.Doctor || 'Unassigned'}</span>
+                    </div>
+                    <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Vitals & Symptoms</h4>
+                        <ul className="space-y-1 text-sm text-slate-700">
+                          <li><span className="font-semibold">Reason:</span> {visit.reason || 'N/A'}</li>
+                          <li><span className="font-semibold">BP:</span> {visit['Blood Pressure'] || visit.vitals_bp || 'N/A'}</li>
+                          <li><span className="font-semibold">Weight:</span> {visit.weight || visit.vitals_weight || 'N/A'}</li>
+                          <li><span className="font-semibold">Temp:</span> {visit.temperature || 'N/A'}</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Diagnosis & Treatment</h4>
+                        <div className="space-y-3">
+                          <div>
+                            <p className="text-sm text-slate-800 font-medium whitespace-pre-wrap">{visit.diagnosis_notes || 'No notes available.'}</p>
+                          </div>
+                          {visit.medicines_list && (
+                            <div className="bg-emerald-50 p-3 rounded-lg border border-emerald-100">
+                              <p className="text-xs font-bold text-emerald-700 mb-1">Prescription:</p>
+                              <p className="text-sm text-emerald-900 font-medium whitespace-pre-wrap">{visit.medicines_list}</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              ))}
+            </div>
+            
+            <div className="p-4 border-t border-slate-100 bg-white shrink-0 text-right">
+              <button 
+                onClick={() => setHistoryPatient(null)}
+                className="px-5 py-2 text-slate-700 bg-white border border-slate-300 rounded-lg text-sm font-bold hover:bg-slate-50 transition-colors shadow-sm"
+              >
+                Close Records
               </button>
             </div>
           </div>
