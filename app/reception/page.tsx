@@ -49,6 +49,7 @@ export default function ReceptionDashboard() {
 
   useEffect(() => {
     fetchPatients();
+    fetchDoctors();
     
     // Set up realtime subscription
     const subscription = supabase
