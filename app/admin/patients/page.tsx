@@ -8,6 +8,7 @@ export default function PatientsAdminPage() {
   const [patients, setPatients] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filterGender, setFilterGender] = useState('All');
+  const [selectedPatient, setSelectedPatient] = useState<any>(null);
 
   useEffect(() => {
     fetchPatients();
@@ -45,7 +46,7 @@ export default function PatientsAdminPage() {
 
   const filteredPatients = patients.filter(p => {
     const matchesSearch = p.Name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          p.Phone?.includes(searchTerm) ||
+                          p.Phone?.toString().includes(searchTerm) ||
                           p.token_number?.toString().includes(searchTerm);
                           
     const pGender = p.gender || "N/A";
@@ -135,7 +136,11 @@ export default function PatientsAdminPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right flex justify-end gap-2">
-                      <button className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="View Profile">
+                      <button 
+                        onClick={() => setSelectedPatient(patient)}
+                        className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" 
+                        title="View Profile"
+                      >
                         <Eye size={18} />
                       </button>
                       <button className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="View Medical Records">
@@ -149,6 +154,150 @@ export default function PatientsAdminPage() {
           </table>
         </div>
       </div>
+
+      {/* Patient Details Modal */}
+      {selectedPatient && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={() => setSelectedPatient(null)}></div>
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="flex justify-between items-center p-6 border-b border-slate-100 shrink-0 bg-slate-50">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xl">
+                  {(selectedPatient.Name || 'P').split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase()}
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-slate-900">{selectedPatient.Name}</h2>
+                  <p className="text-sm font-medium text-slate-500">Token ID: TKN-{selectedPatient.token_number || selectedPatient.id}</p>
+                </div>
+              </div>
+              <button onClick={() => setSelectedPatient(null)} className="text-slate-400 hover:text-slate-700 p-2 rounded-md hover:bg-slate-200 transition-colors">
+                <span className="sr-only">Close</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto bg-white space-y-8">
+              {/* Personal Details */}
+              <section>
+                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 border-b pb-2">Personal Information</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                    <p className="text-xs text-slate-500 mb-1">Age / Gender</p>
+                    <p className="font-semibold text-slate-900">{selectedPatient.age || 'N/A'} Yrs / {selectedPatient.gender || 'N/A'}</p>
+                  </div>
+                  <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                    <p className="text-xs text-slate-500 mb-1">Phone</p>
+                    <p className="font-semibold text-slate-900">{selectedPatient.Phone || 'N/A'}</p>
+                  </div>
+                  <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 md:col-span-2">
+                    <p className="text-xs text-slate-500 mb-1">Email</p>
+                    <p className="font-semibold text-slate-900 truncate">{selectedPatient.Email || 'N/A'}</p>
+                  </div>
+                  <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 md:col-span-2">
+                    <p className="text-xs text-slate-500 mb-1">City / Location</p>
+                    <p className="font-semibold text-slate-900">{selectedPatient.city || 'N/A'}</p>
+                  </div>
+                </div>
+              </section>
+
+              {/* Visit Details */}
+              <section>
+                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 border-b pb-2">Visit Details</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-blue-50/50 p-3 rounded-lg border border-blue-100">
+                    <p className="text-xs text-blue-600 mb-1">Date</p>
+                    <p className="font-semibold text-slate-900">{selectedPatient.Date}</p>
+                  </div>
+                  <div className="bg-blue-50/50 p-3 rounded-lg border border-blue-100">
+                    <p className="text-xs text-blue-600 mb-1">Department</p>
+                    <p className="font-semibold text-slate-900">{selectedPatient.Department || 'N/A'}</p>
+                  </div>
+                  <div className="bg-blue-50/50 p-3 rounded-lg border border-blue-100 md:col-span-2">
+                    <p className="text-xs text-blue-600 mb-1">Doctor</p>
+                    <p className="font-semibold text-slate-900">{selectedPatient.Doctor || 'N/A'}</p>
+                  </div>
+                  <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                    <p className="text-xs text-slate-500 mb-1">Visit Type</p>
+                    <p className="font-semibold text-slate-900">{selectedPatient.booking_type || 'Walk-In'}</p>
+                  </div>
+                  <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                    <p className="text-xs text-slate-500 mb-1">Triage Priority</p>
+                    <p className="font-semibold text-slate-900">{selectedPatient.triage_priority || 'Standard'}</p>
+                  </div>
+                  <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 md:col-span-2">
+                    <p className="text-xs text-slate-500 mb-1">Reason for Visit</p>
+                    <p className="font-semibold text-slate-900">{selectedPatient.reason || 'N/A'}</p>
+                  </div>
+                </div>
+              </section>
+
+              {/* Status Section */}
+              <section>
+                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 border-b pb-2">Tracking Status</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center">
+                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Queue</p>
+                    <span className="px-3 py-1 rounded-full text-sm font-bold bg-slate-200 text-slate-700">{selectedPatient.queue_status || 'Registered'}</span>
+                  </div>
+                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center">
+                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Pharmacy</p>
+                    <span className="px-3 py-1 rounded-full text-sm font-bold bg-slate-200 text-slate-700">{selectedPatient.pharmacy_status || 'N/A'}</span>
+                  </div>
+                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center">
+                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Billing</p>
+                    <span className="px-3 py-1 rounded-full text-sm font-bold bg-slate-200 text-slate-700">{selectedPatient.payment_status || 'Unpaid'}</span>
+                  </div>
+                </div>
+              </section>
+
+              {/* Vitals & Medical */}
+              <section>
+                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 border-b pb-2">Medical History & Vitals</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                  <div className="bg-rose-50 p-3 rounded-lg border border-rose-100">
+                    <p className="text-xs text-rose-600 mb-1">Blood Pressure</p>
+                    <p className="font-bold text-slate-900">{selectedPatient['Blood Pressure'] || selectedPatient.vitals_bp || 'N/A'}</p>
+                  </div>
+                  <div className="bg-rose-50 p-3 rounded-lg border border-rose-100">
+                    <p className="text-xs text-rose-600 mb-1">Temperature</p>
+                    <p className="font-bold text-slate-900">{selectedPatient.temperature || 'N/A'}</p>
+                  </div>
+                  <div className="bg-rose-50 p-3 rounded-lg border border-rose-100">
+                    <p className="text-xs text-rose-600 mb-1">Weight</p>
+                    <p className="font-bold text-slate-900">{selectedPatient.weight || selectedPatient.vitals_weight || 'N/A'}</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Doctor's Diagnosis / Notes</p>
+                    <p className="text-sm text-slate-800 whitespace-pre-wrap">{selectedPatient.diagnosis_notes || 'No diagnosis notes provided yet.'}</p>
+                  </div>
+                  
+                  <div className="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100">
+                    <p className="text-xs font-semibold text-emerald-600 uppercase tracking-wider mb-2">Prescribed Medicines</p>
+                    {selectedPatient.medicines_list ? (
+                      <p className="text-sm text-slate-800 whitespace-pre-wrap font-medium">{selectedPatient.medicines_list}</p>
+                    ) : (
+                      <p className="text-sm text-slate-500 italic">No medicines prescribed.</p>
+                    )}
+                  </div>
+                </div>
+              </section>
+            </div>
+            
+            <div className="p-4 border-t border-slate-100 bg-slate-50 shrink-0 text-right">
+              <button 
+                onClick={() => setSelectedPatient(null)}
+                className="px-5 py-2 text-slate-700 bg-white border border-slate-300 rounded-lg text-sm font-bold hover:bg-slate-50 transition-colors shadow-sm"
+              >
+                Close Profile
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }
