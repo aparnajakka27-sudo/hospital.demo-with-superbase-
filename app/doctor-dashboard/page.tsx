@@ -16,6 +16,7 @@ export default function DoctorDashboard() {
   
   const [visitHistory, setVisitHistory] = useState<any[]>([]);
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
+  const [expandedVisits, setExpandedVisits] = useState<number[]>([]);
 
   // Clinical Vitals & Notes
   const [notes, setNotes] = useState("");
@@ -81,7 +82,7 @@ export default function DoctorDashboard() {
       const { data, error } = await supabase
         .from('Booking Appointment')
         .select(`
-          Date, Doctor, diagnosis_notes, weight, "Blood Pressure", temperature, medicines_list
+          Date, Doctor, diagnosis_notes, weight, "Blood Pressure", temperature, medicines_list, reason
         `)
         .eq('Phone', phone)
         .order('created_at', { ascending: false });
@@ -94,6 +95,7 @@ export default function DoctorDashboard() {
       }
       
       setVisitHistory(data || []);
+      setExpandedVisits([]); // Reset expanded state when new patient history loads
     } catch (err: any) {
       console.log("Error fetching history:", err);
       alert("Error fetching history: " + (err.message || JSON.stringify(err)));
@@ -109,7 +111,8 @@ export default function DoctorDashboard() {
     setSmsLog(null);
     
     if (p.Phone) {
-      fetchVisitHistory(p.Phone, undefined);
+      setExpandedVisits([]);
+      fetchVisitHistory(p.Phone, p.id);
     } else {
       setVisitHistory([]);
     }
@@ -426,30 +429,66 @@ Wishing you a speedy recovery. 💙`;
                               <p className="text-xs text-gray-400">No past visits recorded for this patient.</p>
                             </div>
                           ) : (
-                            visitHistory.map((hist, idx) => (
-                              <div key={idx} className="border border-gray-100 rounded-lg p-3 bg-gray-50/50 text-sm">
-                                <div className="flex justify-between font-bold text-gray-800 mb-1">
-                                  <span>{hist.Date}</span>
-                                  <span className="text-xs text-gray-500 font-normal">Dr. {hist.Doctor}</span>
+                            visitHistory.map((hist, idx) => {
+                              const isExpanded = expandedVisits.includes(idx);
+                              return (
+                                <div key={idx} className="border border-gray-200 rounded-lg bg-white overflow-hidden text-sm shadow-sm transition-all">
+                                  <button 
+                                    onClick={() => toggleVisitExpand(idx)}
+                                    className="w-full flex justify-between items-center p-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left font-bold text-gray-800"
+                                  >
+                                    <div className="flex items-center gap-3">
+                                      <span className="text-primary">{hist.Date}</span>
+                                      <span className="text-xs text-gray-500 font-normal">Dr. {hist.Doctor}</span>
+                                    </div>
+                                    <ChevronDown size={16} className={`text-gray-400 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
+                                  </button>
+                                  
+                                  {isExpanded && (
+                                    <div className="p-4 bg-white border-t border-gray-100 animate-in slide-in-from-top-2">
+                                      {hist.reason && (
+                                        <div className="mb-3">
+                                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Chief Symptoms / Reason</p>
+                                          <p className="text-xs text-gray-700 font-medium">{hist.reason}</p>
+                                        </div>
+                                      )}
+                                      
+                                      {(hist.weight || hist["Blood Pressure"] || hist.temperature) && (
+                                        <div className="mb-3">
+                                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Vitals Recorded</p>
+                                          <p className="text-xs text-gray-600 font-medium bg-gray-50 p-2 rounded-md border border-gray-100">
+                                            {[hist.weight && `Wt: ${hist.weight}`, hist["Blood Pressure"] && `BP: ${hist["Blood Pressure"]} mmHg`, hist.temperature && `Temp: ${hist.temperature}`].filter(Boolean).join('  |  ')}
+                                          </p>
+                                        </div>
+                                      )}
+                                      
+                                      {hist.diagnosis_notes && (
+                                        <div className="mb-3">
+                                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Clinical Notes</p>
+                                          <p className="text-xs text-gray-700 bg-blue-50/50 p-2.5 rounded-md border border-blue-100/50">"{hist.diagnosis_notes}"</p>
+                                        </div>
+                                      )}
+                                      
+                                      {hist.medicines_list && hist.medicines_list.length > 0 ? (
+                                        <div className="mt-4">
+                                          <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-2">Prescribed Medicines</p>
+                                          <div className="bg-emerald-50/30 border border-emerald-100 rounded-lg p-2.5 space-y-2">
+                                            {hist.medicines_list.map((m:any, i:number) => (
+                                              <div key={i} className="flex justify-between items-center text-xs">
+                                                <span className="font-bold text-gray-800">{m.name}</span>
+                                                <span className="text-gray-500 font-medium">{m.frequency}</span>
+                                              </div>
+                                            ))}
+                                          </div>
+                                        </div>
+                                      ) : (
+                                        <p className="text-xs text-gray-400 italic mt-3">No medicines prescribed during this visit.</p>
+                                      )}
+                                    </div>
+                                  )}
                                 </div>
-                                {(hist.weight || hist["Blood Pressure"] || hist.temperature) && (
-                                  <p className="text-xs text-gray-500 mb-1">Vitals: {[hist.weight && `${hist.weight}`, hist["Blood Pressure"] && `${hist["Blood Pressure"]} mmHg`, hist.temperature].filter(Boolean).join(' • ')}</p>
-                                )}
-                                {hist.diagnosis_notes && (
-                                  <p className="text-xs text-gray-700 mt-1 mb-2">"{hist.diagnosis_notes}"</p>
-                                )}
-                                {hist.medicines_list && hist.medicines_list.length > 0 && (
-                                  <div className="mt-2 bg-white border border-gray-100 rounded p-2">
-                                    <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">Prescribed Medicines</p>
-                                    <ul className="list-disc pl-4 text-xs text-gray-600">
-                                      {hist.medicines_list.map((m:any, i:number) => (
-                                        <li key={i}>{m.name} ({m.frequency})</li>
-                                      ))}
-                                    </ul>
-                                  </div>
-                                )}
-                              </div>
-                            ))
+                              );
+                            })
                           )}
                         </div>
                       </div>
