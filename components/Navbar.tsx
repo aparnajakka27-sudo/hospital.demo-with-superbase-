@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Menu, X, HeartPulse, Smartphone, Users, Stethoscope, Pill, Star } from "lucide-react";
+import { Menu, X, HeartPulse, Smartphone, Users, Stethoscope, Pill, Star, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { hospitalConfig } from "../lib/hospitalConfig";
@@ -98,6 +98,11 @@ export default function Navbar() {
               <Link href="/pharmacy" className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-primary transition-colors">
                 <Pill size={16} className="text-amber-500" />
                 Pharmacy
+              </Link>
+
+              <Link href="/admin" className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-primary transition-colors">
+                <LayoutDashboard size={16} className="text-blue-500" />
+                Admin
               </Link>
             </div>
 
@@ -209,6 +214,9 @@ export default function Navbar() {
              </Link>
              <Link href="/pharmacy" className="flex items-center gap-3 text-sm font-medium text-gray-700">
                 <Pill size={18} className="text-amber-500" /> Pharmacy
+             </Link>
+             <Link href="/admin" className="flex items-center gap-3 text-sm font-medium text-gray-700">
+                <LayoutDashboard size={18} className="text-blue-500" /> Admin
              </Link>
           </div>
 
