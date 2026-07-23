@@ -28,13 +28,13 @@ export default function Home() {
       
       <div className="flex-1">
         <HeroSection />
-        <AboutSection />
         <SpecialitiesSection />
         <ServicesSection />
         <DoctorsSection />
         <GallerySection />
         <WhyChooseUsSection />
         <BuildingSection />
+        <AboutSection />
         <ContactInfoStrip />
       </div>
 
