@@ -5,6 +5,7 @@ import { supabase } from '../../../lib/supabase'
 
 export default function BillingAdminPage() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('All');
   const [bills, setBills] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
@@ -67,10 +68,45 @@ export default function BillingAdminPage() {
     }
   };
 
-  const filteredBills = bills.filter(bill => 
-    bill.Name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    bill.token_number?.toString().includes(searchTerm)
-  );
+  const exportToCSV = () => {
+    if (filteredBills.length === 0) return;
+    
+    const headers = ['Invoice/Token', 'Patient Name', 'Date', 'Amount (INR)', 'Status'];
+    const rows = filteredBills.map(bill => {
+      const isPaid = bill.payment_status === 'Paid';
+      const amount = 150 + (bill.pharmacy_status === 'Fulfilled' ? 45 : 0);
+      return [
+        `INV-TKN-${bill.token_number || bill.id}`,
+        `"${bill.Name || ''}"`,
+        bill.Date || '',
+        amount.toFixed(2),
+        isPaid ? 'Paid' : 'Pending'
+      ];
+    });
+    
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.join(','))
+    ].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `billing_report_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const filteredBills = bills.filter(bill => {
+    const matchesSearch = bill.Name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          bill.token_number?.toString().includes(searchTerm);
+    const matchesStatus = filterStatus === 'All' || 
+                         (filterStatus === 'Paid' && bill.payment_status === 'Paid') ||
+                         (filterStatus === 'Pending' && bill.payment_status !== 'Paid');
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <div className="space-y-6">
@@ -79,7 +115,7 @@ export default function BillingAdminPage() {
           <h1 className="text-2xl font-bold text-slate-900">Billing & Payments</h1>
           <p className="text-sm text-slate-500">Live transaction history pulled from Appointments.</p>
         </div>
-        <button className="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors shadow-sm">
+        <button onClick={exportToCSV} className="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors shadow-sm">
           <Download size={16} /> Export CSV
         </button>
       </div>
@@ -88,12 +124,12 @@ export default function BillingAdminPage() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
           <p className="text-sm text-slate-500 mb-1">Total Collected Revenue</p>
-          <h3 className="text-2xl font-bold text-emerald-600">${stats.totalRevenue.toLocaleString()}</h3>
+          <h3 className="text-2xl font-bold text-emerald-600">₹{stats.totalRevenue.toLocaleString()}</h3>
           <p className="text-xs text-slate-400 mt-2">{stats.paidInvoices} paid invoices</p>
         </div>
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
           <p className="text-sm text-slate-500 mb-1">Pending Payments</p>
-          <h3 className="text-2xl font-bold text-amber-500">${stats.pendingAmount.toLocaleString()}</h3>
+          <h3 className="text-2xl font-bold text-amber-500">₹{stats.pendingAmount.toLocaleString()}</h3>
           <p className="text-xs text-slate-400 mt-2">{stats.pendingInvoices} pending invoices</p>
         </div>
       </div>
@@ -109,6 +145,15 @@ export default function BillingAdminPage() {
             className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-emerald-500" 
           />
         </div>
+        <select 
+          value={filterStatus} 
+          onChange={(e) => setFilterStatus(e.target.value)}
+          className="px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:bg-white focus:border-emerald-500 text-slate-700 font-medium"
+        >
+          <option value="All">All Statuses</option>
+          <option value="Paid">Paid Only</option>
+          <option value="Pending">Pending Only</option>
+        </select>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
@@ -143,7 +188,7 @@ export default function BillingAdminPage() {
                       <td className="px-6 py-4 font-mono font-medium text-slate-700">INV-TKN-{bill.token_number || bill.id}</td>
                       <td className="px-6 py-4 font-semibold text-slate-900">{bill.Name}</td>
                       <td className="px-6 py-4">{bill.Date}</td>
-                      <td className="px-6 py-4 font-semibold text-slate-900">${amount.toFixed(2)}</td>
+                      <td className="px-6 py-4 font-semibold text-slate-900">₹{amount.toFixed(2)}</td>
                       <td className="px-6 py-4">
                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium 
                           ${isPaid ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}>
