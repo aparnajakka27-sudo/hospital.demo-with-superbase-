@@ -634,17 +634,17 @@ export default function ReceptionDashboard() {
                     </thead>
                     <tbody className="divide-y divide-slate-100">
                       {doctorsList.filter(d => 
-                        (d['Doctor Name'] || d.name || '').toLowerCase().includes(doctorSearchQuery.toLowerCase()) || 
-                        (d.Specialization || d.specialty || '').toLowerCase().includes(doctorSearchQuery.toLowerCase())
+                        (d['Doctor Name'] || d.Name || d.name || '').toLowerCase().includes(doctorSearchQuery.toLowerCase()) || 
+                        (d.Specialization || d.Department || d.specialty || '').toLowerCase().includes(doctorSearchQuery.toLowerCase())
                       ).map((doc) => (
                         <tr key={doc.id} className="hover:bg-slate-50 transition-colors">
                           <td className="px-6 py-4">
-                            <p className="font-bold text-slate-900">{doc['Doctor Name'] || doc.name}</p>
+                            <p className="font-bold text-slate-900">{doc['Doctor Name'] || doc.Name || doc.name}</p>
                             <p className="text-xs text-slate-500">{doc.Room || 'No Room Assigned'}</p>
                             <p className="text-xs text-emerald-600 font-semibold mt-1">Avail: {doc.Available_Days || 'N/A'}</p>
                           </td>
                           <td className="px-6 py-4 font-medium">
-                            {doc.Specialization || doc.specialty}
+                            {doc.Specialization || doc.Department || doc.specialty}
                           </td>
                           <td className="px-6 py-4">
                             <select
