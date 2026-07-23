@@ -90,9 +90,13 @@ export default function PrescriptionPage() {
             </div>
           </div>
           
-          <div className="text-center sm:text-right flex flex-col items-center sm:items-end w-full sm:w-auto">
-            <div className="bg-emerald-600 text-white font-bold tracking-widest text-sm py-1.5 px-6 inline-block mb-3 rounded-full sm:rounded-l-full sm:rounded-r-none">e-PRESCRIPTION</div>
-            <div className="text-xs font-semibold text-gray-600 mt-2">
+          <div className="text-center sm:text-right flex flex-col items-center sm:items-end w-full sm:w-auto gap-2">
+            <div className="bg-emerald-600 text-white font-bold tracking-widest text-sm py-1.5 px-6 inline-block rounded-full sm:rounded-l-full sm:rounded-r-none">e-PRESCRIPTION</div>
+            <div className="bg-emerald-50 border-2 border-emerald-200 text-emerald-700 rounded-lg px-4 py-1.5 text-center inline-block">
+              <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-0.5">Token Number</p>
+              <p className="text-3xl font-black leading-none">{data.token_number || 'N/A'}</p>
+            </div>
+            <div className="text-xs font-semibold text-gray-600 mt-1">
               <p>Consultation Date: {new Date(data.created_at || new Date()).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</p>
             </div>
           </div>
@@ -125,11 +129,7 @@ export default function PrescriptionPage() {
             <p className="text-xs text-gray-500 font-semibold mb-0.5">Address</p>
             <p className="font-bold text-gray-900">Hyderabad, Telangana</p>
           </div>
-          <div>
-            <p className="text-xs text-gray-500 font-semibold mb-0.5">Token Number</p>
-            <p className="font-bold text-gray-900">{data.token_number || 'N/A'}</p>
-          </div>
-          <div className="col-span-1 sm:col-span-3">
+          <div className="col-span-2 sm:col-span-4">
             <p className="text-xs text-gray-500 font-semibold mb-0.5">Vitals Recorded</p>
             <p className="font-bold text-gray-900">Wt: {data.weight || '--'} | BP: {data["Blood Pressure"] || '--'} | Temp: {data.temperature || '--'}</p>
           </div>

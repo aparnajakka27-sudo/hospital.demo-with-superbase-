@@ -97,7 +97,13 @@ export default function ReceiptPage() {
           </div>
           
           <div className="text-center sm:text-right w-full sm:w-auto">
-            <div className="bg-[#1A56A9] text-white font-bold tracking-widest text-sm py-1.5 px-6 inline-block mb-3">RECEIPT</div>
+            <div className="flex flex-col items-center sm:items-end mb-3 gap-2">
+              <div className="bg-[#1A56A9] text-white font-bold tracking-widest text-sm py-1.5 px-6 inline-block">RECEIPT</div>
+              <div className="bg-blue-50 border-2 border-blue-200 text-[#1A56A9] rounded-lg px-4 py-1.5 text-center inline-block">
+                <p className="text-[10px] font-bold text-blue-600 uppercase tracking-wider mb-0.5">Token Number</p>
+                <p className="text-3xl font-black leading-none">{data.token_number || 'N/A'}</p>
+              </div>
+            </div>
             <table className="text-xs text-left mx-auto sm:ml-auto sm:mr-0">
               <tbody>
                 <tr><td className="pr-3 text-gray-500 font-semibold py-0.5">Receipt No</td><td className="font-bold text-gray-800">: {receiptNo}</td></tr>
@@ -140,8 +146,13 @@ export default function ReceiptPage() {
             <p className="font-bold text-gray-900">{data.booking_type === 'Online' ? 'Tele/Online' : 'OPD Consultation'}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-500 font-semibold mb-0.5">Token Number</p>
-            <p className="font-bold text-gray-900">{data.token_number || 'N/A'}</p>
+            <p className="text-xs text-gray-500 font-semibold mb-0.5">Vitals</p>
+            <p className="font-bold text-gray-900">
+              {data.weight ? `${data.weight}, ` : ''}
+              {data['Blood Pressure'] ? `${data['Blood Pressure']}, ` : ''}
+              {data.temperature || ''}
+              {!data.weight && !data['Blood Pressure'] && !data.temperature && 'N/A'}
+            </p>
           </div>
         </div>
 
