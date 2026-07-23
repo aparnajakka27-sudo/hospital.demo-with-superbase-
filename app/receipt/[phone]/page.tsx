@@ -82,11 +82,11 @@ export default function ReceiptPage() {
               </svg>
             </div>
             <div>
-              <h1 className="text-2xl font-extrabold text-[#0B1B36] tracking-tight">HOPE <span className="font-light">SUPER SPECIALITY</span> HOSPITAL</h1>
+              <h1 className="text-2xl font-extrabold text-[#0B1B36] tracking-tight">HORIZON <span className="font-light">SUPER SPECIALITY</span> HOSPITAL</h1>
               <div className="text-[11px] text-gray-500 mt-1 space-y-0.5 font-medium">
                 <p>123, HealthCare Road, Banjara Hills, Hyderabad, Telangana - 500034</p>
-                <p>Phone: +91 40 1234 5678 | Email: info@hopehospital.com</p>
-                <p>Website: www.hopehospital.com</p>
+                <p>Phone: +91 40 1234 5678 | Email: info@horizonhospital.com</p>
+                <p>Website: www.horizonhospital.com</p>
               </div>
             </div>
           </div>
@@ -195,7 +195,7 @@ export default function ReceiptPage() {
             <p className="text-xs font-bold text-gray-900 mb-1">Amount in Words:</p>
             <p className="text-sm font-semibold text-gray-700 mb-6">Six Hundred Rupees Only</p>
             
-            <p className="text-xs font-bold text-blue-800">Thank you for choosing HOPE SUPER SPECIALITY HOSPITAL.</p>
+            <p className="text-xs font-bold text-blue-800">Thank you for choosing HORIZON SUPER SPECIALITY HOSPITAL.</p>
             <p className="text-xs font-medium text-gray-600 mt-0.5">We wish you good health!</p>
           </div>
           <div className="text-center">
@@ -203,7 +203,7 @@ export default function ReceiptPage() {
             <div className="h-10 w-32 border-b border-gray-400 mx-auto flex items-end justify-center mb-1">
               <span className="font-serif italic text-2xl text-blue-900 opacity-80 leading-3 -mb-1">Manager</span>
             </div>
-            <p className="text-[10px] font-bold text-gray-700">For HOPE SUPER SPECIALITY HOSPITAL</p>
+            <p className="text-[10px] font-bold text-gray-700">For HORIZON SUPER SPECIALITY HOSPITAL</p>
           </div>
         </div>
 

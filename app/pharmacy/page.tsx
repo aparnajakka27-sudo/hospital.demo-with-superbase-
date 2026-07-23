@@ -10,6 +10,10 @@ export default function PharmacyDashboard() {
   const [filter, setFilter] = useState("All Prescriptions");
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [issueModalOpen, setIssueModalOpen] = useState(false);
+  const [selectedRxForIssue, setSelectedRxForIssue] = useState<any>(null);
+  const [issueType, setIssueType] = useState('Admin');
+  const [issueMessage, setIssueMessage] = useState('');
 
   useEffect(() => {
     fetchPrescriptions();
@@ -139,6 +143,55 @@ export default function PharmacyDashboard() {
           </div>
         </div>
 
+        {/* Issue Report Modal */}
+        {issueModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={() => setIssueModalOpen(false)}></div>
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md relative z-10 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200">
+              <div className="p-5 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+                <h3 className="font-bold text-gray-900">Report Issue</h3>
+                <button onClick={() => setIssueModalOpen(false)} className="text-gray-400 hover:text-gray-600 font-bold">
+                  ✕
+                </button>
+              </div>
+              <div className="p-5 space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 mb-2">Send To</label>
+                  <select 
+                    value={issueType} 
+                    onChange={(e) => setIssueType(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-amber-500 font-semibold"
+                  >
+                    <option value="Admin">Admin Dashboard (e.g., Out of Stock, Inventory)</option>
+                    <option value="Doctor">Doctor's Desk (e.g., Prescription Concern)</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 mb-2">Message</label>
+                  <textarea 
+                    rows={4}
+                    value={issueMessage}
+                    onChange={(e) => setIssueMessage(e.target.value)}
+                    placeholder="Describe the issue..."
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-amber-500"
+                  ></textarea>
+                </div>
+                <button 
+                  onClick={() => {
+                    alert(`Issue successfully sent to ${issueType === 'Admin' ? 'Admin Dashboard' : "Doctor's Desk"}:\n\n${issueMessage}`);
+                    setIssueModalOpen(false);
+                    setIssueMessage('');
+                  }}
+                  disabled={!issueMessage.trim()}
+                  className="w-full bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white font-bold py-2.5 rounded-lg transition-colors text-sm"
+                >
+                  Send Report
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Prescriptions List */}
         {isLoading ? (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center py-24">
@@ -194,21 +247,33 @@ export default function PharmacyDashboard() {
                 </div>
 
                 {rx.pharmacy_status === "Pending Dispense" ? (
-                  <div className="p-4 bg-gray-50 border-t border-gray-100">
+                  <div className="p-4 bg-gray-50 border-t border-gray-100 space-y-2">
                     <button 
                       onClick={() => handleMarkFulfilled(rx)}
                       className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2.5 rounded-lg text-sm transition-colors shadow-sm flex items-center justify-center gap-2 active:scale-[0.98]"
                     >
                       <CheckCircle2 size={16} /> Mark as Fulfilled & Handed
                     </button>
+                    <button 
+                      onClick={() => { setSelectedRxForIssue(rx); setIssueType('Admin'); setIssueModalOpen(true); }}
+                      className="w-full bg-red-50 hover:bg-red-100 text-red-600 font-bold py-2 rounded-lg text-xs transition-colors border border-red-200"
+                    >
+                      Report Issue
+                    </button>
                   </div>
                 ) : (
-                  <div className="p-4 bg-gray-50 border-t border-gray-100">
+                  <div className="p-4 bg-gray-50 border-t border-gray-100 space-y-2">
                     <button 
                       onClick={() => handleWhatsApp(rx)}
                       className="w-full bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 font-bold py-2.5 rounded-lg text-sm transition-colors shadow-sm flex items-center justify-center gap-2"
                     >
                       <MessageSquare size={16} /> Resend WhatsApp Reminder
+                    </button>
+                    <button 
+                      onClick={() => { setSelectedRxForIssue(rx); setIssueType('Admin'); setIssueModalOpen(true); }}
+                      className="w-full bg-red-50 hover:bg-red-100 text-red-600 font-bold py-2 rounded-lg text-xs transition-colors border border-red-200"
+                    >
+                      Report Issue
                     </button>
                   </div>
                 )}

@@ -19,6 +19,7 @@ export default function ReceptionDashboard() {
   const [isRosterOpen, setIsRosterOpen] = useState(false);
   const [doctorsList, setDoctorsList] = useState<any[]>([]);
   const [isDoctorsLoading, setIsDoctorsLoading] = useState(false);
+  const [doctorSearchQuery, setDoctorSearchQuery] = useState("");
 
   // Form State
   const [editingPatient, setEditingPatient] = useState<any>(null);
@@ -200,7 +201,8 @@ export default function ReceptionDashboard() {
         error = updateError;
       } else {
         // Insert new record (trigger handles token_number)
-        const { error: insertError } = await supabase.from('Booking Appointment').insert([
+        // Using upsert to avoid duplicate key errors if a patient with the same primary key already exists
+        const { error: insertError } = await supabase.from('Booking Appointment').upsert([
           {
             ...payload,
             booking_type: "Walk-in"
@@ -557,9 +559,35 @@ export default function ReceptionDashboard() {
                     <p className="text-xs text-slate-500">Manage today's active duty doctors</p>
                   </div>
                 </div>
-                <button onClick={() => setIsRosterOpen(false)} className="text-slate-400 hover:text-slate-700 p-1 rounded-md hover:bg-slate-200 transition-colors">
-                  <XCircle size={24} />
-                </button>
+                <div className="flex items-center gap-4">
+                  <div className="relative hidden sm:block">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                    <input 
+                      type="text" 
+                      placeholder="Search doctor..." 
+                      value={doctorSearchQuery}
+                      onChange={(e) => setDoctorSearchQuery(e.target.value)}
+                      className="pl-9 pr-4 py-1.5 text-sm border border-gray-200 rounded-full focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+                  <button onClick={() => setIsRosterOpen(false)} className="text-slate-400 hover:text-slate-700 p-1 rounded-md hover:bg-slate-200 transition-colors">
+                    <XCircle size={24} />
+                  </button>
+                </div>
+              </div>
+              
+              {/* Mobile search bar */}
+              <div className="p-4 border-b border-slate-100 sm:hidden">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                  <input 
+                    type="text" 
+                    placeholder="Search doctor..." 
+                    value={doctorSearchQuery}
+                    onChange={(e) => setDoctorSearchQuery(e.target.value)}
+                    className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-full focus:outline-none focus:border-blue-500"
+                  />
+                </div>
               </div>
               
               <div className="p-0 overflow-y-auto bg-slate-50">
@@ -582,7 +610,10 @@ export default function ReceptionDashboard() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                      {doctorsList.map((doc) => (
+                      {doctorsList.filter(d => 
+                        (d['Doctor Name'] || d.name || '').toLowerCase().includes(doctorSearchQuery.toLowerCase()) || 
+                        (d.Specialization || d.specialty || '').toLowerCase().includes(doctorSearchQuery.toLowerCase())
+                      ).map((doc) => (
                         <tr key={doc.id} className="hover:bg-slate-50 transition-colors">
                           <td className="px-6 py-4">
                             <p className="font-bold text-slate-900">{doc['Doctor Name'] || doc.name}</p>

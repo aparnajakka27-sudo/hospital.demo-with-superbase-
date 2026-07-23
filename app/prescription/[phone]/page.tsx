@@ -76,11 +76,11 @@ export default function PrescriptionPage() {
               </svg>
             </div>
             <div>
-              <h1 className="text-2xl font-extrabold text-[#0B1B36] tracking-tight">HOPE <span className="font-light">SUPER SPECIALITY</span> HOSPITAL</h1>
+              <h1 className="text-2xl font-extrabold text-[#0B1B36] tracking-tight">HORIZON <span className="font-light">SUPER SPECIALITY</span> HOSPITAL</h1>
               <div className="text-[11px] text-gray-500 mt-1 space-y-0.5 font-medium">
                 <p>123, HealthCare Road, Banjara Hills, Hyderabad, Telangana - 500034</p>
-                <p>Phone: +91 40 1234 5678 | Email: info@hopehospital.com</p>
-                <p>Website: www.hopehospital.com</p>
+                <p>Phone: +91 40 1234 5678 | Email: info@horizonhospital.com</p>
+                <p>Website: www.horizonhospital.com</p>
               </div>
             </div>
           </div>
