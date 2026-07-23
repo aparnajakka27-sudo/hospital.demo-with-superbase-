@@ -100,8 +100,8 @@ export default function PatientsAdminPage() {
                   </td>
                 </tr>
               ) : (
-                filteredPatients.map((patient) => (
-                  <tr key={patient.id} className="hover:bg-slate-50 transition-colors">
+                filteredPatients.map((patient, idx) => (
+                  <tr key={patient.id || `pat-${idx}`} className="hover:bg-slate-50 transition-colors">
                     <td className="px-6 py-4 font-mono font-medium text-slate-700">
                       TKN-{patient.token_number || patient.id}
                     </td>

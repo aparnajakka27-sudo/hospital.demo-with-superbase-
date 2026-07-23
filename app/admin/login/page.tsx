@@ -3,6 +3,8 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Activity, Lock, Mail, AlertCircle } from 'lucide-react'
 
+import { supabase } from '../../../lib/supabase'
+
 export default function AdminLogin() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -16,20 +18,19 @@ export default function AdminLogin() {
     setError(null)
     
     try {
-      // In a fully integrated Supabase auth setup:
-      // const { error } = await supabase.auth.signInWithPassword({ email, password })
-      // if (error) throw error
-      // 
-      // // Optionally check role here before pushing, or let middleware do it.
+      const { data, error } = await supabase.auth.signInWithPassword({ 
+        email, 
+        password 
+      })
       
-      // For this phase, simulate a login delay to demonstrate the UI
-      await new Promise(resolve => setTimeout(resolve, 800))
+      if (error) {
+        throw error
+      }
       
-      // Temporary bypass for demonstration purposes:
-      if (email === 'admin@horizon.com' && password === 'admin') {
+      if (data.session) {
+        // Set a marker for our middleware/layout if needed
+        localStorage.setItem("admin_session", "true")
         router.push('/admin')
-      } else {
-        throw new Error('Invalid email or password. Hint: admin@horizon.com / admin')
       }
     } catch (err: any) {
       setError(err.message || 'An error occurred during login.')
@@ -81,7 +82,7 @@ export default function AdminLogin() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg shadow-sm placeholder-slate-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm transition-colors"
+                  className="appearance-none block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg shadow-sm placeholder-slate-400 text-slate-900 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm transition-colors"
                   placeholder="admin@horizon.com"
                 />
               </div>
@@ -100,7 +101,7 @@ export default function AdminLogin() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg shadow-sm placeholder-slate-400 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm transition-colors"
+                  className="appearance-none block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-lg shadow-sm placeholder-slate-400 text-slate-900 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm transition-colors"
                   placeholder="••••••••"
                 />
               </div>
