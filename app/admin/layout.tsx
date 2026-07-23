@@ -40,6 +40,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const [adminEmail, setAdminEmail] = useState('Admin User');
 
   useEffect(() => {
@@ -150,16 +151,48 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
             <div className="h-6 w-px bg-slate-200 hidden sm:block"></div>
 
-            <button className="flex items-center gap-2 hover:bg-slate-50 p-1 rounded-lg transition-colors cursor-pointer">
-              <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-sm">
-                AD
-              </div>
-              <div className="hidden sm:block text-left">
-                <p className="text-sm font-semibold text-slate-700 leading-tight">{adminEmail}</p>
-                <p className="text-[10px] text-slate-500 font-medium">Logged In</p>
-              </div>
-              <ChevronDown size={14} className="text-slate-400 hidden sm:block" />
-            </button>
+            <div className="relative">
+              <button 
+                onClick={() => setProfileOpen(!profileOpen)}
+                className="flex items-center gap-2 hover:bg-slate-50 p-1 rounded-lg transition-colors cursor-pointer"
+              >
+                <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-sm">
+                  {adminEmail ? adminEmail.charAt(0).toUpperCase() : 'A'}
+                </div>
+                <div className="hidden sm:block text-left">
+                  <p className="text-sm font-semibold text-slate-700 leading-tight">{adminEmail}</p>
+                  <p className="text-[10px] text-slate-500 font-medium">Logged In</p>
+                </div>
+                <ChevronDown size={14} className="text-slate-400 hidden sm:block" />
+              </button>
+              
+              {profileOpen && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-40"
+                    onClick={() => setProfileOpen(false)}
+                  ></div>
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-50">
+                    <div className="px-4 py-2 border-b border-slate-100">
+                      <p className="text-sm font-medium text-slate-900 truncate">{adminEmail}</p>
+                    </div>
+                    <button 
+                      onClick={() => { setProfileOpen(false); /* future profile logic */ }}
+                      className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                    >
+                      My Profile
+                    </button>
+                    <button 
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-slate-50 transition-colors flex items-center gap-2"
+                    >
+                      <LogOut size={14} />
+                      Sign out
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </header>
 
