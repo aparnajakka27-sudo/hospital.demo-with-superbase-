@@ -43,6 +43,7 @@ export default function AdminDashboardPage() {
 
   const [revenueData, setRevenueData] = useState<any[]>([]);
   const [departmentData, setDepartmentData] = useState<any[]>([]);
+  const [statusData, setStatusData] = useState<any[]>([]);
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const [pharmacyStats, setPharmacyStats] = useState({ sales: 0, fulfilledCount: 0 });
 
@@ -133,6 +134,14 @@ export default function AdminDashboardPage() {
         deptCounts[d] = (deptCounts[d] || 0) + 1;
       });
       setDepartmentData(Object.keys(deptCounts).map(k => ({ name: k, value: deptCounts[k] })));
+
+      // Status Distribution (Today's Queue)
+      const statusCounts: Record<string, number> = {};
+      todayAppts.forEach(a => {
+        const s = a.queue_status || 'Scheduled';
+        statusCounts[s] = (statusCounts[s] || 0) + 1;
+      });
+      setStatusData(Object.keys(statusCounts).map(k => ({ name: k, value: statusCounts[k] })));
 
       // Revenue Trend (Last 7 days)
       const trendMap: Record<string, number> = {};
@@ -245,7 +254,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Main Charts Area */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Revenue Chart */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 lg:col-span-2">
           <div className="flex justify-between items-center mb-6">
@@ -275,7 +284,7 @@ export default function AdminDashboardPage() {
 
         {/* Dept Breakdown */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-          <h3 className="text-lg font-bold text-slate-800 mb-6">Appointments by Department</h3>
+          <h3 className="text-lg font-bold text-slate-800 mb-6">By Department</h3>
           <div className="h-[200px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -299,13 +308,70 @@ export default function AdminDashboardPage() {
               </PieChart>
             </ResponsiveContainer>
           </div>
-          <div className="mt-6 grid grid-cols-2 gap-y-3 gap-x-2">
+          <div className="mt-6 grid grid-cols-1 gap-y-3 gap-x-2">
             {departmentData.slice(0, 4).map((dept, idx) => (
-              <div key={dept.name} className="flex items-center text-xs">
-                <span className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: COLORS[idx] }}></span>
-                <span className="text-slate-600 truncate">{dept.name}</span>
+              <div key={dept.name} className="flex items-center justify-between text-xs w-full">
+                <div className="flex items-center">
+                  <span className="w-2 h-2 rounded-full mr-2 shrink-0" style={{ backgroundColor: COLORS[idx] }}></span>
+                  <span className="text-slate-600 truncate max-w-[90px]">{dept.name}</span>
+                </div>
+                <span className="font-semibold">{dept.value}</span>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Status Breakdown */}
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+          <h3 className="text-lg font-bold text-slate-800 mb-6">Today's Status</h3>
+          <div className="h-[200px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={statusData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={2}
+                  dataKey="value"
+                >
+                  {statusData.map((entry, index) => {
+                    // Match colors specifically for status
+                    let color = '#64748b'; // default gray
+                    if(entry.name === 'Waiting') color = '#f59e0b'; // amber
+                    if(entry.name === 'With Doctor') color = '#0ea5e9'; // blue
+                    if(entry.name === 'Completed') color = '#10b981'; // green
+                    if(entry.name === 'No-show') color = '#ef4444'; // red
+                    if(entry.name === 'Scheduled') color = '#6366f1'; // indigo
+                    return <Cell key={`cell-${index}`} fill={color} />;
+                  })}
+                </Pie>
+                <Tooltip 
+                  formatter={(value: any) => [value, 'Patients']}
+                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="mt-6 grid grid-cols-1 gap-y-3 gap-x-2">
+            {statusData.map((stat, idx) => {
+              let color = '#64748b';
+              if(stat.name === 'Waiting') color = '#f59e0b';
+              if(stat.name === 'With Doctor') color = '#0ea5e9';
+              if(stat.name === 'Completed') color = '#10b981';
+              if(stat.name === 'No-show') color = '#ef4444';
+              if(stat.name === 'Scheduled') color = '#6366f1';
+              return (
+                <div key={stat.name} className="flex items-center justify-between text-xs w-full">
+                  <div className="flex items-center">
+                    <span className="w-2 h-2 rounded-full mr-2 shrink-0" style={{ backgroundColor: color }}></span>
+                    <span className="text-slate-600 truncate max-w-[90px]">{stat.name}</span>
+                  </div>
+                  <span className="font-semibold">{stat.value}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
