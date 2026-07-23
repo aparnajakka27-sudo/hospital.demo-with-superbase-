@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { supabase } from '../../lib/supabase'
@@ -40,6 +40,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [adminEmail, setAdminEmail] = useState('Admin User');
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (data?.user?.email) {
+        setAdminEmail(data.user.email);
+      }
+    };
+    fetchUser();
+  }, []);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -139,13 +150,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
             <div className="h-6 w-px bg-slate-200 hidden sm:block"></div>
 
-            <button className="flex items-center gap-2 hover:bg-slate-50 p-1 rounded-lg transition-colors">
+            <button className="flex items-center gap-2 hover:bg-slate-50 p-1 rounded-lg transition-colors cursor-pointer">
               <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-sm">
                 AD
               </div>
               <div className="hidden sm:block text-left">
-                <p className="text-sm font-semibold text-slate-700 leading-tight">Admin User</p>
-                <p className="text-[10px] text-slate-500 font-medium">Super Admin</p>
+                <p className="text-sm font-semibold text-slate-700 leading-tight">{adminEmail}</p>
+                <p className="text-[10px] text-slate-500 font-medium">Logged In</p>
               </div>
               <ChevronDown size={14} className="text-slate-400 hidden sm:block" />
             </button>
