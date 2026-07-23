@@ -9,11 +9,11 @@ import { useAppointment } from "../context/AppointmentContext";
 
 const navLinks = [
   { name: "Home", href: "#home" },
+  { name: "About Us", href: "#about" },
   { name: "Specialities", href: "#specialities" },
   { name: "Services", href: "#services" },
   { name: "Doctors", href: "#doctors" },
   { name: "Facilities", href: "#gallery" },
-  { name: "About Us", href: "#about" },
   { name: "Contact Us", href: "#contact" },
 ];
 
