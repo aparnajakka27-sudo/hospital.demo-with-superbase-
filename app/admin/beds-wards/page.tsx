@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import { Plus, BedDouble, Trash2 } from 'lucide-react'
-import { supabase } from '../../lib/supabase'
+import { supabase } from '../../../lib/supabase'
 
 export default function BedsAdminPage() {
   const [beds, setBeds] = useState<any[]>([]);

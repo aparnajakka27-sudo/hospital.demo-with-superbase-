@@ -10,7 +10,7 @@ import {
   Filter,
   X
 } from 'lucide-react'
-import { supabase } from '../../lib/supabase'
+import { supabase } from '../../../lib/supabase'
 
 export default function DoctorsAdminPage() {
   const [searchTerm, setSearchTerm] = useState('');

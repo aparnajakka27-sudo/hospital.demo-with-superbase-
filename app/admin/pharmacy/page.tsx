@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import { Pill, AlertTriangle, PackagePlus, ArrowRightLeft, X, Trash2 } from 'lucide-react'
-import { supabase } from '../../lib/supabase'
+import { supabase } from '../../../lib/supabase'
 
 export default function PharmacyAdminPage() {
   const [inventory, setInventory] = useState<any[]>([]);
