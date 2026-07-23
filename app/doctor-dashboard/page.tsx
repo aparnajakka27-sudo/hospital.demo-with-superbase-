@@ -263,10 +263,10 @@ Wishing you a speedy recovery. 💙`;
             <p className="text-gray-500 text-sm">Review visit history, record vitals, and dispatch prescriptions to the pharmacy directly via Token Number.</p>
           </div>
           
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-semibold text-gray-500">Active Doctor:</span>
-            <div className="relative">
-              <select className="appearance-none bg-white border border-emerald-500 rounded-full px-5 py-2.5 pr-10 text-sm font-bold text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 w-full md:w-auto mt-2 md:mt-0">
+            <span className="text-sm font-semibold text-gray-500 whitespace-nowrap">Active Doctor:</span>
+            <div className="relative w-full sm:w-auto max-w-full">
+              <select className="appearance-none bg-white border border-emerald-500 rounded-full px-5 py-2.5 pr-10 text-sm font-bold text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer w-full max-w-full truncate">
                 <option>{user.name} ({user.specialty}) - Room {user.room}</option>
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-emerald-600">
