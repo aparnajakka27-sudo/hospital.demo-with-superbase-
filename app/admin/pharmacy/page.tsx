@@ -1,6 +1,15 @@
 "use client"
 import React, { useState, useEffect } from 'react'
-import { Pill, AlertTriangle, PackagePlus, ArrowRightLeft, X, Trash2 } from 'lucide-react'
+import { Pill, AlertTriangle, PackagePlus, ArrowRightLeft, X, Trash2, Calendar } from 'lucide-react'
+import { 
+  AreaChart, 
+  Area, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer 
+} from 'recharts'
 import { supabase } from '../../../lib/supabase'
 
 export default function PharmacyAdminPage() {
@@ -21,9 +30,12 @@ export default function PharmacyAdminPage() {
     reorder_level: '10'
   });
 
+  const [timeRange, setTimeRange] = useState('7');
+  const [revenueData, setRevenueData] = useState<any[]>([]);
+
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [timeRange]);
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -44,22 +56,44 @@ export default function PharmacyAdminPage() {
       const lowStockCount = medicines.filter(m => m.stock_quantity <= (m.reorder_level || 10)).length;
       const totalMeds = medicines.length;
 
-      // 2. Fetch Today's Sales from Booking Appointment
+      // 2. Fetch Sales from Booking Appointment
       const today = new Date().toISOString().split('T')[0];
       const { data: appts, error: apptError } = await supabase
         .from('Booking Appointment')
-        .select('pharmacy_status')
-        .eq('Date', today);
+        .select('pharmacy_status, Date')
+        .eq('pharmacy_status', 'Fulfilled');
         
       if (apptError) throw apptError;
       
-      const fulfilled = (appts || []).filter(a => a.pharmacy_status === 'Fulfilled').length;
+      const allSales = appts || [];
+      const fulfilledToday = allSales.filter(a => a.Date === today).length;
       
       setStats({
-        sales: fulfilled * 45, // Generic assumption for demo
+        sales: fulfilledToday * 45, // Generic assumption for demo
         lowStock: lowStockCount,
         total: totalMeds
       });
+
+      // Calculate trend data based on timeRange
+      const daysToFetch = parseInt(timeRange);
+      const trendMap: Record<string, number> = {};
+      
+      // Initialize map
+      for(let i=daysToFetch-1; i>=0; i--) {
+        const d = new Date(Date.now() - i * 86400000).toISOString().split('T')[0];
+        trendMap[d] = 0;
+      }
+      
+      allSales.forEach(a => {
+        if (trendMap[a.Date] !== undefined) {
+          trendMap[a.Date] += 45; // $45 per prescription
+        }
+      });
+      
+      setRevenueData(Object.keys(trendMap).map(k => ({ 
+        name: k.split('-').slice(1).join('/'), // MM/DD
+        revenue: trendMap[k] 
+      })));
 
     } catch (error) {
       console.error("Error fetching pharmacy data:", error);
@@ -114,12 +148,56 @@ export default function PharmacyAdminPage() {
           <h1 className="text-2xl font-bold text-slate-900">Pharmacy & Inventory</h1>
           <p className="text-sm text-slate-500">Live stock management connected to Supabase.</p>
         </div>
-        <button 
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 bg-[#0a4d40] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#073a30] transition-colors"
-        >
-          <PackagePlus size={16} /> Add Stock
-        </button>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm">
+            <Calendar className="text-slate-400" size={16} />
+            <select 
+              value={timeRange}
+              onChange={(e) => setTimeRange(e.target.value)}
+              className="text-sm font-bold text-slate-700 bg-transparent border-none outline-none cursor-pointer py-0.5"
+            >
+              <option value="7">Last 7 Days</option>
+              <option value="30">Last 30 Days</option>
+            </select>
+          </div>
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center gap-2 bg-[#0a4d40] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#073a30] transition-colors shadow-sm"
+          >
+            <PackagePlus size={16} /> Add Stock
+          </button>
+        </div>
+      </div>
+
+      {/* Revenue Graph */}
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+        <h3 className="text-lg font-bold text-slate-800 mb-6">Pharmacy Revenue Trend</h3>
+        <div className="h-[250px] w-full">
+          {isLoading ? (
+            <div className="w-full h-full flex justify-center items-center text-slate-400 text-sm">
+              Loading chart...
+            </div>
+          ) : (
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={revenueData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorPharma" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} tickFormatter={(value) => `$${value}`} />
+                <Tooltip 
+                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                  formatter={(value: any) => [`$${value}`, 'Revenue']}
+                />
+                <Area type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorPharma)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
