@@ -25,26 +25,28 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [dynamicDepartments, setDynamicDepartments] = useState<string[]>([]);
+  const [dynamicDoctors, setDynamicDoctors] = useState<any[]>([]);
   const [isLoadingDepartments, setIsLoadingDepartments] = useState(true);
   const [fetchError, setFetchError] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
     
-    async function fetchDepartments() {
+    async function fetchData() {
       try {
-        const { data, error } = await supabase
-          .from("Departments")
-          .select("Names")
-          .order("Names");
+        const [deptRes, docRes] = await Promise.all([
+          supabase.from("Departments").select("Names").order("Names"),
+          supabase.from("Doctors").select("*")
+        ]);
           
         if (!isMounted) return;
 
-        if (error) {
-          console.error(error);
+        if (deptRes.error || docRes.error) {
+          console.error(deptRes.error || docRes.error);
           setFetchError(true);
-        } else if (data) {
-          setDynamicDepartments(data.map(d => d.Names ? d.Names.trim() : "").filter(Boolean));
+        } else {
+          if (deptRes.data) setDynamicDepartments(deptRes.data.map(d => d.Names ? d.Names.trim() : "").filter(Boolean));
+          if (docRes.data) setDynamicDoctors(docRes.data);
         }
       } catch (err) {
         if (!isMounted) return;
@@ -56,7 +58,7 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
         }
       }
     }
-    fetchDepartments();
+    fetchData();
     
     return () => {
       isMounted = false;
@@ -70,7 +72,7 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
     }
   }, [selectedDepartment]);
 
-  const doctorsList = ["Dr. Smith (Cardiology)", "Dr. Jones (Neurology)", "Dr. Patel (Orthopaedics)", "Dr. Kumar (General)"];
+
 
   const isFormValid = formData.fullName.trim() !== "" && formData.email.trim() !== "" && formData.mobile.trim() !== "" && formData.consent && dynamicDepartments.length > 0 && !isLoadingDepartments && !fetchError;
 
@@ -227,11 +229,21 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
                 className="w-full pl-3 pr-8 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:shadow-md focus:pl-4 outline-none transition-all duration-300 text-sm appearance-none text-gray-900"
                 value={formData.doctor}
                 onChange={(e) => setFormData({ ...formData, doctor: e.target.value })}
+                disabled={isLoadingDepartments || fetchError}
               >
-                <option value="" disabled className="text-gray-400">Doctor</option>
-                {doctorsList.map((doc) => (
-                  <option key={doc} value={doc}>{doc}</option>
-                ))}
+                <option value="" disabled className="text-gray-400">Doctor (Optional)</option>
+                {dynamicDoctors
+                  // If department is selected, optionally filter doctors by department
+                  .filter(doc => !formData.department || (doc.Specialization || doc.Department) === formData.department)
+                  .map((doc) => {
+                    const docName = doc['Doctor Name'] || doc.Name || doc.name;
+                    const spec = doc.Specialization || doc.Department;
+                    return (
+                      <option key={doc.id || doc['User Id'] || docName} value={docName}>
+                        {docName} {spec ? `(${spec})` : ''}
+                      </option>
+                    );
+                })}
               </select>
               <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
             </div>

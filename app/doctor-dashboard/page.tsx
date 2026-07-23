@@ -100,7 +100,7 @@ export default function DoctorDashboard() {
       const { data, error } = await supabase
         .from('Booking Appointment')
         .select(`
-          Date, Doctor, diagnosis_notes, weight, "Blood Pressure", temperature, medicines_list, reason
+          Date, Doctor, diagnosis_notes, weight, "Blood Pressure", temperature, medicines_list, reason, created_at, Phone
         `)
         .eq('Phone', phone)
         .order('created_at', { ascending: false });
@@ -555,6 +555,16 @@ Wishing you a speedy recovery. 💙`;
                                       ) : (
                                         <p className="text-xs text-gray-400 italic mt-3">No medicines prescribed during this visit.</p>
                                       )}
+
+                                      {/* Past Documents Links */}
+                                      <div className="mt-4 flex gap-2 pt-3 border-t border-gray-100">
+                                        <Link target="_blank" href={`/receipt/${hist.Phone || selectedPatient.Phone}?created=${encodeURIComponent(hist.created_at)}`} className="text-[10px] font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded border border-blue-200 flex items-center gap-1 transition-colors">
+                                          📄 View Receipt
+                                        </Link>
+                                        <Link target="_blank" href={`/prescription/${hist.Phone || selectedPatient.Phone}?created=${encodeURIComponent(hist.created_at)}`} className="text-[10px] font-bold text-emerald-600 bg-emerald-50 hover:bg-emerald-100 px-3 py-1.5 rounded border border-emerald-200 flex items-center gap-1 transition-colors">
+                                          💊 View Prescription
+                                        </Link>
+                                      </div>
                                     </div>
                                   )}
                                 </div>

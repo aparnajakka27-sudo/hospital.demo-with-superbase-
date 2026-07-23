@@ -513,10 +513,11 @@ export default function ReceptionDashboard() {
                   <label className="block text-xs font-bold text-slate-700 mb-2">Assigned Doctor *</label>
                   <select required value={assignedDoctor} onChange={e => setAssignedDoctor(e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900">
                     <option value="">Select Doctor...</option>
-                    <option value="Dr. Smith (Cardiology)">Dr. Smith (Cardiology)</option>
-                    <option value="Dr. Jones (Neurology)">Dr. Jones (Neurology)</option>
-                    <option value="Dr. Patel (Orthopaedics)">Dr. Patel (Orthopaedics)</option>
-                    <option value="Dr. Kumar (General)">Dr. Kumar (General)</option>
+                    {doctorsList.map(doc => (
+                      <option key={doc.id || doc['User Id'] || doc.Name} value={doc['Doctor Name'] || doc.Name || doc.name}>
+                        {doc['Doctor Name'] || doc.Name || doc.name} {doc.Specialization || doc.Department ? `(${doc.Specialization || doc.Department})` : ''}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div>
@@ -654,11 +655,12 @@ export default function ReceptionDashboard() {
                     No doctors found in the system.
                   </div>
                 ) : (
-                  <table className="w-full text-left text-sm text-slate-600 bg-white">
-                    <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
-                      <tr>
-                        <th className="px-6 py-4">Doctor</th>
-                        <th className="px-6 py-4">Specialization</th>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-sm text-slate-600 bg-white min-w-[500px]">
+                      <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                        <tr>
+                          <th className="px-6 py-4">Doctor</th>
+                          <th className="px-6 py-4">Specialization</th>
                         <th className="px-6 py-4">Current Status</th>
                       </tr>
                     </thead>
@@ -697,8 +699,48 @@ export default function ReceptionDashboard() {
                       ))}
                     </tbody>
                   </table>
+                </div>
                 )}
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Raise Issue Modal */}
+        {isIssueModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={() => setIsIssueModalOpen(false)}></div>
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-md relative z-10 p-6">
+              <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle className="text-red-500" size={24} />
+                  <h2 className="text-xl font-bold text-slate-900">Raise Issue</h2>
+                </div>
+                <button onClick={() => setIsIssueModalOpen(false)} className="text-slate-400 hover:text-slate-700 p-1">
+                  <XCircle size={24} />
+                </button>
+              </div>
+              <form onSubmit={handleIssueSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-bold text-slate-700 mb-1">Target Department</label>
+                  <select value={issueTarget} onChange={e => setIssueTarget(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                    <option value="Admin">Admin</option>
+                    <option value="Doctor">Doctor</option>
+                    <option value="Pharmacy">Pharmacy</option>
+                    <option value="Lab">Lab / Diagnostics</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-slate-700 mb-1">Issue Description</label>
+                  <textarea required value={issueMessage} onChange={e => setIssueMessage(e.target.value)} rows={4} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Describe the issue..."></textarea>
+                </div>
+                <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                  <button type="button" onClick={() => setIsIssueModalOpen(false)} className="px-4 py-2 border rounded-lg font-bold text-slate-700">Cancel</button>
+                  <button type="submit" disabled={isSubmittingIssue} className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-colors">
+                    {isSubmittingIssue ? 'Sending...' : 'Submit Issue'}
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         )}
