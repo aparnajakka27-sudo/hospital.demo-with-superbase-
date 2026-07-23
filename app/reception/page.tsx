@@ -449,33 +449,16 @@ export default function ReceptionDashboard() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-2">Weight</label>
-                  <select value={vitalsWeight} onChange={e => setVitalsWeight(e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900">
-                    <option value="">Select Range...</option>
-                    <option value="Underweight (< 50 kg)">Underweight (&lt; 50 kg)</option>
-                    <option value="Normal (50 - 70 kg)">Normal (50 - 70 kg)</option>
-                    <option value="Overweight (70 - 90 kg)">Overweight (70 - 90 kg)</option>
-                    <option value="Obese (> 90 kg)">Obese (&gt; 90 kg)</option>
-                  </select>
+                  <label className="block text-xs font-bold text-slate-700 mb-2">Weight (kg)</label>
+                  <input type="text" value={vitalsWeight} onChange={e => setVitalsWeight(e.target.value)} placeholder="e.g. 75" className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-2">Blood Pressure</label>
-                  <select value={vitalsBp} onChange={e => setVitalsBp(e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900">
-                    <option value="">Select BP...</option>
-                    <option value="Low (< 90/60)">Low (&lt; 90/60)</option>
-                    <option value="Normal (~ 120/80)">Normal (~ 120/80)</option>
-                    <option value="Elevated (120-129 / <80)">Elevated (120-129 / &lt;80)</option>
-                    <option value="High (Hypertension)">High (Hypertension)</option>
-                  </select>
+                  <label className="block text-xs font-bold text-slate-700 mb-2">Blood Pressure (mmHg)</label>
+                  <input type="text" value={vitalsBp} onChange={e => setVitalsBp(e.target.value)} placeholder="e.g. 120/80" className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-2">Temperature</label>
-                  <select value={vitalsTemp} onChange={e => setVitalsTemp(e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900">
-                    <option value="">Select Temp...</option>
-                    <option value="Low (< 97°F)">Low (&lt; 97°F)</option>
-                    <option value="Normal (97°F - 99°F)">Normal (97°F - 99°F)</option>
-                    <option value="Fever (> 100°F)">Fever (&gt; 100°F)</option>
-                  </select>
+                  <label className="block text-xs font-bold text-slate-700 mb-2">Temperature (°F/°C)</label>
+                  <input type="text" value={vitalsTemp} onChange={e => setVitalsTemp(e.target.value)} placeholder="e.g. 98.6 °F" className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900" />
                 </div>
               </div>
 
