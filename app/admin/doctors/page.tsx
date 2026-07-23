@@ -84,7 +84,6 @@ export default function DoctorsAdminPage() {
     setFormError('');
 
     try {
-    try {
       const payload = {
         "Name": newDoc.name,
         "Deparment": newDoc.specialization,
