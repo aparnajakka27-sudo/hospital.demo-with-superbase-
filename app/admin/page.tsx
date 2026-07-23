@@ -45,6 +45,7 @@ export default function AdminDashboardPage() {
   const [revenueData, setRevenueData] = useState<any[]>([]);
   const [departmentData, setDepartmentData] = useState<any[]>([]);
   const [statusData, setStatusData] = useState<any[]>([]);
+  const [recentPatients, setRecentPatients] = useState<any[]>([]);
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const [pharmacyStats, setPharmacyStats] = useState({ sales: 0, fulfilledCount: 0 });
 
@@ -106,6 +107,9 @@ export default function AdminDashboardPage() {
         sales: fulfilledToday * 3600,
         fulfilledCount: fulfilledToday
       });
+
+      // Recent Patients
+      setRecentPatients(appts.slice(0, 5));
 
       // Recent Activity (Top 4)
       const recent = appts.slice(0, 4).map((a, idx) => {
@@ -297,42 +301,25 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Dept Breakdown */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-          <h3 className="text-lg font-bold text-slate-800 mb-6">By Department</h3>
-          <div className="h-[200px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={departmentData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={2}
-                  dataKey="value"
-                >
-                  {departmentData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  formatter={(value: any) => [value, 'Appointments']}
-                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="mt-6 grid grid-cols-1 gap-y-3 gap-x-2">
-            {departmentData.slice(0, 4).map((dept, idx) => (
-              <div key={dept.name} className="flex items-center justify-between text-xs w-full">
-                <div className="flex items-center">
-                  <span className="w-2 h-2 rounded-full mr-2 shrink-0" style={{ backgroundColor: COLORS[idx] }}></span>
-                  <span className="text-slate-600 truncate max-w-[90px]">{dept.name}</span>
+        {/* Recent Registrations */}
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex flex-col">
+          <h3 className="text-lg font-bold text-slate-800 mb-6 shrink-0">Recent Patient Registrations</h3>
+          <div className="flex flex-col gap-3 flex-1 overflow-y-auto">
+            {recentPatients.map((p, idx) => (
+              <div key={idx} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100 shrink-0">
+                <div className="flex flex-col">
+                  <span className="font-bold text-sm text-slate-900">{p.Name || "Unknown"}</span>
+                  <span className="text-[10px] text-slate-500 font-medium mt-0.5">{p.Department || "General"} • Token #{p.token_number || "N/A"}</span>
                 </div>
-                <span className="font-semibold">{dept.value}</span>
+                <div className="text-right flex flex-col items-end">
+                  <span className="text-xs font-bold text-emerald-600">{p.Doctor || "Unassigned"}</span>
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 mt-1">{p.queue_status || "Waiting"}</span>
+                </div>
               </div>
             ))}
+            {recentPatients.length === 0 && (
+              <div className="text-sm text-slate-500 py-4 text-center">No recent registrations.</div>
+            )}
           </div>
         </div>
 
@@ -363,7 +350,7 @@ export default function AdminDashboardPage() {
                   })}
                 </Pie>
                 <Tooltip 
-                  formatter={(value: any) => [value, 'Patients']}
+                  formatter={(value: any, name: any) => [value, name]}
                   contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                 />
               </PieChart>
