@@ -134,7 +134,7 @@ export default function PrescriptionPage() {
           </div>
           <div>
             <p className="text-xs text-gray-500 font-semibold mb-0.5">Address</p>
-            <p className="font-bold text-gray-900">Hyderabad, Telangana</p>
+            <p className="font-bold text-gray-900">{data.city || 'Hyderabad, Telangana'}</p>
           </div>
           <div className="col-span-2 sm:col-span-4">
             <p className="text-xs text-gray-500 font-semibold mb-0.5">Vitals Recorded</p>

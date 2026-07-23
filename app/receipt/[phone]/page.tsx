@@ -137,7 +137,7 @@ export default function ReceiptPage() {
           </div>
           <div>
             <p className="text-xs text-gray-500 font-semibold mb-0.5">Address</p>
-            <p className="font-bold text-gray-900">Hyderabad, Telangana</p>
+            <p className="font-bold text-gray-900">{data.city || 'Hyderabad, Telangana'}</p>
           </div>
           <div>
             <p className="text-xs text-gray-500 font-semibold mb-0.5">Doctor Name</p>

@@ -26,7 +26,9 @@ export default function ReceptionDashboard() {
   const [patientName, setPatientName] = useState("");
   const [mobile, setMobile] = useState("");
   const [email, setEmail] = useState("");
+  const [city, setCity] = useState("");
   const [assignedDoctor, setAssignedDoctor] = useState("");
+  const [department, setDepartment] = useState("");
   const [triage, setTriage] = useState("Normal");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("Male");
@@ -116,7 +118,9 @@ export default function ReceptionDashboard() {
       setPatientName(patientToEdit.Name || "");
       setMobile(patientToEdit.Phone ? patientToEdit.Phone.toString() : "");
       setEmail(patientToEdit.Email || "");
+      setCity(patientToEdit.city || "");
       setAssignedDoctor(patientToEdit.Doctor || "");
+      setDepartment(patientToEdit.Department || "");
       setTriage(patientToEdit.triage_priority || "Normal");
       setAge(patientToEdit.age ? patientToEdit.age.toString() : "");
       setGender(patientToEdit.gender || "Male");
@@ -131,7 +135,9 @@ export default function ReceptionDashboard() {
       setPatientName("");
       setMobile("");
       setEmail("");
+      setCity("");
       setAssignedDoctor("");
+      setDepartment("");
       setTriage("Normal");
       setAge("");
       setGender("Male");
@@ -170,8 +176,9 @@ export default function ReceptionDashboard() {
       const payload: any = {
         Name: patientName,
         Email: email || "",
+        city: city || "",
         Phone: isNaN(phoneNum) ? null : phoneNum,
-        Department: "General", // Better to derive from doctor but keeping it simple
+        Department: department || "General",
         Date: selectedDate, // Use selected date, not necessarily today
         Doctor: assignedDoctor,
         age: parseInt(age, 10) || null,
@@ -439,7 +446,7 @@ export default function ReceptionDashboard() {
             )}
 
             <form onSubmit={handleWalkInSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-2">Patient Name *</label>
                   <input type="text" required value={patientName} onChange={e => setPatientName(e.target.value)} placeholder="e.g. David Miller" className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900" />
@@ -452,9 +459,25 @@ export default function ReceptionDashboard() {
                   <label className="block text-xs font-bold text-slate-700 mb-2">Email (Optional)</label>
                   <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="david@example.com" className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900" />
                 </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-2">City</label>
+                  <input type="text" value={city} onChange={e => setCity(e.target.value)} placeholder="e.g. Hyderabad" className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900" />
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-2">Department *</label>
+                  <select required value={department} onChange={e => setDepartment(e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900">
+                    <option value="">Select Department...</option>
+                    <option value="Cardiology">Cardiology</option>
+                    <option value="Neurology">Neurology</option>
+                    <option value="Orthopaedics">Orthopaedics</option>
+                    <option value="General Medicine">General Medicine</option>
+                    <option value="Pediatrics">Pediatrics</option>
+                    <option value="Dermatology">Dermatology</option>
+                  </select>
+                </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-2">Assigned Doctor *</label>
                   <select required value={assignedDoctor} onChange={e => setAssignedDoctor(e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900">
@@ -779,14 +802,15 @@ export default function ReceptionDashboard() {
                               <span className="px-1.5 py-0.5 rounded text-[8px] font-bold bg-blue-100 text-blue-700 uppercase">Online</span>
                             )}
                           </div>
-                          <div className="text-xs font-semibold text-gray-500 my-0.5">
-                            {p.Phone} <span className="text-gray-300 font-normal ml-1">• {p.age ? `${p.age}y` : "Age N/A"} / {p.gender ? p.gender.substring(0,1) : "N/A"}</span>
+                          <div className="text-xs font-semibold text-gray-500 my-0.5 truncate">
+                            {p.Phone} <span className="text-gray-300 font-normal ml-1">• {p.age ? `${p.age}y` : "Age N/A"} / {p.gender ? p.gender.substring(0,1) : "N/A"}{p.city ? ` • ${p.city}` : ''}</span>
                           </div>
                           <div className="text-[10px] text-gray-400 max-w-[200px] truncate" title={p.reason}>{p.reason || "No symptoms recorded"}</div>
                         </td>
                         <td className="px-5 py-4">
                           <div className="text-sm font-bold text-gray-900 truncate max-w-[150px]">{p.Doctor || "Unassigned"}</div>
-                          <div className="text-xs text-gray-500">{p.Date}</div>
+                          {p.Department && <div className="text-[10px] text-gray-400 font-medium truncate">{p.Department}</div>}
+                          <div className="text-[10px] text-gray-400">{p.Date}</div>
                         </td>
                         <td className="px-5 py-4">
                           <span className={`inline-flex items-center text-[10px] font-bold px-2 py-1 rounded-md border ${
