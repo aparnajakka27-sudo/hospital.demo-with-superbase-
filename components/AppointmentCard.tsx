@@ -21,6 +21,7 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
     department: "",
     doctor: "",
     date: "",
+    tokenNumber: "",
     consent: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -74,15 +75,40 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
 
 
 
-  const isFormValid = formData.fullName.trim() !== "" && formData.email.trim() !== "" && formData.mobile.trim() !== "" && formData.consent && dynamicDepartments.length > 0 && !isLoadingDepartments && !fetchError;
+  const isFormValid = formData.fullName.trim() !== "" && formData.email.trim() !== "" && formData.mobile.trim() !== "" && formData.consent && dynamicDepartments.length > 0 && !isLoadingDepartments && !fetchError && formData.date !== "" && formData.department !== "";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.date || !formData.department) {
+      alert("Please complete all required fields including Date and Department.");
+      return;
+    }
+
     if (isFormValid) {
       setIsSubmitting(true);
       
       // Convert phone to integer as Supabase expects int8
       const phoneNum = parseInt((countryCode + formData.mobile).replace(/\D/g, ''), 10);
+      
+      let finalToken = formData.tokenNumber ? parseInt(formData.tokenNumber, 10) : null;
+      
+      // If no token provided, try to find one by Phone + Name
+      if (!finalToken && !isNaN(phoneNum)) {
+        const { data: existingProfiles } = await supabase
+          .from('Booking Appointment')
+          .select('token_number')
+          .eq('Phone', phoneNum)
+          .eq('Name', formData.fullName)
+          .not('token_number', 'is', null)
+          .limit(1);
+          
+        if (existingProfiles && existingProfiles.length > 0) {
+          finalToken = existingProfiles[0].token_number;
+        } else {
+          // Generate new 6-digit UHID token
+          finalToken = Math.floor(100000 + Math.random() * 900000);
+        }
+      }
       
       const { error } = await supabase
         .from('Booking Appointment')
@@ -94,6 +120,7 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
             Department:formData.department,
             Date:formData.date,
             Doctor:formData.doctor,
+            token_number: finalToken,
             booking_type: 'Online',
             queue_status: 'Scheduled'
           }
@@ -115,6 +142,7 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
           department: "",
           doctor: "",
           date: "",
+          tokenNumber: "",
           consent: false,
         });
         
@@ -155,8 +183,8 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
             </div>
           </div>
 
-          <div>
-            <div className="relative">
+          <div className="flex gap-2">
+            <div className="relative flex-1">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
               <input
                 type="email"
@@ -165,6 +193,16 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
+              />
+            </div>
+            
+            <div className="relative flex-[0.7]">
+              <input
+                type="text"
+                placeholder="Token Number (Optional)"
+                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:shadow-md outline-none transition-all duration-300 text-sm text-gray-900 placeholder:text-gray-400"
+                value={formData.tokenNumber}
+                onChange={(e) => setFormData({ ...formData, tokenNumber: e.target.value })}
               />
             </div>
           </div>

@@ -45,6 +45,7 @@ export default function ReceptionDashboard() {
   const [vitalsTemp, setVitalsTemp] = useState("");
   const [weightUnit, setWeightUnit] = useState("kg");
   const [tempUnit, setTempUnit] = useState("°F");
+  const [tokenNumber, setTokenNumber] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -144,6 +145,7 @@ export default function ReceptionDashboard() {
       setPatientName(patientToEdit.Name || "");
       setMobile(patientToEdit.Phone ? patientToEdit.Phone.toString() : "");
       setEmail(patientToEdit.Email || "");
+      setTokenNumber(patientToEdit.token_number ? patientToEdit.token_number.toString() : "");
       setCity(patientToEdit.city || "");
       setAssignedDoctor(patientToEdit.Doctor || "");
       setDepartment(patientToEdit.Department || "");
@@ -161,6 +163,7 @@ export default function ReceptionDashboard() {
       setPatientName("");
       setMobile("");
       setEmail("");
+      setTokenNumber("");
       setCity("");
       setAssignedDoctor("");
       setDepartment("");
@@ -218,9 +221,29 @@ export default function ReceptionDashboard() {
         queue_status: "Waiting",
       };
       
-      // Auto-generate token if missing (frontend fallback since DB trigger might be missing)
-      if (!editingPatient || !editingPatient.token_number) {
-        payload.token_number = Math.floor(1000 + Math.random() * 9000);
+      // Handle Token Logic (UHID)
+      if (editingPatient && editingPatient.token_number) {
+        payload.token_number = editingPatient.token_number;
+      } else {
+        let finalToken = tokenNumber ? parseInt(tokenNumber, 10) : null;
+        if (!finalToken && !isNaN(phoneNum)) {
+          const { data: existingProfiles } = await supabase
+            .from('Booking Appointment')
+            .select('token_number')
+            .eq('Phone', phoneNum)
+            .eq('Name', patientName)
+            .not('token_number', 'is', null)
+            .order('created_at', { ascending: false })
+            .limit(1);
+            
+          if (existingProfiles && existingProfiles.length > 0) {
+            finalToken = existingProfiles[0].token_number;
+          } else {
+            // Generate new 6-digit UHID token
+            finalToken = Math.floor(100000 + Math.random() * 900000);
+          }
+        }
+        payload.token_number = finalToken;
       }
 
       let error;

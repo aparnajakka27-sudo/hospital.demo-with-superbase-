@@ -11,6 +11,7 @@ export default function DoctorDashboard() {
   const { user, isLoading, logout, switchDoctor } = useDoctorAuth();
   const router = useRouter();
   const [allDoctors, setAllDoctors] = useState<any[]>([]);
+  const [docStatus, setDocStatus] = useState("Available");
   const [patients, setPatients] = useState<any[]>([]);
   const [selectedPatient, setSelectedPatient] = useState<any>(null);
   const [isFetching, setIsFetching] = useState(true);
@@ -80,6 +81,29 @@ export default function DoctorDashboard() {
       };
     }
   }, [user]);
+
+  // Sync status on user change
+  useEffect(() => {
+    if (user && allDoctors.length > 0) {
+      const doc = allDoctors.find(d => (d.id || d['User Id']) === user.id);
+      if (doc && doc.Status) {
+        setDocStatus(doc.Status);
+      }
+    }
+  }, [user, allDoctors]);
+
+  const handleUpdateStatus = async (newStatus: string) => {
+    if (!user) return;
+    setDocStatus(newStatus);
+    try {
+      await supabase
+        .from('Doctors')
+        .update({ Status: newStatus })
+        .eq(allDoctors.find(d => d.id === user.id) ? 'id' : 'User Id', user.id);
+    } catch (err) {
+      console.log("Error updating status:", err);
+    }
+  };
 
   const fetchMyPatients = async () => {
     if (!user) return;
@@ -387,6 +411,33 @@ Wishing you a speedy recovery. 💙`;
                 )}
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-emerald-600">
+                <ChevronDown size={16} strokeWidth={3} />
+              </div>
+            </div>
+
+            {/* Doctor Status Dropdown */}
+            <div className="relative w-full sm:w-auto max-w-full">
+              <select 
+                value={docStatus}
+                onChange={(e) => handleUpdateStatus(e.target.value)}
+                className={`appearance-none border rounded-full px-5 py-2.5 pr-10 text-sm font-bold shadow-sm focus:outline-none focus:ring-2 cursor-pointer w-full max-w-full truncate
+                  ${docStatus === 'Available' ? 'bg-emerald-50 border-emerald-500 text-emerald-700 focus:ring-emerald-500' :
+                    docStatus === 'In Surgery' ? 'bg-red-50 border-red-500 text-red-700 focus:ring-red-500' :
+                    docStatus === 'On Rounds' ? 'bg-amber-50 border-amber-500 text-amber-700 focus:ring-amber-500' :
+                    'bg-slate-50 border-slate-500 text-slate-700 focus:ring-slate-500'
+                  }`}
+              >
+                <option value="Available">🟢 Available (Consulting)</option>
+                <option value="In Surgery">🔴 In Surgery / OT</option>
+                <option value="On Rounds">🟡 On Rounds (Wards)</option>
+                <option value="On Leave">⚪ On Leave / Off Shift</option>
+              </select>
+              <div className={`pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 
+                ${docStatus === 'Available' ? 'text-emerald-700' :
+                  docStatus === 'In Surgery' ? 'text-red-700' :
+                  docStatus === 'On Rounds' ? 'text-amber-700' :
+                  'text-slate-700'
+                }`}>
                 <ChevronDown size={16} strokeWidth={3} />
               </div>
             </div>
