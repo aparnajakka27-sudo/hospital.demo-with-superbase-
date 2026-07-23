@@ -101,7 +101,7 @@ export default function ReceptionDashboard() {
       const { error } = await supabase
         .from('Doctors')
         .update({ Status: newStatus })
-        .eq('id', id);
+        .eq('User Id', id);
       
       if (error) throw error;
       fetchDoctors(); // Refresh list
@@ -635,21 +635,21 @@ export default function ReceptionDashboard() {
                     <tbody className="divide-y divide-slate-100">
                       {doctorsList.filter(d => 
                         (d['Doctor Name'] || d.Name || d.name || '').toLowerCase().includes(doctorSearchQuery.toLowerCase()) || 
-                        (d.Specialization || d.Department || d.specialty || '').toLowerCase().includes(doctorSearchQuery.toLowerCase())
+                        (d.Specialization || d.Deparment || d.Department || d.specialty || '').toLowerCase().includes(doctorSearchQuery.toLowerCase())
                       ).map((doc) => (
-                        <tr key={doc.id} className="hover:bg-slate-50 transition-colors">
+                        <tr key={doc['User Id'] || doc.id || doc.Name} className="hover:bg-slate-50 transition-colors">
                           <td className="px-6 py-4">
                             <p className="font-bold text-slate-900">{doc['Doctor Name'] || doc.Name || doc.name}</p>
                             <p className="text-xs text-slate-500">{doc.Room || 'No Room Assigned'}</p>
                             <p className="text-xs text-emerald-600 font-semibold mt-1">Avail: {doc.Available_Days || 'N/A'}</p>
                           </td>
                           <td className="px-6 py-4 font-medium">
-                            {doc.Specialization || doc.Department || doc.specialty}
+                            {doc.Specialization || doc.Deparment || doc.Department || doc.specialty}
                           </td>
                           <td className="px-6 py-4">
                             <select
                               value={doc.Status || 'Available'}
-                              onChange={(e) => updateDoctorStatus(doc.id, e.target.value)}
+                              onChange={(e) => updateDoctorStatus(doc['User Id'] || doc.id || doc.Name, e.target.value)}
                               className={`text-xs font-bold px-3 py-1.5 rounded-lg border appearance-none outline-none cursor-pointer ${
                                 doc.Status === 'Available' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
                                 doc.Status === 'In Surgery' ? 'bg-red-50 text-red-700 border-red-200' :
