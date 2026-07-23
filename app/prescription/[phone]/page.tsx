@@ -75,10 +75,9 @@ export default function PrescriptionPage() {
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start border-b-4 border-emerald-600 pb-6 mb-6 gap-6 sm:gap-0">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
-            <div className="w-16 h-16 bg-emerald-50 text-emerald-600 flex items-center justify-center rounded-xl border-2 border-emerald-100">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-              </svg>
+            <div className="w-16 h-16 bg-white overflow-hidden flex items-center justify-center rounded-xl border-2 border-emerald-100 shrink-0">
+              {/* Hospital Logo */}
+              <img src="/horizon_hospital.jpg" alt="Horizon Hospital Logo" className="w-full h-full object-cover" />
             </div>
             <div>
               <h1 className="text-2xl font-extrabold text-[#0B1B36] tracking-tight">HORIZON <span className="font-light">SUPER SPECIALITY</span> HOSPITAL</h1>
