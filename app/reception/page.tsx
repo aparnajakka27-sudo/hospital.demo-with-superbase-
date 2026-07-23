@@ -537,7 +537,13 @@ export default function ReceptionDashboard() {
                   <label className="block text-xs font-bold text-slate-700 mb-2">Assigned Doctor *</label>
                   <select required value={assignedDoctor} onChange={e => setAssignedDoctor(e.target.value)} className="w-full bg-white border border-slate-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors text-slate-900">
                     <option value="">Select Doctor...</option>
-                    {doctorsList.map(doc => {
+                    {doctorsList
+                      .filter(doc => {
+                        if (!department) return true;
+                        const spec = (doc.Specialization || doc.Department || doc.Deparment || "").trim();
+                        return spec === department.trim();
+                      })
+                      .map(doc => {
                       const docName = doc['Doctor Name'] || doc.Name || doc.name;
                       const spec = doc.Specialization || doc.Department || doc.Deparment;
                       return (

@@ -271,8 +271,12 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
               >
                 <option value="" disabled className="text-gray-400">Doctor (Optional)</option>
                 {dynamicDoctors
-                  // If department is selected, optionally filter doctors by department
-                  .filter(doc => !formData.department || (doc.Specialization || doc.Department || doc.Deparment) === formData.department)
+                  // If department is selected, filter doctors by department
+                  .filter(doc => {
+                    if (!formData.department) return true;
+                    const spec = (doc.Specialization || doc.Department || doc.Deparment || "").trim();
+                    return spec === formData.department.trim();
+                  })
                   .map((doc) => {
                     const docName = doc['Doctor Name'] || doc.Name || doc.name;
                     const spec = doc.Specialization || doc.Department || doc.Deparment;
