@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import { CalendarDays, Filter, Search, Plus } from 'lucide-react'
-import { supabase } from '../../lib/supabase'
+import { supabase } from '../../../lib/supabase'
 
 export default function AppointmentsAdminPage() {
   const [searchTerm, setSearchTerm] = useState('');

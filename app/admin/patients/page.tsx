@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import { Search, Filter, Eye, FileText } from 'lucide-react'
-import { supabase } from '../../lib/supabase'
+import { supabase } from '../../../lib/supabase'
 
 export default function PatientsAdminPage() {
   const [searchTerm, setSearchTerm] = useState('');
