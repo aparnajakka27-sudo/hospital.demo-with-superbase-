@@ -16,12 +16,17 @@ export default function PrescriptionPage() {
     async function fetchPrescriptionData() {
       if (!phone) return;
       try {
-        const { data: records, error } = await supabase
-          .from('Booking Appointment')
-          .select('*')
-          .eq('Phone', phone)
-          .order('created_at', { ascending: false })
-          .limit(1);
+        const searchParams = new URLSearchParams(window.location.search);
+        const idParam = searchParams.get('id');
+
+        let query = supabase.from('Booking Appointment').select('*');
+        if (idParam) {
+          query = query.eq('id', idParam);
+        } else {
+          query = query.eq('Phone', phone).order('created_at', { ascending: false }).limit(1);
+        }
+
+        const { data: records, error } = await query;
 
         if (error) throw error;
         if (records && records.length > 0) {

@@ -179,8 +179,8 @@ export default function DoctorDashboard() {
       if (updateError) throw updateError;
 
       // 2. Simulate SMS Notification
-      const receiptLink = `${window.location.origin}/receipt/${selectedPatient.Phone}`;
-      const prescriptionLink = `${window.location.origin}/prescription/${selectedPatient.Phone}`;
+      const receiptLink = `${window.location.origin}/receipt/${selectedPatient.Phone}?id=${selectedPatient.id}`;
+      const prescriptionLink = `${window.location.origin}/prescription/${selectedPatient.Phone}?id=${selectedPatient.id}`;
       
       const whatsappMessage = `Hello ${selectedPatient.Name},
 

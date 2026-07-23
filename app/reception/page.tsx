@@ -818,10 +818,10 @@ export default function ReceptionDashboard() {
                           <div className="flex flex-col items-end gap-2">
                             {p.queue_status === 'Completed' && (
                               <div className="flex gap-2">
-                                <Link target="_blank" href={`/receipt/${p.Phone}`} className="text-[10px] font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 px-2 py-1 rounded border border-blue-200 flex items-center gap-1 transition-colors">
+                                <Link target="_blank" href={`/receipt/${p.Phone}?id=${p.id}`} className="text-[10px] font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 px-2 py-1 rounded border border-blue-200 flex items-center gap-1 transition-colors">
                                   📄 Receipt
                                 </Link>
-                                <Link target="_blank" href={`/prescription/${p.Phone}`} className="text-[10px] font-bold text-emerald-600 bg-emerald-50 hover:bg-emerald-100 px-2 py-1 rounded border border-emerald-200 flex items-center gap-1 transition-colors">
+                                <Link target="_blank" href={`/prescription/${p.Phone}?id=${p.id}`} className="text-[10px] font-bold text-emerald-600 bg-emerald-50 hover:bg-emerald-100 px-2 py-1 rounded border border-emerald-200 flex items-center gap-1 transition-colors">
                                   💊 Prescription
                                 </Link>
                                 <button onClick={() => alert(`Simulated WhatsApp Sent to ${p.Phone}!\n\nTemplate attached PDFs.`)} className="text-[10px] font-bold text-green-700 bg-green-50 hover:bg-green-100 px-2 py-1 rounded border border-green-200 flex items-center gap-1 transition-colors" title="Resend to WhatsApp">
