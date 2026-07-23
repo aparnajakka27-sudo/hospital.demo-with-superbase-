@@ -8,8 +8,9 @@ import Link from "next/link";
 import { supabase } from "../../lib/supabase";
 
 export default function DoctorDashboard() {
-  const { user, isLoading, logout } = useDoctorAuth();
+  const { user, isLoading, logout, switchDoctor } = useDoctorAuth();
   const router = useRouter();
+  const [allDoctors, setAllDoctors] = useState<any[]>([]);
   const [patients, setPatients] = useState<any[]>([]);
   const [selectedPatient, setSelectedPatient] = useState<any>(null);
   const [isFetching, setIsFetching] = useState(true);
@@ -52,6 +53,12 @@ export default function DoctorDashboard() {
         if (data) setIssues(data);
       };
       fetchIssues();
+
+      const fetchAllDoctors = async () => {
+        const { data } = await supabase.from('Doctors').select('*');
+        if (data) setAllDoctors(data);
+      };
+      fetchAllDoctors();
 
       const subscription = supabase
         .channel('doctor-queue')
@@ -337,8 +344,41 @@ Wishing you a speedy recovery. 💙`;
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 w-full md:w-auto mt-2 md:mt-0">
             <span className="text-sm font-semibold text-gray-500 whitespace-nowrap">Active Doctor:</span>
             <div className="relative w-full sm:w-auto max-w-full">
-              <select className="appearance-none bg-white border border-emerald-500 rounded-full px-5 py-2.5 pr-10 text-sm font-bold text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer w-full max-w-full truncate">
-                <option>{user.name} ({user.specialty}) - Room {user.room}</option>
+              <select 
+                value={user.id}
+                onChange={(e) => {
+                  const doc = allDoctors.find(d => (d.id || d['User Id']) === e.target.value);
+                  if (doc) {
+                    switchDoctor({
+                      id: doc.id || doc['User Id'],
+                      name: doc['Doctor Name'] || doc.Name || doc.name || "Dr. " + doc['User Id'],
+                      specialty: doc.Specialization || doc.Department || doc.Deparment || doc.specialty || "General Medicine",
+                      room: doc.Room || "OPD-General",
+                    });
+                  }
+                }}
+                className="appearance-none bg-white border border-emerald-500 rounded-full px-5 py-2.5 pr-10 text-sm font-bold text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer w-full max-w-full truncate"
+              >
+                {allDoctors.length === 0 ? (
+                  <option value={user.id}>{user.name} ({user.specialty}) - Room {user.room}</option>
+                ) : (
+                  <>
+                    {!allDoctors.some(d => (d.id || d['User Id']) === user.id) && (
+                      <option value={user.id}>{user.name} ({user.specialty}) - Room {user.room}</option>
+                    )}
+                    {allDoctors.map(doc => {
+                      const docId = doc.id || doc['User Id'];
+                      const docName = doc['Doctor Name'] || doc.Name || doc.name || "Dr. " + docId;
+                      const docSpec = doc.Specialization || doc.Department || doc.Deparment || doc.specialty || "General Medicine";
+                      const docRoom = doc.Room || "OPD-General";
+                      return (
+                        <option key={docId} value={docId}>
+                          {docName} ({docSpec}) - Room {docRoom}
+                        </option>
+                      )
+                    })}
+                  </>
+                )}
               </select>
               <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-emerald-600">
                 <ChevronDown size={16} strokeWidth={3} />

@@ -14,6 +14,7 @@ interface DoctorAuthContextType {
   user: DoctorUser | null;
   login: (userId: string, pass: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
+  switchDoctor: (doc: DoctorUser) => void;
   isLoading: boolean;
 }
 
@@ -85,8 +86,8 @@ export function DoctorAuthProvider({ children }: { children: ReactNode }) {
       // Map Supabase columns to our interface
       const docUser: DoctorUser = {
         id: data.id || data["User Id"],
-        name: data["Doctor Name"] || data.name || "Dr. " + userId,
-        specialty: data.Specialization || data.specialty || "General Medicine",
+        name: data["Doctor Name"] || data.Name || data.name || "Dr. " + userId,
+        specialty: data.Specialization || data.Department || data.Deparment || data.specialty || "General Medicine",
         room: data.Room || "OPD-General",
       };
 
@@ -106,8 +107,13 @@ export function DoctorAuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("hospital_doctor_session");
   };
 
+  const switchDoctor = (docUser: DoctorUser) => {
+    setUser(docUser);
+    localStorage.setItem("hospital_doctor_session", JSON.stringify(docUser));
+  };
+
   return (
-    <DoctorAuthContext.Provider value={{ user, login, logout, isLoading }}>
+    <DoctorAuthContext.Provider value={{ user, login, logout, switchDoctor, isLoading }}>
       {children}
     </DoctorAuthContext.Provider>
   );
