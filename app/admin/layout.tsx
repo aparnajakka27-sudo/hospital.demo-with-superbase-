@@ -42,10 +42,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [adminEmail, setAdminEmail] = useState('Admin User');
+  const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
     const checkAuth = async () => {
-      if (pathname === '/admin/login') return;
+      if (pathname === '/admin/login') {
+        setIsChecking(false);
+        return;
+      }
       
       const hasSession = localStorage.getItem("admin_session");
       if (!hasSession) {
@@ -56,6 +60,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       const { data } = await supabase.auth.getUser();
       if (data?.user?.email) {
         setAdminEmail(data.user.email);
+        setIsChecking(false);
       } else {
         localStorage.removeItem("admin_session");
         router.push('/admin/login');
@@ -73,6 +78,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   // If we are on the login page, don't show the sidebar layout
   if (pathname === '/admin/login') {
     return <>{children}</>;
+  }
+
+  if (isChecking) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-emerald-700 font-semibold animate-pulse">Verifying Admin Access...</p>
+        </div>
+      </div>
+    );
   }
 
   return (

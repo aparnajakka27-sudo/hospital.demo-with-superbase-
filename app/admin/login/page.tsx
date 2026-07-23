@@ -1,7 +1,8 @@
 "use client"
 import React, { useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Activity, Lock, Mail, AlertCircle } from 'lucide-react'
+import { Activity, Lock, Mail, AlertCircle, ArrowLeft } from 'lucide-react'
 
 import { supabase } from '../../../lib/supabase'
 
@@ -65,6 +66,14 @@ export default function AdminLogin() {
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute top-0 left-0 w-full h-96 bg-[#052620] -skew-y-3 origin-top-left -z-10" />
+      
+      {/* Back to Home Button */}
+      <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-10">
+        <Link href="/" className="inline-flex items-center gap-2 text-white/80 hover:text-white transition-colors font-medium bg-black/20 hover:bg-black/40 px-4 py-2 rounded-full text-sm backdrop-blur-sm border border-white/10 shadow-sm hover:shadow-md">
+          <ArrowLeft size={16} />
+          Back to Home
+        </Link>
+      </div>
       
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center mb-6">
