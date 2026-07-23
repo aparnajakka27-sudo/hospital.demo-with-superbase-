@@ -147,6 +147,13 @@ export default function DoctorDashboard() {
         console.log("Failed to update status to With Doctor:", err);
       }
     }
+
+    // Scroll to consultation window on mobile
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      setTimeout(() => {
+        document.getElementById('consultation-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
   };
 
   const handleSaveClinicalInfo = async () => {
@@ -345,7 +352,7 @@ Wishing you a speedy recovery. 💙`;
           
           {/* Left Column: Today's Patient Queue */}
           <div className="w-full lg:w-[350px] shrink-0 flex flex-col gap-6">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex-1 min-h-[500px] flex flex-col overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex-1 lg:min-h-[500px] flex flex-col overflow-hidden">
               <div className="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/80">
                 <div>
                   <h3 className="font-bold text-gray-900 text-base">Today's Queue</h3>
@@ -400,7 +407,7 @@ Wishing you a speedy recovery. 💙`;
           </div>
 
           {/* Right Column: Active Patient Details */}
-          <div className="flex-1 min-w-0">
+          <div id="consultation-panel" className="flex-1 min-w-0">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 h-full min-h-[600px] flex items-center justify-center relative overflow-hidden">
               
               {!selectedPatient ? (
