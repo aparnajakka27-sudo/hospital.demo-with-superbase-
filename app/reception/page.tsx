@@ -134,7 +134,7 @@ export default function ReceptionDashboard() {
       
       // Auto-generate token if missing (frontend fallback since DB trigger might be missing)
       if (!editingPatient || !editingPatient.token_number) {
-        payload.token_number = `HSP-${Math.floor(1000 + Math.random() * 9000)}`;
+        payload.token_number = Math.floor(1000 + Math.random() * 9000);
       }
 
       let error;
