@@ -728,7 +728,7 @@ export default function ReceptionDashboard() {
               <form onSubmit={handleIssueSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-1">Target Department</label>
-                  <select value={issueTarget} onChange={e => setIssueTarget(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500">
+                  <select value={issueTarget} onChange={e => setIssueTarget(e.target.value)} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-slate-900 bg-white">
                     <option value="Admin">Admin</option>
                     <option value="Doctor">Doctor</option>
                     <option value="Pharmacy">Pharmacy</option>
@@ -737,7 +737,7 @@ export default function ReceptionDashboard() {
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-1">Issue Description</label>
-                  <textarea required value={issueMessage} onChange={e => setIssueMessage(e.target.value)} rows={4} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Describe the issue..."></textarea>
+                  <textarea required value={issueMessage} onChange={e => setIssueMessage(e.target.value)} rows={4} className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-slate-900 bg-white" placeholder="Describe the issue..."></textarea>
                 </div>
                 <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
                   <button type="button" onClick={() => setIsIssueModalOpen(false)} className="px-4 py-2 border rounded-lg font-bold text-slate-700">Cancel</button>
