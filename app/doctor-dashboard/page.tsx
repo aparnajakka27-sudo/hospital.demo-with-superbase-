@@ -129,6 +129,12 @@ export default function DoctorDashboard() {
     }
   };
 
+  const toggleVisitExpand = (index: number) => {
+    setExpandedVisits(prev => 
+      prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index]
+    );
+  };
+
   const handlePatientSelect = async (p: any) => {
     setSelectedPatient(p);
     setNotes(p.diagnosis_notes || "");
