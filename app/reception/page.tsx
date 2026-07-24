@@ -270,12 +270,20 @@ export default function ReceptionDashboard() {
       if (error) throw error;
       
       // Trigger WhatsApp notification directly on update/insert
-      if (phoneNum) {
+      const targetPhone = editingPatient ? editingPatient.Phone : phoneNum;
+      
+      if (targetPhone) {
         try {
-          const formattedPhone = String(phoneNum).replace(/\D/g, '');
+          let formattedPhone = String(targetPhone).replace(/\D/g, '');
+          
+          // Auto-add country code for 10 digit numbers
+          if (formattedPhone.length === 10) {
+            formattedPhone = '91' + formattedPhone;
+          }
+          
           const baseUrl = window.location.origin;
           const createdAt = editingPatient ? editingPatient.created_at : new Date().toISOString();
-          const receiptUrl = `${baseUrl}/receipt/${phoneNum}?created=${encodeURIComponent(createdAt)}`;
+          const receiptUrl = `${baseUrl}/receipt/${targetPhone}?created=${encodeURIComponent(createdAt)}`;
           
           await fetch("/api/whatsapp", {
             method: "POST",
