@@ -273,40 +273,51 @@ export default function ReceptionDashboard() {
       const targetPhone = editingPatient ? editingPatient.Phone : phoneNum;
       
       if (targetPhone) {
-        try {
-          let formattedPhone = String(targetPhone).replace(/\D/g, '');
-          
-          // Auto-add country code for 10 digit numbers
-          if (formattedPhone.length === 10) {
-            formattedPhone = '91' + formattedPhone;
+        // Run WhatsApp in the background with a 5 second delay so we don't block the UI refresh
+        setTimeout(async () => {
+          try {
+            let formattedPhone = String(targetPhone).replace(/\D/g, '');
+            
+            // Auto-add country code for 10 digit numbers
+            if (formattedPhone.length === 10) {
+              formattedPhone = '91' + formattedPhone;
+            }
+            
+            const baseUrl = window.location.origin;
+            const createdAt = editingPatient ? editingPatient.created_at : new Date().toISOString();
+            const receiptUrl = `${baseUrl}/receipt/${targetPhone}?created=${encodeURIComponent(createdAt)}`;
+            
+            const res = await fetch("/api/whatsapp", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                name: patientName,
+                date: selectedDate,
+                time: editingPatient ? editingPatient.Time : null,
+                doctor: assignedDoctor,
+                tokenNumber: payload.token_number,
+                phone: formattedPhone,
+                receiptUrl: receiptUrl
+              }),
+            });
+            
+            const data = await res.json();
+            if (!res.ok) {
+              alert("WhatsApp Error: " + (data.error?.error?.message || data.message || "Unknown Error. Please check Meta Developer Dashboard test numbers."));
+            } else {
+              alert(`WhatsApp message sent successfully to ${formattedPhone}!`);
+            }
+          } catch (err) {
+            console.error("Failed to trigger WhatsApp notification:", err);
+            alert("Failed to connect to WhatsApp API.");
           }
-          
-          const baseUrl = window.location.origin;
-          const createdAt = editingPatient ? editingPatient.created_at : new Date().toISOString();
-          const receiptUrl = `${baseUrl}/receipt/${targetPhone}?created=${encodeURIComponent(createdAt)}`;
-          
-          await fetch("/api/whatsapp", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name: patientName,
-              date: selectedDate,
-              time: editingPatient ? editingPatient.Time : null,
-              doctor: assignedDoctor,
-              tokenNumber: payload.token_number,
-              phone: formattedPhone,
-              receiptUrl: receiptUrl
-            }),
-          });
-        } catch (err) {
-          console.error("Failed to trigger WhatsApp notification:", err);
-        }
+        }, 5000); // 5 second delay
       }
       
       setIsWalkInFormOpen(false);
-      fetchPatients(); // Refresh list
+      fetchPatients(); // Refresh list immediately
     } catch (err: any) {
       const errorMsg = err?.message || err?.details || JSON.stringify(err);
       console.log("Failed to add/update patient:", JSON.stringify(err, null, 2), err);
@@ -998,10 +1009,10 @@ export default function ReceptionDashboard() {
                               </div>
                             )}
                             <div className="flex items-center justify-end gap-2 transition-opacity">
-                              <button onClick={() => openWalkInForm(p)} className="p-1.5 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-md transition-colors" title="Edit Patient">
+                              <button onClick={() => openWalkInForm(p)} className="p-1.5 text-slate-700 hover:text-primary hover:bg-primary/10 rounded-md transition-colors" title="Edit Patient">
                                 <Edit size={16} />
                               </button>
-                              <button onClick={() => { if(window.confirm('Delete this patient record?')) alert('Deletion would be implemented here via Supabase DELETE query.'); }} className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors" title="Delete Entry">
+                              <button onClick={() => { if(window.confirm('Delete this patient record?')) alert('Deletion would be implemented here via Supabase DELETE query.'); }} className="p-1.5 text-slate-700 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors" title="Delete Entry">
                                 <Trash2 size={16} />
                               </button>
                             </div>
