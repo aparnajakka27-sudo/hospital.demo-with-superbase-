@@ -16,17 +16,30 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: "No phone number provided." });
     }
 
-    // Prepare the message text
-    const messageText = `Hello ${name}, your appointment at HORIZON Super Speciality Hospital is CONFIRMED! ✅\n\n📅 Date: ${date}\n⏰ Time: ${time || "Please check receipt"}\n👨‍⚕️ Doctor: ${doctor || "General Consultation"}\n🎫 Token Number: ${tokenNumber}\n\n🧾 You can view and download your appointment receipt here:\n${receiptUrl || "N/A"}\n\nPlease arrive 15 minutes before your scheduled time. If you have any questions, feel free to contact us.\n\nThank you for choosing us!`;
-
-    // WhatsApp Cloud API request payload
+    // WhatsApp Cloud API request payload using Template
     const payload = {
       messaging_product: "whatsapp",
       to: phone,
-      type: "text",
-      text: {
-        body: messageText,
-      },
+      type: "template",
+      template: {
+        name: "appointment_confirmation",
+        language: {
+          code: "en_US"
+        },
+        components: [
+          {
+            type: "body",
+            parameters: [
+              { type: "text", text: name || "Patient" },
+              { type: "text", text: date || "Scheduled Date" },
+              { type: "text", text: time || "Please check receipt" },
+              { type: "text", text: doctor || "General Consultation" },
+              { type: "text", text: tokenNumber ? tokenNumber.toString() : "N/A" },
+              { type: "text", text: receiptUrl || "N/A" }
+            ]
+          }
+        ]
+      }
     };
 
     const response = await fetch(`https://graph.facebook.com/v21.0/${WHATSAPP_PHONE_NUMBER_ID}/messages`, {
