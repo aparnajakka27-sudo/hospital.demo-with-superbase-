@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
-    const { name, date, doctor, tokenNumber, phone } = await request.json();
+    const { name, date, time, doctor, tokenNumber, phone, receiptUrl } = await request.json();
 
     const WHATSAPP_TOKEN = process.env.WHATSAPP_TOKEN;
     const WHATSAPP_PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID;
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     }
 
     // Prepare the message text
-    const messageText = `Hello ${name}, your appointment at HORIZON Super Speciality Hospital is confirmed! \n\n📅 Date: ${date}\n👨‍⚕️ Doctor: ${doctor || "General Consultation"}\n🎫 Token Number: ${tokenNumber}\n\nPlease arrive 15 minutes before your scheduled time. If you have any questions, feel free to contact us.\n\nThank you for choosing us!`;
+    const messageText = `Hello ${name}, your appointment at HORIZON Super Speciality Hospital is CONFIRMED! ✅\n\n📅 Date: ${date}\n⏰ Time: ${time || "Please check receipt"}\n👨‍⚕️ Doctor: ${doctor || "General Consultation"}\n🎫 Token Number: ${tokenNumber}\n\n🧾 You can view and download your appointment receipt here:\n${receiptUrl || "N/A"}\n\nPlease arrive 15 minutes before your scheduled time. If you have any questions, feel free to contact us.\n\nThank you for choosing us!`;
 
     // WhatsApp Cloud API request payload
     const payload = {

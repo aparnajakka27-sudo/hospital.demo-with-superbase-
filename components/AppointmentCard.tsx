@@ -21,6 +21,7 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
     department: "",
     doctor: "",
     date: "",
+    time: "",
     tokenNumber: "",
     consent: false,
   });
@@ -75,12 +76,12 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
 
 
 
-  const isFormValid = formData.fullName.trim() !== "" && formData.email.trim() !== "" && formData.mobile.trim() !== "" && formData.consent && dynamicDepartments.length > 0 && !isLoadingDepartments && !fetchError && formData.date !== "" && formData.department !== "";
+  const isFormValid = formData.fullName.trim() !== "" && formData.email.trim() !== "" && formData.mobile.trim() !== "" && formData.consent && dynamicDepartments.length > 0 && !isLoadingDepartments && !fetchError && formData.date !== "" && formData.time !== "" && formData.department !== "";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.date || !formData.department) {
-      alert("Please complete all required fields including Date and Department.");
+    if (!formData.date || !formData.time || !formData.department) {
+      alert("Please complete all required fields including Date, Time, and Department.");
       return;
     }
 
@@ -119,6 +120,7 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
             Phone: isNaN(phoneNum) ? null : phoneNum,
             Department:formData.department,
             Date:formData.date,
+            Time: formData.time,
             Doctor:formData.doctor,
             token_number: finalToken,
             booking_type: 'Online',
@@ -132,30 +134,7 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
         console.error("Supabase Error:", error);
         alert("There was an error saving to Supabase: " + error.message);
       } else {
-        // Send WhatsApp notification
-        try {
-          // Format phone number to international format (strip '+' if present, WhatsApp API expects it without '+')
-          const formattedPhone = (countryCode + formData.mobile).replace(/\D/g, '');
-          
-          await fetch("/api/whatsapp", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name: formData.fullName,
-              date: formData.date,
-              doctor: formData.doctor,
-              tokenNumber: finalToken,
-              phone: formattedPhone,
-            }),
-          });
-        } catch (err) {
-          console.error("Failed to trigger WhatsApp notification:", err);
-          // We don't alert the user here because the appointment itself was successful
-        }
-
-        alert("Appointment requested successfully! Our team will contact you shortly.");
+        alert("Your appointment has been booked. Our team will verify and confirm shortly.");
         
         // Reset form
         setFormData({
@@ -165,6 +144,7 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
           department: "",
           doctor: "",
           date: "",
+          time: "",
           tokenNumber: "",
           consent: false,
         });
@@ -314,14 +294,24 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
             </div>
           </div>
 
-          <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-            <input
-              type="date"
-              className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:shadow-md focus:pl-11 outline-none transition-all duration-300 text-sm text-gray-900"
-              value={formData.date}
-              onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-            />
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+              <input
+                type="date"
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:shadow-md focus:pl-11 outline-none transition-all duration-300 text-sm text-gray-900"
+                value={formData.date}
+                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+              />
+            </div>
+            <div className="relative flex-1">
+              <input
+                type="time"
+                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:shadow-md outline-none transition-all duration-300 text-sm text-gray-900"
+                value={formData.time}
+                onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+              />
+            </div>
           </div>
 
           <div className="flex items-start gap-2 pt-2">

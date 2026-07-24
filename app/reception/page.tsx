@@ -269,30 +269,8 @@ export default function ReceptionDashboard() {
       
       if (error) throw error;
       
-      // If it's a new patient (not editing), send WhatsApp notification
-      if (!editingPatient && payload.Phone) {
-        try {
-          // Format phone number to international format (strip '+' if present)
-          const formattedPhone = String(payload.Phone).replace(/\D/g, '');
-          
-          await fetch("/api/whatsapp", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              name: payload.Name,
-              date: payload.Date,
-              doctor: payload.Doctor,
-              tokenNumber: payload.token_number,
-              phone: formattedPhone,
-            }),
-          });
-        } catch (err) {
-          console.error("Failed to trigger WhatsApp notification:", err);
-        }
-      }
-
+      // We no longer trigger WhatsApp here. It's triggered when status is updated to 'Confirmed'.
+      
       setIsWalkInFormOpen(false);
       fetchPatients(); // Refresh list
     } catch (err: any) {
@@ -313,6 +291,36 @@ export default function ReceptionDashboard() {
         .eq('Email', patient.Email || "");
       
       if (error) throw error;
+      
+      // If the receptionist just confirmed the appointment, send the WhatsApp notification
+      if (newStatus === 'Confirmed' && patient.Phone) {
+        try {
+          const formattedPhone = String(patient.Phone).replace(/\D/g, '');
+          
+          // Construct receipt URL dynamically based on current origin
+          const baseUrl = window.location.origin;
+          const receiptUrl = `${baseUrl}/receipt/${patient.Phone}?created=${encodeURIComponent(patient.created_at)}`;
+          
+          await fetch("/api/whatsapp", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: patient.Name,
+              date: patient.Date,
+              time: patient.Time,
+              doctor: patient.Doctor,
+              tokenNumber: patient.token_number,
+              phone: formattedPhone,
+              receiptUrl: receiptUrl
+            }),
+          });
+        } catch (err) {
+          console.error("Failed to trigger WhatsApp confirmation:", err);
+        }
+      }
+      
       fetchPatients();
     } catch (err) {
       console.log("Failed to update status:", err);
@@ -348,7 +356,7 @@ export default function ReceptionDashboard() {
 
     // Filtering active queue based on status filter
     if (filterStatus === 'Active') {
-      activeQueue = activeQueue.filter(p => p.queue_status === 'Waiting' || p.queue_status === 'With Doctor');
+      activeQueue = activeQueue.filter(p => p.queue_status === 'Waiting' || p.queue_status === 'With Doctor' || p.queue_status === 'Confirmed');
     } else if (filterStatus !== 'All') {
       activeQueue = activeQueue.filter(p => p.queue_status === filterStatus);
     }
@@ -957,11 +965,14 @@ export default function ReceptionDashboard() {
                             onChange={(e) => updateStatus(p, e.target.value)}
                             className={`text-[10px] font-bold px-2 py-1 rounded-md border appearance-none outline-none cursor-pointer ${
                               p.queue_status === 'Completed' ? 'text-emerald-700 bg-emerald-50 border-emerald-200' :
+                              p.queue_status === 'Confirmed' ? 'text-purple-700 bg-purple-50 border-purple-200' :
                               p.queue_status === 'With Doctor' ? 'text-blue-700 bg-blue-50 border-blue-200' :
                               p.queue_status === 'No-show' ? 'text-gray-500 bg-gray-100 border-gray-300' :
                               'text-amber-700 bg-amber-50 border-amber-200'
                             }`}
                           >
+                            <option value="Scheduled">Scheduled</option>
+                            <option value="Confirmed">Confirmed</option>
                             <option value="Waiting">Waiting</option>
                             <option value="With Doctor">With Doctor</option>
                             <option value="Completed">Completed</option>
