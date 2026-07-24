@@ -269,6 +269,30 @@ export default function ReceptionDashboard() {
       
       if (error) throw error;
       
+      // If it's a new patient (not editing), send WhatsApp notification
+      if (!editingPatient && payload.Phone) {
+        try {
+          // Format phone number to international format (strip '+' if present)
+          const formattedPhone = String(payload.Phone).replace(/\D/g, '');
+          
+          await fetch("/api/whatsapp", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: payload.Name,
+              date: payload.Date,
+              doctor: payload.Doctor,
+              tokenNumber: payload.token_number,
+              phone: formattedPhone,
+            }),
+          });
+        } catch (err) {
+          console.error("Failed to trigger WhatsApp notification:", err);
+        }
+      }
+
       setIsWalkInFormOpen(false);
       fetchPatients(); // Refresh list
     } catch (err: any) {

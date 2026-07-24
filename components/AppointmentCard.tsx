@@ -132,6 +132,29 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
         console.error("Supabase Error:", error);
         alert("There was an error saving to Supabase: " + error.message);
       } else {
+        // Send WhatsApp notification
+        try {
+          // Format phone number to international format (strip '+' if present, WhatsApp API expects it without '+')
+          const formattedPhone = (countryCode + formData.mobile).replace(/\D/g, '');
+          
+          await fetch("/api/whatsapp", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: formData.fullName,
+              date: formData.date,
+              doctor: formData.doctor,
+              tokenNumber: finalToken,
+              phone: formattedPhone,
+            }),
+          });
+        } catch (err) {
+          console.error("Failed to trigger WhatsApp notification:", err);
+          // We don't alert the user here because the appointment itself was successful
+        }
+
         alert("Appointment requested successfully! Our team will contact you shortly.");
         
         // Reset form
