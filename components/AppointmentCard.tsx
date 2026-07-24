@@ -186,8 +186,8 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
             </div>
           </div>
 
-          <div className="flex gap-2">
-            <div className="relative flex-1">
+          <div>
+            <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
               <input
                 type="email"
@@ -196,16 +196,6 @@ export default function AppointmentCard({ onClose }: AppointmentCardProps) {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
-              />
-            </div>
-            
-            <div className="relative flex-[0.7]">
-              <input
-                type="text"
-                placeholder="Token Number (Optional)"
-                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-secondary/50 focus:border-secondary focus:shadow-md outline-none transition-all duration-300 text-sm text-gray-900 placeholder:text-gray-400"
-                value={formData.tokenNumber}
-                onChange={(e) => setFormData({ ...formData, tokenNumber: e.target.value })}
               />
             </div>
           </div>
