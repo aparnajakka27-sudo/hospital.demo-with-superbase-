@@ -138,6 +138,49 @@ export default function ReceptionDashboard() {
     }
   };
 
+  const resendWhatsApp = async (patient: any) => {
+    if (!patient.Phone) {
+      alert("No phone number found for this patient.");
+      return;
+    }
+    const proceed = window.confirm(`Resend WhatsApp receipt to ${patient.Phone}?`);
+    if (!proceed) return;
+
+    try {
+      let formattedPhone = String(patient.Phone).replace(/\D/g, '');
+      if (formattedPhone.length === 10) {
+        formattedPhone = '91' + formattedPhone;
+      }
+      
+      const baseUrl = window.location.origin;
+      const receiptUrl = `${baseUrl}/receipt/${patient.Phone}?created=${encodeURIComponent(patient.created_at)}`;
+      
+      const res = await fetch("/api/whatsapp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: patient.Name,
+          date: patient.Date,
+          time: patient.Time || null,
+          doctor: patient.Doctor,
+          tokenNumber: patient.token_number,
+          phone: formattedPhone,
+          receiptUrl: receiptUrl
+        }),
+      });
+      
+      const data = await res.json();
+      if (!res.ok) {
+        alert("WhatsApp Error: " + (data.error?.error?.message || data.message || "Unknown Error."));
+      } else {
+        alert(`WhatsApp message resent successfully to ${formattedPhone}!`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to connect to WhatsApp API.");
+    }
+  };
+
   const openWalkInForm = (patientToEdit: any = null) => {
     setFormError(null);
     if (patientToEdit) {
@@ -1003,7 +1046,7 @@ export default function ReceptionDashboard() {
                                 <Link target="_blank" href={`/prescription/${p.Phone}?created=${encodeURIComponent(p.created_at)}`} className="text-[10px] font-bold text-emerald-600 bg-emerald-50 hover:bg-emerald-100 px-2 py-1 rounded border border-emerald-200 flex items-center gap-1 transition-colors">
                                   💊 Prescription
                                 </Link>
-                                <button onClick={() => alert(`Simulated WhatsApp Sent to ${p.Phone}!\n\nTemplate attached PDFs.`)} className="text-[10px] font-bold text-green-700 bg-green-50 hover:bg-green-100 px-2 py-1 rounded border border-green-200 flex items-center gap-1 transition-colors" title="Resend to WhatsApp">
+                                <button onClick={() => resendWhatsApp(p)} className="text-[10px] font-bold text-green-700 bg-green-50 hover:bg-green-100 px-2 py-1 rounded border border-green-200 flex items-center gap-1 transition-colors" title="Resend to WhatsApp">
                                   💬 Resend
                                 </button>
                               </div>
