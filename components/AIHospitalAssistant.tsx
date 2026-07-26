@@ -17,7 +17,7 @@ export default function AIHospitalAssistant() {
     {
       id: '1',
       sender: 'ai',
-      text: 'Hello! I am your AI Hospital Assistant. How can I help you today? I can help with finding departments, booking appointments, or hospital timings.'
+      text: 'Hello! I am the AI Assistant for HORIZON Super Speciality Hospital. How can I help you today? I can help with finding departments, booking appointments, or hospital timings.'
     }
   ]);
   const [inputText, setInputText] = useState("");
