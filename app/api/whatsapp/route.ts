@@ -31,11 +31,9 @@ export async function POST(request: Request) {
             type: "body",
             parameters: [
               { type: "text", text: name || "Patient" },
-              { type: "text", text: date || "Scheduled Date" },
-              { type: "text", text: time || "Please check receipt" },
-              { type: "text", text: doctor || "General Consultation" },
-              { type: "text", text: tokenNumber ? tokenNumber.toString() : "N/A" },
-              { type: "text", text: receiptUrl || "N/A" }
+              { type: "text", text: `${date} at ${time || 'TBD'}` },
+              { type: "text", text: `Dr. ${doctor}` || "Consultation" },
+              { type: "text", text: tokenNumber ? tokenNumber.toString() : "N/A" }
             ]
           }
         ]
