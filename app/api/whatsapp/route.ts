@@ -22,7 +22,7 @@ export async function POST(request: Request) {
       to: phone,
       type: "template",
       template: {
-        name: "appointment_confirmation",
+        name: "appointment_confirm",
         language: {
           code: "en_US"
         },
