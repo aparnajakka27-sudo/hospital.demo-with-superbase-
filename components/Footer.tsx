@@ -105,7 +105,7 @@ const Footer = React.memo(function Footer() {
             <ul className="space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.name}>
-                  <a href={link.href} className="text-sm text-primary-foreground/80 hover:text-secondary transition-colors inline-block hover:translate-x-1 transform duration-200">
+                  <a href={link.href} className="text-sm text-primary-foreground/80 hover:text-white transition-colors inline-block hover:translate-x-1 transform duration-200">
                     {link.name}
                   </a>
                 </li>
@@ -121,7 +121,7 @@ const Footer = React.memo(function Footer() {
             <ul className="space-y-3">
               {hospitalConfig.specialities.map((speciality) => (
                 <li key={speciality.name}>
-                  <a href="#specialities" className="text-sm text-primary-foreground/80 hover:text-secondary transition-colors inline-block hover:translate-x-1 transform duration-200">
+                  <a href="#specialities" className="text-sm text-primary-foreground/80 hover:text-white transition-colors inline-block hover:translate-x-1 transform duration-200">
                     {speciality.name}
                   </a>
                 </li>
@@ -143,13 +143,13 @@ const Footer = React.memo(function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={18} className="text-secondary shrink-0" />
-                <a href={`tel:${hospitalConfig.phone.replace(/[^0-9+]/g, '')}`} className="text-sm text-primary-foreground/80 hover:text-secondary transition-colors">
+                <a href={`tel:${hospitalConfig.phone.replace(/[^0-9+]/g, '')}`} className="text-sm text-primary-foreground/80 hover:text-white transition-colors">
                   {hospitalConfig.phone}
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={18} className="text-secondary shrink-0" />
-                <a href={`mailto:${hospitalConfig.email}`} className="text-sm text-primary-foreground/80 hover:text-secondary transition-colors">
+                <a href={`mailto:${hospitalConfig.email}`} className="text-sm text-primary-foreground/80 hover:text-white transition-colors">
                   {hospitalConfig.email}
                 </a>
               </li>
