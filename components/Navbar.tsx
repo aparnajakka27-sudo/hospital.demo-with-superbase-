@@ -84,7 +84,7 @@ export default function Navbar() {
               
               <Link href="/reception" className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-primary transition-colors">
                 <Users size={16} className="text-emerald-500" />
-                Reception Intake: <span className="bg-emerald-100 text-emerald-700 px-1.5 rounded text-[10px] ml-0.5">7</span>
+                Reception Intake
               </Link>
 
               <Link href="/doctor-login" className="flex items-center gap-1.5 text-xs font-semibold text-gray-600 hover:text-primary transition-colors">
